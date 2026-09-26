@@ -16,5 +16,6 @@ export default defineConfig({
     environment: 'jsdom',
     // globals: registers RTL's automatic cleanup between tests.
     globals: true,
+    setupFiles: ['./test/setup.ts'],
   },
 });

@@ -36,11 +36,18 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: 'Atlas — the Digital Twin Platform',
+    default: 'Atlas — Model the real world digitally',
     template: '%s · Atlas',
   },
   description: 'The Digital Twin Platform — living models of real systems.',
 };
+
+/** Site nav — lean, only destinations this site actually substantiates. */
+const NAV = [
+  { label: 'Docs', url: '/docs' },
+  { label: 'Blog', url: '/blog' },
+  { label: 'About', url: '/about' },
+] as const;
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -51,9 +58,29 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
         <AntdRegistry>
           <PrismThemeModeProvider pack={DEFAULT_PACK} defaultMode={DEFAULT_MODE}>
-            <SiteHeader site={SITE_ID} />
+            <SiteHeader site={SITE_ID} nav={NAV} />
             <main className="site-main">{children}</main>
-            <SiteFooter site={SITE_ID} />
+            <SiteFooter
+              site={SITE_ID}
+              columns={[
+                {
+                  title: 'Atlas',
+                  links: [
+                    { label: 'Docs', url: '/docs' },
+                    { label: 'Blog', url: '/blog' },
+                    { label: 'About', url: '/about' },
+                  ],
+                },
+                {
+                  title: 'See it run',
+                  links: [
+                    { label: 'Open the playground', url: 'https://playground.nanisoft.com' },
+                    { label: 'Access traversal', url: '/docs/guides/access-traversal' },
+                    { label: 'The integration ledger', url: '/docs/reference/integration-ledger' },
+                  ],
+                },
+              ]}
+            />
           </PrismThemeModeProvider>
         </AntdRegistry>
       </body>
