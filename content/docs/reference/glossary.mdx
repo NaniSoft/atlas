@@ -1,0 +1,90 @@
+---
+title: Glossary
+description: The words this site uses, and what each one means here.
+---
+
+Values in **[square brackets]** are codenames; the real product is in the [integration ledger](/docs/reference/integration-ledger).
+
+### Blast radius
+
+A planned use case: ask what an account, a key, or a host can actually reach from where it sits, and rehearse containment against the graph you already have. Designed on the twin; needs no new connectors. **Not available today.**
+
+### Bronze
+
+The lakehouse layer where raw source data lands **untouched**. Nothing is interpreted at the door. See [the lakehouse path](/docs/concepts/the-lakehouse-path).
+
+### Compass
+
+An in-house component: the traversal UI. Renders a finding as edges, with a missing relationship drawn as a gap.
+
+### Conform
+
+The Silver-stage work of cleaning, joining, and resolving records until identities are stable. One person, one node.
+
+### Edge
+
+A relationship between two nodes in the twin: `memberof`, `viewed`, ownership, inheritance.
+
+### Finding
+
+An answer the twin produces that names something wrong in the estate — for example, a user who viewed a sensitive product without the membership that would back it. Readable [three ways](/docs/guides/reading-one-finding-three-ways).
+
+### Gold
+
+The lakehouse layer holding `graph_nodes` and `graph_edges`. **This graph is the twin.**
+
+### IT estate
+
+The collection of systems, people, and permissions Atlas models: directories, HR systems, databases, and applications. Atlas's first proven domain.
+
+### Lakehouse
+
+The versioned store — Bronze, Silver, Gold — that the twin is produced into. [Bedrock] (Nessie over Iceberg).
+
+### Node
+
+A thing in the estate, modelled as a vertex in the twin: a person, a group, a product, a system.
+
+### Playbook
+
+A scripted sequence of steps that walks a use case end to end. The playground's flagship playbook has twenty-two steps across the four phases.
+
+### Playground
+
+The [fully mocked, in-browser tour](https://playground.nanisoft.com) of the twin. Nothing to install, no real data. The site's single honest ask.
+
+### Quality gate
+
+The check that decides whether a layer advance happens. Bad input stops at the boundary and never reaches the twin.
+
+### SCD2
+
+Slowly-changing dimension, type 2: keeping history as rows with validity ranges, so "what did access look like last quarter" is a query.
+
+### Scout
+
+An in-house component: connectors for internal source systems no off-the-shelf catalog covers.
+
+### Sensitive product
+
+A product node carrying an authored `Sensitive: bool` field — the definitional hinge of the flagship audit, authored before any data flows.
+
+### Silver
+
+The lakehouse layer of conformed, identity-resolved tables with SCD2 snapshots.
+
+### Stale and unused access
+
+A planned use case: find memberships nobody remembers granting and privileges nobody has exercised, and feed clean-up work with evidence instead of anecdotes. **Not available today.**
+
+### Traversal
+
+Answering a question by walking edges from a starting node, rather than by joining exports. The twin's only way of answering.
+
+### Twin
+
+The living graph that models the estate — produced, versioned, and queryable. See [the twin](/docs/concepts/the-twin).
+
+### Use case
+
+A question the twin can answer as a product surface. One is available today ([access traversal](/docs/guides/access-traversal)); two are planned. Statuses are always stated, never implied.

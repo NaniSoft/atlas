@@ -1,0 +1,42 @@
+---
+title: The lakehouse path
+description: Bronze, Silver, Gold — how a fact earns its way into the twin, and why the layers are versioned.
+---
+
+The twin is the **Gold** layer of a lakehouse. Everything upstream of it exists to make Gold trustworthy.
+
+## Land — Bronze
+
+Raw source data lands **untouched** in Bronze. Nothing is interpreted at the door: the directory, the HR system, and the SQL fleet each contribute rows exactly as they describe themselves.
+
+Bronze is deliberately dumb. Its job is to be a faithful, replayable record of what the sources said — so that a mistake downstream is a re-run, not a re-extraction.
+
+## Conform — Silver
+
+Records are cleaned, joined, and resolved until identities are stable. One person, one node — that is Silver.
+
+Conformance is where the estate stops disagreeing with itself. The same human appears in the directory, in the HR system, and in an application's user table under three spellings; Silver resolves them into one identity. Snapshots are kept as SCD2 history, so "what did access look like last quarter" is a query, not an archaeology project.
+
+Confidence scoring happens here too. A resolved identity carries the evidence it was resolved from, and a low-confidence resolution does not silently become fact.
+
+## Publish — Gold
+
+Conformed facts resolve into Gold: `graph_nodes` and `graph_edges`. **This graph is the twin.** Everything downstream — the traversal API, Compass, the dashboards — reads the graph, never the sources.
+
+## Quality gates
+
+Promotion between layers is decided by **quality gates**, not by schedule. Bad input stops at the boundary and never reaches the twin. A gate failure is visible, named, and blocks the layer advance until it is resolved.
+
+## Versioned at every layer
+
+The lakehouse catalog keeps history at every layer, so the twin is reproducible: last quarter's twin can be reconstructed exactly, and a finding can be re-derived against the graph as it was when the question was asked. Versioning is what turns "we think" into "we can show".
+
+## What each layer buys you
+
+| Layer | Contents | Question it answers |
+| --- | --- | --- |
+| Bronze | Raw source rows, uninterpreted | What did the sources actually say? |
+| Silver | Conformed, identity-resolved, snapshotted | Who is this, really? |
+| Gold | `graph_nodes` + `graph_edges` | What is connected to what? |
+
+The mechanics of each stage — which component runs it, and the off-the-shelf product behind the codename — are in [Platform flow](/docs/architecture/platform-flow).

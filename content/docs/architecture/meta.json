@@ -1,0 +1,15 @@
+{
+  "title": "Architecture",
+  "description": "Every component from source systems to Compass, with the off-the-shelf product behind each codename.",
+  "pages": [
+    "platform-flow",
+    "orchestration",
+    "transform",
+    "storage-and-catalog",
+    "query",
+    "in-house-components",
+    "observability",
+    "delivery",
+    "authorization-and-secrets"
+  ]
+}

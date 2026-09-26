@@ -1,0 +1,22 @@
+---
+title: Delivery
+description: Anchor declares the infrastructure; Conveyor delivers it. No snowflake deployments.
+---
+
+Two off-the-shelf products carry the platform's delivery, and the pair is what keeps sixteen integrations from becoming sixteen tribal installations.
+
+## Anchor — infrastructure as code
+
+**Anchor** is [OpenTofu](https://opentofu.org/) / [Terraform](https://www.terraform.io/). It provisions the core platform: the lakehouse's storage and catalog, the databases, the network shape the components talk across.
+
+The platform's infrastructure is therefore **declared** — reviewable, diffable, and reproducible. Standing up the estate's twin again somewhere else is a plan, not an archaeology project.
+
+## Conveyor — GitOps
+
+**Conveyor** is [ArgoCD](https://argo-cd.readthedocs.io/). It delivers what Anchor declares and what the applications ship, reconciling the running platform against the repository rather than against whoever deployed last.
+
+Together the two close the loop that [orchestration](/docs/architecture/orchestration) opens on the data side: the pipeline's shape is reviewable as DAGs, and the platform's shape is reviewable as code.
+
+## Why this is a docs topic and not an ops footnote
+
+Because "declared as code" is a claim about trustworthiness, and trustworthiness is the product. A twin that answers "who can reach this system" is only as credible as the ability to show what platform produced the answer — which version, provisioned how, from what commit.

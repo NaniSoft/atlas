@@ -1,0 +1,42 @@
+---
+title: Reading one finding three ways
+description: The same graph, read as edges, as a row, and as a chart — and when each is the right surface.
+---
+
+One finding, three legitimate surfaces. They are not three products looking at three copies of the data; they are three ways of reading one Gold graph.
+
+The finding, from the [flagship walk-through](/docs/guides/access-traversal): *`j.harper` viewed `P-1042` (Payroll-NG, sensitive) without belonging to `G-SR`, the group that backs it.*
+
+## As graph edges — Compass
+
+**Compass** renders the traversal as edges: `j.harper → viewed → P-1042`, with the missing `memberof` edge drawn as a gap rather than silently absent.
+
+This is the surface for *understanding*. A missing relationship is hard to see in a table — the row simply is not there. Drawing the gap makes the anomaly's shape legible: not "something is wrong with this user", but "there is a path into a sensitive product with nothing backing it".
+
+Use it when you are investigating: drilling into a node, following a path, convincing yourself the finding is real.
+
+## As a table row — Overlook
+
+**Overlook** (Trino) runs Atlas's seeded query over the Gold graph and returns the anomalous row: user, product, sensitivity, the membership that is missing.
+
+This is the surface for *evidence*. A row is exportable, joinable, and diffable. Use it when you need the finding in the shape the rest of your tooling expects, or when you want to enumerate rather than explore — all findings, not one path.
+
+## As a dashboard chart — Superset
+
+**Superset** reads the same Gold and pins the query as an investigative dashboard: products by exposure, users with anomalous views, views by source system.
+
+This is the surface for *communicating*. A compliance or audit persona does not want to traverse a graph; they want to know whether the number moved. Use it when the finding has to travel further than the analyst who ran it, or when the question repeats often enough to be worth a pre-built view.
+
+## Which one, when
+
+| You want to… | Surface |
+| --- | --- |
+| Understand *why* this is a finding | Compass — the edges, with the gap visible |
+| Prove it, export it, diff it | Overlook — the row |
+| Tell someone who was not there | Superset — the chart |
+
+## The part that matters
+
+All three read one graph, so they cannot disagree. That is the practical payoff of the twin being **produced**: there is no reconciliation meeting, because there is only one answer and three renderings of it.
+
+Try all three in the [playground](https://playground.nanisoft.com) — fully mocked, in-browser, nothing to install.

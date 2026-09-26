@@ -1,0 +1,28 @@
+---
+title: Storage and catalog
+description: Bedrock — Nessie over Iceberg, Postgres for the catalog, S3 for storage — the versioned lakehouse the twin lives in.
+---
+
+**Bedrock** is the lakehouse, and it is off-the-shelf end to end: [Nessie](https://projectnessie.org/) as the catalog over [Apache Iceberg](https://iceberg.apache.org/) tables, [Postgres](https://www.postgresql.org/) for the catalog's backing store, and S3 (or MinIO) for object storage.
+
+## The three layers
+
+| Layer | What it holds |
+| --- | --- |
+| **Bronze** | Raw source rows, landed untouched. |
+| **Silver** | Conformed, identity-resolved tables with SCD2 snapshots. |
+| **Gold** | `graph_nodes` and `graph_edges` — the twin. |
+
+Bedrock also carries the **schema-registry-backed tables**: the object types authored in [Blueprint](/docs/concepts/the-component-model) arrive here as real DDL, so a field like `Sensitive: bool` exists as a column before the first row lands.
+
+## Why the catalog matters more than the storage
+
+Object storage is a commodity; the catalog is the interesting part. Nessie gives the lakehouse **versioned layers**, which is what makes three claims in these docs true rather than aspirational:
+
+- *Last quarter's twin can be reproduced exactly* — check out the reference and re-read Gold.
+- *A finding can be re-derived* against the graph as it was when the question was asked.
+- *Promotion is a reviewable event*, not an in-place mutation of a table somebody overwrote.
+
+## Who reads it
+
+[Overlook](/docs/architecture/query) reads Gold to answer questions. [Forge](/docs/architecture/transform) writes Silver and Gold. Nothing downstream reads Bronze directly — Bronze exists so the pipeline can be re-run without re-extracting.

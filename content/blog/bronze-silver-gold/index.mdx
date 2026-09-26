@@ -1,0 +1,50 @@
+---
+title: 'Bronze, Silver, Gold: how a twin earns trust'
+description: The lakehouse path behind a graph product — and why versioned layers are what make a finding quotable.
+date: '2026-09-21'
+tags:
+  - lakehouse
+  - architecture
+---
+
+A graph product lives or dies on one question: *why should I believe the graph?*
+
+Not the query engine — engines are commodities, and swapping Trino for something else would change nothing about whether the answer is true. The belief has to be earned upstream, by the thing that produced the graph. That is the lakehouse path, and it is the reason the twin is a product rather than a picture.
+
+## Bronze: land it untouched
+
+Raw source data lands in Bronze with **nothing interpreted at the door**. The directory, the HR system, and the SQL fleet each contribute rows exactly as they describe themselves.
+
+Bronze is deliberately dumb, and its dumbness is its value. It is a faithful, replayable record of what the sources said. Every mistake downstream is therefore a **re-run**, not a re-extraction — which is the difference between a fixable pipeline and a thing nobody wants to touch.
+
+## Silver: make the estate agree with itself
+
+Records are cleaned, joined, and resolved until identities are stable. One person, one node — that is Silver.
+
+This is where the estate stops disagreeing. The same human arrives from three systems under three spellings; conform resolves them into one identity, and the resolution carries its evidence. Snapshots are kept as SCD2 history, so "what did access look like last quarter" is a query rather than a forensic project.
+
+Confidence scoring happens here too. A low-confidence resolution does not silently become fact — which matters, because a graph that is 97% right is worse than no graph at all. Nobody knows which 3% they are being told.
+
+## Gold: publish the graph
+
+Conformed facts resolve into Gold: `graph_nodes` and `graph_edges`. Products, Users, Groups as nodes; `viewed` and `memberof` as edges. **This graph is the twin**, and everything downstream reads it — never the sources.
+
+The transform stage is also where absence becomes signal. Conform decides what counts as a membership; after that, a `viewed` edge with no `memberof` edge is a real shape in the data. The flagship finding is not a clever query. It is a shape that only exists because conformance was done honestly.
+
+## The gate, and the version
+
+Two mechanisms turn those layers into trust rather than just storage.
+
+**Quality gates decide promotion.** A layer advance happens because the gate passed, not because the schedule said so. Bad input stops at the boundary and never reaches the twin. A gate failure is visible, named, and blocks the advance — which is why a wrong graph is an *event* you can find instead of a fact you absorbed.
+
+**The catalog keeps history at every layer.** Nessie over Iceberg gives the lakehouse versioned layers, which is what makes three claims concrete rather than aspirational:
+
+- last quarter's twin can be reproduced exactly;
+- a finding can be re-derived against the graph as it was when the question was asked;
+- promotion is a reviewable reference move, not an in-place overwrite somebody regrets.
+
+## Why this is the product
+
+"Who can reach this system?" is only worth asking if you can also answer "says who, produced when, from which sources, under what policy?" A graph on its own answers the first. The lakehouse path is what lets it answer the rest — and the rest is what turns a finding into something you can act on.
+
+The stage-by-stage mechanics, with the off-the-shelf product behind each codename, are in [Storage and catalog](/docs/architecture/storage-and-catalog) and [Transform](/docs/architecture/transform).

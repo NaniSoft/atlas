@@ -1,0 +1,29 @@
+---
+title: Exploring the twin in the playground
+description: What the playground is, what it mocks, and how to walk the flagship audit in it.
+---
+
+The [playground](https://playground.nanisoft.com) is a **fully mocked, in-browser tour** of the twin. Nothing to install, no account, and no real data anywhere in it — the estate it models is a seeded scenario with two products, four users, two groups, and two view-logs.
+
+That mock is the point, and it is stated everywhere this site links to the playground. What the playground demonstrates is the *shape* of the platform: the order the phases run in, what each component contributes, and what a finding looks like when it arrives.
+
+## What is real about it
+
+The playground is built from Atlas's actual component model — the same published package that names every codename, its phase, and the off-the-shelf product behind it. The twenty-two steps it walks are the platform's real phases: Schema, Ingestion, Transform, Investigation.
+
+What is mocked is the execution. The engine is not running, OPA is not evaluating real Rego, and no lakehouse is being written to. The playground replays the sequence; it does not run it.
+
+## Walking the flagship audit
+
+1. Open the [playground](https://playground.nanisoft.com). It resets to the seeded teaching state, with `Product.Sensitive: bool` already authored — as if Blueprint had finished phase 1.
+2. Step through the sequence and watch the spine light up stage by stage: sources → schema → ingestion → lakehouse → transform → serving → core → UI.
+3. At each step, open the component's tool overlay to see what it is doing — Blueprint authoring, Trailhead sequencing, Forge conforming, Overlook querying.
+4. Watch step 10 write Gold: `graph_nodes` and `graph_edges` appear, and `r.singh` — no views, no memberships — is dropped by conform.
+5. At step 17, the finding arrives: `j.harper` viewed sensitive `P-1042` with no `memberof` backing it. Compass renders the `viewed` edge and shows the missing membership as a gap.
+6. Step 22 settles the run. Export the state if you want to keep it, or reset to play again.
+
+## Where to go from there
+
+- [Access traversal, start to finish](/docs/guides/access-traversal) — the same twenty-two steps as prose, with the estate spelled out.
+- [Reading one finding three ways](/docs/guides/reading-one-finding-three-ways) — Compass, Overlook, and Superset on the same finding.
+- [The component model](/docs/concepts/the-component-model) — every codename in the playground, and what it really is.

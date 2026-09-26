@@ -1,0 +1,22 @@
+---
+title: Observability
+description: Watchtower — Prometheus, Grafana, Loki — observes every component from above the spine.
+---
+
+**Watchtower** is the observability stack: [Prometheus](https://prometheus.io/) for metrics, [Grafana](https://grafana.com/) for surfaces, [Loki](https://grafana.com/oss/loki/) for logs. Unmodified, like the rest of the composed platform.
+
+## Above the spine, not inside it
+
+Watchtower is modelled as a **cross-cutting observer**: it sits above the pipeline rather than owning a stage, and it reaches the components that matter — the engine, the orchestrator, and the wider stack.
+
+That placement is the point. Observability that lives inside one stage can only explain that stage. A question like "the transform run was slow — was it slow everywhere, or only for that source?" needs a vantage point that sees the whole platform.
+
+## What it watches
+
+- **Pipelines** — ingestion and transform runs under [Trailhead](/docs/architecture/orchestration): when they ran, what they cost, where they failed.
+- **Queries** — what [Overlook](/docs/architecture/query) was asked and what it returned.
+- **The engine** — [Atlas](/docs/architecture/in-house-components) itself: traversal load, policy decisions, audit volume.
+
+## The habit this buys
+
+Every claim in these docs about the twin being *produced* depends on runs being visible. Watchtower is what makes a bad run a named, dated, inspectable event instead of a wrong graph that nobody noticed.

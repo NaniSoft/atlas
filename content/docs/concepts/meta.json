@@ -1,0 +1,10 @@
+{
+  "title": "Concepts",
+  "description": "The twin, the lakehouse path that produces it, and the rules that govern it.",
+  "pages": [
+    "the-twin",
+    "the-lakehouse-path",
+    "traversal-and-policy",
+    "the-component-model"
+  ]
+}

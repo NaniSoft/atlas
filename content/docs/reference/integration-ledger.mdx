@@ -1,0 +1,46 @@
+---
+title: The integration ledger
+description: Sixteen composed off-the-shelf products and four built in-house — roles and real names.
+---
+
+Every off-the-shelf product below runs **unmodified** — integrated through its APIs, configured, never forked. Codenamed entries are the real product shown beneath the codename, not a reimplementation of it.
+
+## Composed — sixteen products
+
+| Shown as | Real product | Role |
+| --- | --- | --- |
+| **Trailhead** | Airflow | Orchestration |
+| **Forge** | Spark + dbt | Transform |
+| **Bedrock** | Nessie (Iceberg catalog, Postgres, S3) | Lakehouse |
+| **Overlook** | Trino | Query |
+| **Blueprint** | DataGerry | Schema |
+| **Watchtower** | Prometheus + Grafana + Loki | Observability |
+| **Anchor** | OpenTofu / Terraform | Infrastructure as code |
+| **Conveyor** | ArgoCD | GitOps |
+| **Airbyte** | Airbyte | Ingestion |
+| **Zingg** | Zingg | Entity resolution |
+| **Great Expectations** | Great Expectations | Quality gates |
+| **Superset** | Apache Superset | Dashboards |
+| **OPA** | Open Policy Agent | Authorization |
+| **OpenBao** | OpenBao | Secrets |
+| **CloudNativePG** | CloudNativePG | Databases |
+| **Valkey** | Valkey | Cache |
+
+The first eight run under a codename; the second eight run under their own name. Where the two columns are identical there was never a seam to draw.
+
+Where each one sits in the pipeline is in [Platform flow](/docs/architecture/platform-flow); what each stage does is in its own [architecture page](/docs/architecture/orchestration).
+
+## Built in-house — four components
+
+| Component | What it is |
+| --- | --- |
+| **Atlas** | The core engine: traversal API, policy enforcement, audit log. |
+| **Compass** | The traversal UI: explore the twin as a graph. |
+| **DataGerry Bridge** | Glue that syncs authored schema into the lakehouse and the engine. |
+| **Scout** | Connectors for internal systems no catalog covers. |
+
+## Reading the ledger
+
+- **The codename is a seam, not a disguise.** It is why the platform's contracts can survive a product being swapped underneath, and why every codenamed entry publishes the real product rather than hiding it.
+- **"Custom (4)" is a schema surface, not a storage count.** DataGerry is off-the-shelf; the in-house Bridge is what carries its authored schema into the lakehouse and the engine.
+- **Dotted edges are not data flow.** Provisioning, deploy, secrets, and observation are platform concerns, not facts about the estate.

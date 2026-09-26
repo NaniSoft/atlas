@@ -1,0 +1,28 @@
+---
+title: In-house components
+description: Atlas, Compass, DataGerry Bridge, and Scout — the four things Nanisoft builds.
+---
+
+Sixteen off-the-shelf products carry the platform. Four components are built in-house, and they are named without codenames because there is nothing to unwrap.
+
+## Atlas — the core engine
+
+The traversal API, authorization enforcement, and audit log, plus use-case step serving. Backed by a Postgres operational store.
+
+Atlas is the component a question actually reaches. It consults the policy engine before traversing, writes the audit entry before executing, seeds the query against Gold, and returns the highlighted path with the narrative steps that explain it.
+
+## Compass — the traversal UI
+
+Graph exploration of the twin, and the product's differentiated surface: Compass renders a finding **as edges** — the anomalous viewed edge, the missing `memberof` shown as a gap, backed access rendered distinctly — with drill-into-node detail.
+
+## DataGerry Bridge — the schema sync
+
+Glue that syncs authored schema into the lakehouse and the engine. It generates the lakehouse DDL for a new object type and refreshes Atlas's schema cache, so a field authored in Blueprint exists downstream before any data flows. A thin CronJob in the real architecture, and deliberately thin: schema definition itself belongs to [DataGerry](/docs/concepts/the-component-model), which is off-the-shelf.
+
+## Scout — the residual connectors
+
+Connectors for the few internal source systems the off-the-shelf connector catalog does not cover. Scout exists so that the platform can claim *every* source is integrated while still composing for the overwhelming majority of them.
+
+## Why only four
+
+Because the other sixteen jobs are solved problems — see [the component model](/docs/concepts/the-component-model) for the reasoning. The four above are the parts where the estate's own shape has to be understood: how its schema is authored, how its odd sources are reached, how its graph is traversed, and how a human reads the answer.

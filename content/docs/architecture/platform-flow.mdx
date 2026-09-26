@@ -1,0 +1,41 @@
+---
+title: Platform flow
+description: The spine — sources, schema, ingestion, lakehouse, transform, serving, core, UI — and the four phases it reads as.
+---
+
+The platform is a directed spine. Every component sits at exactly one stage of it, and the [architecture docs](/docs/architecture/orchestration) follow that order rather than the order the parts were built in.
+
+```
+sources → schema → ingestion → lakehouse → transform → serving → core → ui
+                                                    ↖ watchtower (observes) ↗
+```
+
+## The spine, stage by stage
+
+| Stage | Components | What happens |
+| --- | --- | --- |
+| **Sources** | Active Directory, Workday, SQL Server Fleet | The estate, as it describes itself. |
+| **Schema** | Blueprint (DataGerry), DataGerry Bridge | Object types are authored, bridged into the lakehouse, and cached by the engine. |
+| **Ingestion** | Airbyte, Scout, Trailhead (Airflow) | Raw rows are extracted and landed untouched in Bronze. |
+| **Lakehouse** | Bedrock (Nessie / Iceberg) | Bronze → Silver → Gold, versioned by the catalog. |
+| **Transform** | Forge (Spark + dbt) | Conform, snapshot, score confidence, write the graph. |
+| **Serving** | Overlook (Trino), Superset | Query Gold; pin a finding as a dashboard. |
+| **Core** | Atlas, OPA | Traverse, authorize, log. |
+| **UI** | Compass | Render the traversal as a graph. |
+
+**Watchtower** — Prometheus, Grafana, Loki — observes the whole spine from above it rather than sitting inside one stage. See [Observability](/docs/architecture/observability).
+
+## The four phases
+
+The same spine reads as four phases, which is how the playground walks it and how the [guides](/docs/guides/access-traversal) narrate it:
+
+1. **Schema** — author the object type (e.g. add `Sensitive: bool` to Product), bridge it to Bedrock DDL, refresh Atlas's schema cache.
+2. **Ingestion** — orchestrate extraction from source systems and land raw rows in Bronze, independent of Atlas.
+3. **Transform** — conform, snapshot (SCD2), and confidence-score the raw rows into Silver tables and the Gold graph.
+4. **Investigation** — query, govern, and visualize the Gold graph: surface the finding as a Trino row, Compass edges, or a Superset dashboard.
+
+## Edges, not just nodes
+
+In the component model, **solid** edges are data flow and **dotted** edges are provisioning, deploy, secrets, and observation. The distinction matters when reading the platform: a dotted edge into Atlas is not a fact arriving, it is the platform keeping Atlas runnable.
+
+Every stage above has its own page in this section, naming the off-the-shelf product behind each codename.

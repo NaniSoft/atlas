@@ -1,0 +1,78 @@
+---
+title: Access traversal, end to end
+description: The flagship use case, walked across all four phases — and what each step contributes to the finding.
+date: '2026-09-21'
+tags:
+  - access traversal
+  - flagship
+---
+
+Access traversal is the one Atlas use case that is **available today**. The other two on the roadmap — blast radius, stale and unused access — are labelled planned everywhere we mention them, because they are.
+
+This post walks the flagship end to end. Twenty-two steps, four phases, one finding. The same sequence runs in the [playground](https://playground.nanisoft.com) against a seeded estate, fully mocked and in-browser, if you would rather watch it than read it.
+
+## The question
+
+*Who has viewed a sensitive product without belonging to the group that backs it?*
+
+The interesting part of that question is the word **without**. Most access tooling answers "who has access" — an enumeration of grants, which is the easy half. The finding here is a relationship that does not exist, and no report has anywhere to put it.
+
+## The estate, concretely
+
+A concrete estate, so nothing below is hand-waved:
+
+- **Products** — `P-1042` Payroll-NG, owned by `G-SR`, sensitive; `P-2210` Inventory-NG, owned by `G-OPS`, not sensitive.
+- **Groups** — `G-SR` Sensitive Reports; `G-OPS` Operations.
+- **Users** — `j.harper`, `m.okafor`, `a.chen`, `r.singh`.
+- **Memberships** — `m.okafor` and `a.chen` are in `G-SR`. `j.harper` and `r.singh` are in nothing.
+- **View logs** — `j.harper` viewed `P-1042` at 09:12; `m.okafor` viewed `P-1042` at 09:40.
+
+## Phase 1 — Schema (steps 1–4)
+
+A schema author opens **Blueprint** — DataGerry — and adds `Sensitive: bool` to the `Product` object type. Blueprint pushes the type to the **DataGerry Bridge**, which generates the lakehouse DDL and refreshes **Atlas**'s schema cache.
+
+Four steps, no data extracted, and the use case already has its hinge. Sensitivity is a *definition* — authored before ingestion, so the pipeline conforms against it rather than inferring it afterwards. That ordering is the difference between a policy and a guess.
+
+## Phase 2 — Ingestion (steps 5–7)
+
+**Airbyte** pulls product rows and view-logs from the SQL Server Fleet, then groups, memberships, and users from Active Directory, with Workday supplying the employees. **Trailhead** — Airflow — sequences it, and the raw records land in **Bronze**: `ext_product` (2 rows), `view_logs` (2 rows).
+
+Bronze has interpreted nothing. That is deliberate and it is what makes every later mistake a re-run instead of a re-extraction.
+
+## Phase 3 — Transform (steps 8–10)
+
+**Forge** — Spark plus dbt — reads the cached schema, writes conformed **Silver** with SCD2 snapshots, then writes **Gold**: `graph_nodes` and `graph_edges`.
+
+Watch what conform does with the seed. `r.singh` has no views and no memberships, so `r.singh` is dropped from Gold entirely. `j.harper` is kept, because the `viewed` edge is real — and `j.harper` has no `memberof` edge, because there is none to keep.
+
+The graph now contains the shape the whole use case is looking for: a `viewed` edge into a sensitive product with nothing backing it.
+
+## Phase 4 — Investigation (steps 11–22)
+
+A security analyst opens **Compass** and runs *Sensitive Product View Audit*.
+
+11. Compass asks Atlas for the use-case steps.
+12. Atlas asks **OPA** whether this user may run this use case.
+13. OPA returns **allow**.
+14. Atlas writes the **audit entry** — before executing anything.
+15. Atlas asks **Overlook** to run the seeded query: views edges versus group membership.
+16. Overlook reads Gold and joins views to memberships.
+17. Overlook returns the anomalous view: `j.harper` viewed sensitive `P-1042` with no membership backing it.
+18. Atlas returns the highlighted path plus the narrative steps that explain it.
+19. Compass renders the traversal — `j.harper → viewed → P-1042` — with the missing `memberof` edge drawn as a gap.
+20. The analyst reads the finding in plain language: *j.harper can view Payroll-NG but is not in G-SR.*
+21. **Superset** optionally pins the query as an investigative dashboard for compliance.
+22. **Watchtower** records the run end to end. The twin is settled.
+
+## Four ordinary things, in the right order
+
+Nothing in those twenty-two steps is exotic. The finding exists because of four unglamorous decisions:
+
+1. A sensitivity field was **authored before ingestion**, not inferred after.
+2. Raw rows landed **uninterpreted**, so nothing was lost at the door.
+3. Conform **resolved identities and kept absence meaningful** — dropping `r.singh` and keeping `j.harper` for opposite, correct reasons.
+4. The query ran **against the graph**, not against a source system.
+
+Change any one of them and the finding disappears — or worse, it becomes a number nobody can defend.
+
+That is what we mean by a twin being *produced*: the answer's credibility is inherited from the production line. The same finding is readable [three ways](/docs/guides/reading-one-finding-three-ways), and the whole walk is in the docs as [Access traversal, start to finish](/docs/guides/access-traversal).

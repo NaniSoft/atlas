@@ -1,0 +1,32 @@
+---
+title: Traversal and policy
+description: Policy checks sit in front of the graph, and every answer is logged.
+---
+
+Two things stand between a question and the graph: a **policy check**, and an **audit trail**. Neither is optional, and neither is downstream of the answer.
+
+## Policy in front
+
+Every traversal is checked against policy before it runs. Atlas consults the authorization engine with the requester and the use case; only an allow proceeds.
+
+Putting policy in front — rather than filtering results afterwards — means the question is never partially answered. A denied traversal returns no graph, not a graph with the sensitive parts removed.
+
+## The audit trail
+
+Atlas writes an audit-log entry for a run **before executing it**: who asked, which use case, what the policy decided. The answer, once produced, is written against that entry.
+
+This is why a finding from the twin is usable. A spreadsheet says "j.harper can view Payroll"; the twin says "on this date, this requester ran this use case, the policy allowed it, the graph contained these edges, and this is the path". The derivation travels with the answer.
+
+## Read the same finding three ways
+
+One finding, three legitimate surfaces, all reading the same graph:
+
+- **As graph edges** — Compass renders the traversal: the anomalous viewed edge, the missing membership shown as a gap.
+- **As a table row** — Overlook runs the query and surfaces the anomalous row.
+- **As a dashboard chart** — Superset pins the query as an investigative dashboard for a compliance audience.
+
+See [Reading one finding three ways](/docs/guides/reading-one-finding-three-ways).
+
+## Authorization and secrets
+
+The policy engine and the secret store are off-the-shelf and unmodified — [OPA](https://www.openpolicyagent.org/) for decisions, [OpenBao](https://openbao.org/) for secrets. [Authorization and secrets](/docs/architecture/authorization-and-secrets) covers how they sit in the platform.

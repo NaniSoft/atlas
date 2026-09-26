@@ -1,0 +1,9 @@
+{
+  "title": "Guides",
+  "description": "The flagship use case end to end, and how to read what it produces.",
+  "pages": [
+    "access-traversal",
+    "reading-one-finding-three-ways",
+    "exploring-the-playground"
+  ]
+}

@@ -1,0 +1,22 @@
+---
+title: Query
+description: Overlook (Trino) answers questions against Gold; Superset publishes them as dashboards.
+---
+
+## Overlook
+
+**Overlook** is the query engine — [Trino](https://trino.io/), unmodified, running over the Gold graph in the [lakehouse](/docs/architecture/storage-and-catalog).
+
+Atlas seeds the queries: it asks Overlook to run a specific, reviewable statement — "views edges versus group membership" — and Overlook returns the rows. The engine is generic; the *question* is Atlas's, which is why the question is logged and the query is not ad hoc.
+
+This is the "as a table row" face of a finding. See [Reading one finding three ways](/docs/guides/reading-one-finding-three-ways).
+
+## Superset
+
+**Superset** — [Apache Superset](https://superset.apache.org/) — is the dashboard surface. It sits in the serving stage and reads the same Gold the traversal does; it is not a second copy of the truth.
+
+A pre-built dashboard covers the estate-level questions a compliance or audit persona asks repeatedly: products by exposure, users with anomalous views, views by source system. A one-off finding can also be pinned as an investigative dashboard when it needs to be shared wider than the analyst who ran it.
+
+## Why the query engine is not the twin
+
+It is tempting to call Trino the product. It is not: Overlook can answer "which views lack a backing membership" only because the graph exists to query. Swap the engine and the question survives; remove the [twin](/docs/concepts/the-twin) and no engine answers it.

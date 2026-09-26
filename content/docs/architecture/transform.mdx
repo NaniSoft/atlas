@@ -1,0 +1,23 @@
+---
+title: Transform
+description: Forge (Spark + dbt) conforms, snapshots, and confidence-scores raw rows into Silver and Gold.
+---
+
+**Forge** is the transform stage: [Spark](https://spark.apache.org/) plus [dbt](https://www.getdbt.com/), running the models that turn Bronze rows into the Gold graph.
+
+## What Forge does
+
+1. **Reads the cached schema.** Forge reads the current object-type schema as cached from the [DataGerry Bridge](/docs/architecture/in-house-components) sync, so it conforms the right columns — including a field like `Sensitive: bool` authored before any data flowed.
+2. **Writes conformed Silver.** dbt models clean, join, and identity-resolve the raw rows, and write SCD2 snapshots so history is queryable.
+3. **Scores confidence.** Identity resolution carries its evidence; a low-confidence resolution does not silently become fact.
+4. **Writes Gold.** The final models publish `graph_nodes` and `graph_edges` into the lakehouse — Products, Users, and Groups as nodes; `viewed` and `memberof` as edges.
+
+## One person, one node
+
+Conformance is where the estate stops disagreeing with itself. The same human arrives from the directory, the HR system, and an application's user table under different spellings; Forge resolves them into a single node. That resolution is what makes a traversal answer *complete* rather than *partially complete*.
+
+## Absence is signal
+
+The transform stage is also where the twin becomes able to express something a report cannot: **a relationship that is missing**. A user with a `viewed` edge and no `memberof` edge is the shape of the flagship finding — and that shape only exists because conform decided what counts as a membership in the first place.
+
+See [Access traversal, start to finish](/docs/guides/access-traversal) for the walk-through.

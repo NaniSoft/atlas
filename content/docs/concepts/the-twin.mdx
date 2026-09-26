@@ -1,0 +1,33 @@
+---
+title: The twin
+description: Nodes and edges — what the twin is made of, and why it is produced rather than assembled.
+---
+
+The twin is a graph: **nodes** for the things in the estate, **edges** for the relationships between them.
+
+- **Nodes** — directories, HR systems, databases, and applications become nodes. A person is a node, a group is a node, a product is a node.
+- **Edges** — memberships, grants, and activity become edges. `memberof`, `viewed`, ownership, inheritance.
+
+That is the entire data model, and it is deliberately small. The value is not in the schema's sophistication; it is in the fact that the graph is **one graph** — every source system contributing to the same nodes and edges, so a question that crosses three systems is a traversal, not an integration project.
+
+## Produced, not assembled
+
+The usual way to answer a cross-system question is to export from each system and stitch the results together in a spreadsheet. That answer is stale the moment it is written, and nothing records how it was derived.
+
+The twin is produced instead. Raw source data lands untouched, is conformed until identities are stable, and is published as a versioned graph. Because the pipeline that produces it is a real data platform, the twin has properties a spreadsheet never will:
+
+- **Identities are resolved once.** One person, one node — not one row per source system.
+- **Every layer is versioned.** Last quarter's twin can be reproduced exactly.
+- **Quality gates decide promotion.** Bad input stops at the boundary and never reaches the twin.
+
+## Built for questions
+
+The twin exists to answer questions by traversal: *who can reach this system?* *what did access look like last quarter?*
+
+Traversal means walking the edges. "Who can reach Payroll?" is answered by starting at the product node and following every path backwards — group memberships, direct grants, inherited rights — until the paths are exhausted. No export is stitched; the answer is a property of the graph.
+
+Access is the first use case. [Blast radius](/docs/reference/glossary) and stale-access cleanup are planned, and both fall out of the same graph rather than needing new connectors.
+
+## Where the graph lives
+
+The graph is the Gold layer of the lakehouse: `graph_nodes` and `graph_edges`. [The lakehouse path](/docs/concepts/the-lakehouse-path) covers how facts get there.

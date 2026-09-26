@@ -1,0 +1,64 @@
+---
+title: Access traversal, start to finish
+description: The flagship use case — from authoring a schema field to a highlighted traversal in Compass.
+---
+
+**Access traversal** is the one use case available today. This guide walks it start to finish, in the order the platform actually executes it — the same sequence the [playground](https://playground.nanisoft.com) replays against a fully mocked estate.
+
+The question being answered: *who has viewed a sensitive product without belonging to the group that backs it?*
+
+## The estate, concretely
+
+The walk needs a concrete estate, so here is the seeded one:
+
+- **Products** — `P-1042` Payroll-NG, owned by `G-SR`, marked sensitive; and `P-2210` Inventory-NG, owned by `G-OPS`, not sensitive.
+- **Groups** — `G-SR` Sensitive Reports, and `G-OPS` Operations.
+- **Users** — `j.harper`, `m.okafor`, `a.chen`, `r.singh`.
+- **Memberships** — `m.okafor` and `a.chen` are in `G-SR`. `j.harper` and `r.singh` are in nothing.
+- **View logs** — `j.harper` viewed `P-1042` at 09:12; `m.okafor` viewed `P-1042` at 09:40.
+
+## Phase 1 — Schema
+
+1. A schema author opens **Blueprint** (DataGerry) and adds `Sensitive: bool` to the `Product` object type. This is the definitional hinge, authored *before* any data flows.
+2. Blueprint pushes the type to the **DataGerry Bridge**.
+3. The Bridge generates the lakehouse DDL — a `ext_product` table is now ready in Bronze shell form.
+4. The Bridge refreshes **Atlas**'s schema cache; Atlas acknowledges.
+
+Nothing has been extracted yet, and the property the whole use case turns on already exists.
+
+## Phase 2 — Ingestion
+
+5. **Airbyte** pulls product rows and view-logs from the SQL Server Fleet source.
+6. Airbyte pulls groups, memberships, and users from Active Directory (Workday for the employees).
+7. Airbyte lands the raw records in **Bronze**: `ext_product` (2 rows) and `view_logs` (2 rows), under **Trailhead**'s (Airflow) sequencing.
+
+Bronze has interpreted nothing. It is a faithful record of what the sources said.
+
+## Phase 3 — Transform
+
+8. **Forge** reads the cached product schema, so it conforms the right columns.
+9. Forge and dbt write conformed **Silver** rows with SCD2 snapshots.
+10. Forge writes **Gold**: `graph_nodes` (Products, Users, Groups) and `graph_edges` (`viewed`, `memberof`).
+
+After conform, `r.singh` — no views, no memberships — is dropped from Gold. `j.harper` is not, because the `viewed` edge is real. The graph now contains the shape the use case hunts for: a `viewed` edge with no `memberof` to back it.
+
+## Phase 4 — Investigation
+
+11. A security analyst opens **Compass** and runs *Sensitive Product View Audit*. Compass asks Atlas for the use-case steps.
+12. Atlas asks **OPA** whether this user may run this use case.
+13. OPA returns **allow**.
+14. Atlas writes the **audit-log entry** for the run — before executing anything.
+15. Atlas asks **Overlook** to run the seeded query: views edges versus group membership.
+16. Overlook reads the Gold graph from Bedrock and joins views to memberships.
+17. Overlook returns the anomalous view: **`j.harper` viewed sensitive `P-1042` with no group membership backing it.**
+18. Atlas returns the highlighted traversal path and the narrative steps that explain it.
+19. Compass renders the traversal: `j.harper → viewed → P-1042` (sensitive), with the missing `memberof` edge shown as a gap.
+20. The analyst sees the finding in plain language: *j.harper can view Payroll-NG but is not in G-SR.*
+21. (Optional) **Superset** pins the anomalous-views query as an investigative dashboard for compliance.
+22. **Watchtower** records the run end to end. The twin is settled; export the state or reset to play again.
+
+## What made that possible
+
+Not one of those twenty-two steps is exotic on its own. The finding exists because four ordinary things were done in the right order: a sensitivity field was authored before ingestion; raw rows landed uninterpreted; conform resolved identities and kept absence meaningful; and the graph, not the source system, was what got queried.
+
+Next: [reading one finding three ways](/docs/guides/reading-one-finding-three-ways), or [explore this exact run in the playground](https://playground.nanisoft.com) — fully mocked, in-browser, nothing to install.

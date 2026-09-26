@@ -1,0 +1,26 @@
+---
+title: Orchestration
+description: Trailhead (Airflow) sequences every move as reviewable DAGs.
+---
+
+**Trailhead** is the platform's orchestrator, and it is [Airflow](https://airflow.apache.org/) — unmodified.
+
+Every move the platform makes is a DAG under Trailhead's sequencing: ingestion, promotion, and maintenance. Nothing important happens on a cron nobody can see.
+
+## What Trailhead actually orchestrates
+
+- **The ingestion DAG** — triggers the extract from source systems into Bronze: the connector platform pulling products, view-logs, groups, users, and memberships.
+- **The transform DAG** — orchestrates Forge through Silver and into Gold: conformance, SCD2 snapshots, confidence scoring, and the final write of `graph_nodes` and `graph_edges`.
+- **Maintenance** — the recurring work that keeps the platform honest, scheduled and reviewable like everything else.
+
+## Why it matters
+
+Orchestration is where "produced, not assembled" becomes enforceable. Because the pipeline is declared as reviewable DAGs:
+
+- a finding can be traced back to the run that produced it;
+- a bad run is a visible failure with a name, not a silent divergence;
+- the pipeline's shape is inspectable by someone who did not build it.
+
+## Where it sits
+
+Trailhead sits in the **ingestion** stage of the [spine](/docs/architecture/platform-flow) and reaches forward into **transform**. It is one of the eight codenamed off-the-shelf products — see [the integration ledger](/docs/reference/integration-ledger) for its role and real name.

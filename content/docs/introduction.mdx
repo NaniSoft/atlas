@@ -1,0 +1,36 @@
+---
+title: Introduction
+description: What Atlas is, what it models today, and where it is going.
+---
+
+Atlas is a digital twin platform. It builds **living representations of real systems** — systems, assets, and operations — so you can ask questions of a model instead of assembling an answer by hand. Its first proven domain is the **IT estate**: directories, HR systems, databases, and applications turned into one queryable graph.
+
+That is the whole frame, and the order matters. *Digital twin platform* is what Atlas is for. *The IT estate* is what it demonstrably does today. Nothing in these docs claims a second domain before it exists.
+
+## The twin
+
+A twin is a graph, and the graph is **produced, not assembled**. Every fact lands raw, is conformed, and is promoted layer by layer — raw in Bronze, clean in Silver, published as Gold — until it becomes part of the twin. Directories, HR systems, databases, and applications become nodes. Memberships, grants, and activity become edges. The estate finally agrees with itself.
+
+Because the twin comes off a real data platform — ingestion, transformation, quality gates, versioned layers — it stays trustworthy as the estate changes. You can reproduce last quarter's twin exactly.
+
+## What it is not
+
+Atlas is not a dashboard and not a CMDB export. The twin answers questions **by traversal** — walk the edges — rather than by stitching reports together. And it is not a finished product line: one use case is available today, and the rest are labelled **planned** wherever they appear on this site.
+
+## Status
+
+- **Access traversal** — the flagship use case, available today. See [Access traversal, start to finish](/docs/guides/access-traversal).
+- **Blast radius** and **stale and unused access** — planned, designed on the same graph. No new connectors.
+
+## Where to look
+
+- [Concepts](/docs/concepts/the-twin) — the twin, the lakehouse path, traversal and policy, the component model.
+- [Architecture](/docs/architecture/platform-flow) — every component from source systems to Compass, with the off-the-shelf product behind each codename.
+- [Guides](/docs/guides/access-traversal) — the flagship use case walked start to finish, and how to explore the twin yourself.
+- [Reference](/docs/reference/integration-ledger) — the integration ledger and the glossary.
+
+## See it run
+
+The [playground](https://playground.nanisoft.com) is a fully mocked, in-browser tour of the twin: it replays the flagship audit end to end against a seeded estate — twenty-two steps, from schema authoring to the highlighted traversal. Nothing to install, and no real data anywhere in it.
+
+Atlas's architecture is also a real artifact: the component model that names every codename, its phase, and the off-the-shelf product it wraps is a published package, and the docs here are written from it rather than from a diagram.

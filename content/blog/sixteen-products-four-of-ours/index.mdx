@@ -1,0 +1,49 @@
+---
+title: Sixteen products, four of ours
+description: The compose-don't-fork approach — codenames and all, and why the codenames are published rather than hidden.
+date: '2026-09-21'
+tags:
+  - architecture
+  - open source
+---
+
+The Atlas platform is sixteen off-the-shelf products and four things we built ourselves. That ratio is not a compromise we settled for; it is the strategy.
+
+The hard problems in this category are not novel. Orchestrating DAGs, conforming identities, cataloguing a lakehouse, querying it at scale, holding secrets, storing logs, provisioning infrastructure — every one of them has a mature, battle-tested answer maintained by people who do nothing else. Building our own would spend exactly the effort that belongs to the graph.
+
+So we compose. Airflow orchestrates. Spark and dbt transform. Nessie catalogues Iceberg tables over S3. Trino queries. Superset draws. Prometheus, Grafana and Loki watch. OpenTofu provisions, ArgoCD delivers, OpenBao holds secrets.
+
+## Four things, and why those four
+
+The four we build are the four where the estate's own shape has to be understood:
+
+- **Atlas** — the core engine: the traversal API, policy enforcement, the audit log.
+- **Compass** — the traversal UI: explore the twin as a graph.
+- **DataGerry Bridge** — the glue that syncs authored schema into the lakehouse and the engine.
+- **Scout** — connectors for the internal systems no catalog covers.
+
+Notice what they have in common: none of them is a platform primitive. They are the parts where a general-purpose tool would need to be told what *this* estate means, and that telling is the product.
+
+## About the codenames
+
+Eight of the sixteen run under a codename. Trailhead is Airflow. Forge is Spark plus dbt. Bedrock is Nessie over Iceberg. Overlook is Trino. Blueprint is DataGerry.
+
+Codenames in infrastructure have a bad reputation, and the reputation is earned — they are usually a way to make a commodity sound proprietary. Ours are there for the opposite reason: **the codename is a seam, and publishing it is how we keep ourselves honest.**
+
+A seam means the contract is the codename, not the product. If Nessie stopped being the right catalog, Bedrock's contract holds and the estate's model of itself does not change. That is only true if the seam is real — and the way you keep it real is by saying, everywhere, what is actually behind it.
+
+So every codenamed entry carries its real product: in the [integration ledger](/docs/reference/integration-ledger), in each [architecture page](/docs/architecture/platform-flow), and in the [playground](https://playground.nanisoft.com)'s own component inspector. A codename you cannot unwrap is a claim you cannot check.
+
+## Not a fork
+
+Worth stating plainly, because "we integrated it" and "we forked it" get used interchangeably:
+
+**Every off-the-shelf product runs unmodified** — integrated through its APIs, configured, never patched. The moment you fork, you own the release cycle, the security backlog, and the divergence, and you have converted a free dependency into a permanent liability.
+
+Composition has a real price and we pay it rather than pretend otherwise: the platform carries the integration surface of sixteen products, and it tracks their release cycles. [Anchor](/docs/architecture/delivery) declares the infrastructure as code and [Conveyor](/docs/architecture/delivery) reconciles the running platform against the repository, so that surface is reviewable and reproducible rather than tribal knowledge.
+
+## The honest summary
+
+Sixteen products we did not write, four we did, and a ledger that says which is which. If a component in this platform surprises you one day, it will not be because it was hiding.
+
+The full ledger — roles and real names — is in [the integration ledger](/docs/reference/integration-ledger), and the reasoning behind the four is in [the component model](/docs/concepts/the-component-model).
