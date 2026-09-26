@@ -1,7 +1,7 @@
 'use client';
 
 // The landing — the product-site template's variant A, "The Instrument Bench"
-// (user-locked, nanisoft-web ticket 09), carrying Atlas's content (ticket 07).
+   // The design is locked; this is Atlas's content in it.
 //
 // One beam-dark ground, mono section indices on hairline-topped sections, the
 // twin in a bordered instrument panel, the data path as a conveyor rail, use

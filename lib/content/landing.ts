@@ -1,4 +1,4 @@
-// The landing's content, fixed once (nanisoft-web ticket 07's migration law):
+// The landing's content, fixed once:
 // copy migrates from the old site's landing near-verbatim, with the broader
 // "Model the real world digitally" frame added as positioning and every
 // use-case status preserved exactly (access traversal = available; blast
