@@ -117,24 +117,7 @@ export function TwinDag({ mode = 'panel' }: { mode?: TwinDagMode }) {
     // mode toggle flips prism-green-dark ⇄ prism-green-light at runtime, and a
     // palette captured only at mount would keep drawing dark-mode ink on a
     // light page. Mutated in place — the draw closure always reads `palette`.
-    //
-    // The re-read is deferred two frames. MutationObserver callbacks run in a
-    // microtask, and Chromium has not recalculated style yet at that point: a
-    // token read inside the callback still returns the OUTGOING theme
-    // (#091b12 after the class had already flipped to light — measured), which
-    // silently re-armed the old palette. Two frames land after the recalc.
     const palette = readPalette(wrap);
-    let rethemeRaf = 0;
-    const retheme = (): void => {
-      cancelAnimationFrame(rethemeRaf);
-      rethemeRaf = requestAnimationFrame(() => {
-        rethemeRaf = requestAnimationFrame(() => {
-          Object.assign(palette, readPalette(wrap));
-        });
-      });
-    };
-    const themeObserver = new MutationObserver(retheme);
-    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const animated = !reduced;
@@ -293,6 +276,29 @@ export function TwinDag({ mode = 'panel' }: { mode?: TwinDagMode }) {
     };
 
     const drawFrame = (nowMs: number): void => draw(nowMs);
+
+    // Re-read the palette whenever the theme class swaps on <html>.
+    //
+    // The re-read is deferred two frames. MutationObserver callbacks run in a
+    // microtask, and Chromium has not recalculated style yet at that point: a
+    // token read inside the callback still returns the OUTGOING theme
+    // (#091b12 after the class had already flipped to light — measured), which
+    // silently re-armed the old palette. Two frames land after the recalc.
+    // The redraw covers reduced motion, whose settled frame has no loop to
+    // pick the new palette up. (Ticket 17: this is the family's canonical
+    // observer-based re-theme pattern — AlphaLens's instrument now matches.)
+    let rethemeRaf = 0;
+    const retheme = (): void => {
+      cancelAnimationFrame(rethemeRaf);
+      rethemeRaf = requestAnimationFrame(() => {
+        rethemeRaf = requestAnimationFrame(() => {
+          Object.assign(palette, readPalette(wrap));
+          draw(performance.now());
+        });
+      });
+    };
+    const themeObserver = new MutationObserver(retheme);
+    themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     // Draw once (settled frame under reduced motion), then loop only when
     // animated. Pause the loop while the tab is hidden.
