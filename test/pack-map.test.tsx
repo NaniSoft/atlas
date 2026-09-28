@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
  * The pack map, read off the real composition in a real DOM.
  *
  * This is the second of two independent readers of `scripts/pack-map.json`. The
- * first is `scripts/check-pack-map.mjs`, which reads the built export and resolves
+ * first is the pack-boundary gate in `@nanisoft/prism-ui/gates`, which reads the built export and resolves
  * every boundary against the published token contract in both modes. Two readers of
  * one declaration, so a drift in the file itself is a difference between them rather
  * than a difference each of them agrees on.
