@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
-import { findNeighbour } from 'fumadocs-core/page-tree';
 
 import { DocArticle } from '@/components/doc-article';
 import { SectionIndex, type IndexGroup } from '@/components/section-index';
@@ -68,6 +67,10 @@ function docGroups(): IndexGroup[] {
 export default async function DocsPage({ params }: PageProps): Promise<ReactElement> {
   const { slug } = await params;
 
+  // The index is this site's own composition, because the design system
+  // deliberately ships no documentation index Page: a Page is judged on what it
+  // encodes, and four sites file their documentation four different ways, so an
+  // index one of them owns would be an index the other three had to argue with.
   if (!slug) {
     return (
       <SectionIndex
@@ -82,17 +85,5 @@ export default async function DocsPage({ params }: PageProps): Promise<ReactElem
   const page = docsSource.getPage(slug);
   if (!page) notFound();
 
-  const tree = docsSource.getPageTree();
-  const neighbour = findNeighbour(tree, page.url);
-
-  return (
-    <DocArticle
-      page={page}
-      tree={tree}
-      neighbours={{
-        previous: neighbour.previous && { title: String(neighbour.previous.name), url: neighbour.previous.url },
-        next: neighbour.next && { title: String(neighbour.next.name), url: neighbour.next.url },
-      }}
-    />
-  );
+  return <DocArticle page={page} tree={docsSource.getPageTree()} />;
 }

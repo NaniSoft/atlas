@@ -16,6 +16,23 @@ export default defineConfig({
     environment: 'jsdom',
     // globals: registers RTL's automatic cleanup between tests.
     globals: true,
-    setupFiles: ['./test/setup.ts'],
+    server: {
+      deps: {
+        /**
+         * The design system's published JavaScript carries extensionless relative
+         * imports (`from '../../lib/utils'`), which a bundler resolves and Node's
+         * ESM resolver does not. Next resolves them, so `next build` is green; a
+         * test that renders a catalogue item in this runner is not, and the failure
+         * reads as a missing module rather than as a packaging defect.
+         *
+         * Inlining the package puts its files through this runner's resolver, which
+         * does try the extensions. The alternative is a site test suite that cannot
+         * render anything the design system ships, which is a test suite that asserts
+         * nothing about the design system. It is a defect against the design system
+         * and is filed as one; it is not a practice.
+         */
+        inline: [/@nanisoft\/prism-ui/],
+      },
+    },
   },
 });

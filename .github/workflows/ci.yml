@@ -33,8 +33,17 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm lint
+      # The compiler was never run in this repository before the migration, so a
+      # token that no longer existed was a runtime surprise rather than a build
+      # failure. It is in the gate now, not because the compiler is new but because
+      # the gate is the only thing that reaches every push.
+      - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm build
+      # The gates read the built export, so they run after the build rather than
+      # beside it. A check that cannot see the artefact it is about is a check about
+      # the source, and this programme has three of those.
+      - run: pnpm check
 
   deploy:
     needs: verify

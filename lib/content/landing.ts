@@ -4,7 +4,7 @@
 // use-case status preserved exactly (access traversal = available; blast
 // radius and stale & unused access = planned).
 //
-// Content is the constant; structure lives in components/landing.
+// Content is the constant; structure lives in app/page.tsx.
 
 export const HERO = {
   eyebrow: 'nanisoft · atlas',
@@ -68,7 +68,7 @@ export const PATH_FEATURES = [
   { title: 'Declared as code', body: 'Anchor declares the infrastructure; Conveyor delivers it. No snowflake deployments.' },
 ] as const;
 
-export type UseCaseStatus = 'available' | 'planned';
+export type UseCaseStatus = 'live' | 'planned';
 
 export const USE_CASES: ReadonlyArray<{
   title: string;
@@ -77,7 +77,7 @@ export const USE_CASES: ReadonlyArray<{
 }> = [
   {
     title: 'Access traversal',
-    status: 'available',
+    status: 'live',
     bullets: [
       'Trace every path between a person and a sensitive product: group memberships, direct grants, inherited rights.',
       'The audit surfaces views of sensitive products with no membership backing them. Each one is a finding.',
@@ -104,8 +104,17 @@ export const USE_CASES: ReadonlyArray<{
   },
 ];
 
+/**
+ * The words for each state, in this product's own vocabulary.
+ *
+ * The tier is Prism's and the words are the caller's: the design system's ledger
+ * refuses to render a tier's own name because four products in this family use eight
+ * words for four states, and a Block that picked one would force a vocabulary on
+ * every consumer. So `STATUS_LABEL` is the only place a status word is written, and
+ * the tier beside it is the colour the dot is drawn from.
+ */
 export const STATUS_LABEL: Record<UseCaseStatus, string> = {
-  available: 'Flagship · available today',
+  live: 'Flagship · available today',
   planned: 'Planned',
 };
 
@@ -151,13 +160,20 @@ export const INTEGRATIONS_NOTE =
 // The platform story (ticket 07: a section the old site never had). Honesty
 // law from ticket 06 applies here too: Nexus is the engine that makes building
 // products repeatable — in active development; never claim it built this site.
+//
+// The three packs are the published ones for those three products, read from the
+// family map rather than from the retired line's names: `rose` and `blue` are not
+// packs any rule emits, so a mark carrying one painted the page's own ground and
+// the three products looked identical. `lavender`, `blush` and `peach` are the
+// identifiers the design system publishes, and each mark is now the only element on
+// the page carrying a boundary besides the header's switcher.
 export const BUILT_ON_NEXUS = {
   lede: 'Atlas is one of three Nanisoft products on one platform — and the platform has a factory behind it.',
   body: 'Nexus is Nanisoft’s agent factory: it turns an issue into a reviewed, merged change, so building each product becomes repeatable. It is in active development and building in the open — the same honesty this page applies to the twin.',
   products: [
     { id: 'nexus', name: 'Nexus', tagline: 'The Agent Factory', pack: 'lavender', url: 'https://nexus.nanisoft.com' },
-    { id: 'alphalens', name: 'AlphaLens', tagline: 'Market research, quantified', pack: 'rose', url: 'https://alphalens.nanisoft.com' },
-    { id: 'prism', name: 'Prism', tagline: 'The design system this site wears', pack: 'blue', url: 'https://prism.nanisoft.com' },
+    { id: 'alphalens', name: 'AlphaLens', tagline: 'Market research, quantified', pack: 'blush', url: 'https://alphalens.nanisoft.com' },
+    { id: 'prism', name: 'Prism', tagline: 'The design system this site wears', pack: 'peach', url: 'https://prism.nanisoft.com' },
   ],
 } as const;
 
@@ -169,9 +185,37 @@ export const FINAL_CTA = {
     'In-browser, guided, and fully mocked — nothing to install. Watch a query traverse the twin end to end.',
 } as const;
 
-// The hero DAG's territory — the pipeline as the old site drew it (sources →
-// schema/ingest → lakehouse → transform → query → core+authz → UI), re-rendered
-// fresh in the green pack, never copied.
+// The status ticker under the hero — the page's honesty devices, up front.
+export const TICKER = [
+  'access traversal → available today',
+  'blast radius → planned',
+  'stale & unused access → planned',
+  'playground → fully mocked',
+] as const;
+
+/**
+ * The ticker's accessible name.
+ *
+ * The strip is a list of states and the design system requires every list of states
+ * to name itself, because a Block that shipped no copy would be naming a consumer's
+ * data for it. It is an `aria-label` and not visible text, so it is a word a reader
+ * hears and not a word this site publishes on the page.
+ */
+export const TICKER_LABEL = 'Status';
+
+/* ------------------------------------------------------------------ *
+ * The hero's drawing: the pipeline, as data
+ * ------------------------------------------------------------------ */
+
+// The pipeline as the old site drew it (sources → schema/ingest → lakehouse →
+// transform → query → core+authz → UI), re-rendered in the published pack and never
+// copied. These were the deleted canvas's own graph; they move to the content module
+// because a drawing is content and the mechanism that painted it is gone.
+//
+// The names are grouped by pipeline column, left to right, and the columns are laid
+// out on the same normalised geometry the canvas used, so the picture a reader has
+// seen is the picture they get. The one name the canvas added rather than took from
+// this list is the observer, which floats above the lake and transform stages.
 export const DAG_STAGES: ReadonlyArray<ReadonlyArray<string>> = [
   ['AD', 'Workday', 'SQL Fleet'],
   ['Blueprint', 'Trailhead'],
@@ -182,13 +226,73 @@ export const DAG_STAGES: ReadonlyArray<ReadonlyArray<string>> = [
   ['Compass'],
 ];
 
+/** The observer, and the column it floats over. The canvas drew it; the list did not. */
+export const DAG_OBSERVER = { name: 'Watchtower', column: 3, row: 0.08 };
+
+/**
+ * Where each column sits across the drawing, and how far down each of its names.
+ *
+ * The canvas used the same seven column positions and the same vertical spread, and
+ * both numbers are handed to the design system's diagram as a caller's coordinate
+ * space rather than as pixels, so the Component fits them to its own canvas and the
+ * drawing is a function of the shape rather than of the scale.
+ */
+export const DAG_COLUMNS = [0.09, 0.245, 0.395, 0.53, 0.665, 0.81, 0.94] as const;
+
+/** The band the names are spread through, as the canvas spread them. */
+export const DAG_ROWS = { first: 0.26, last: 0.82, single: 0.52 } as const;
+
+/**
+ * The verbs the drawing labels its relations with, keyed by the stage the relation
+ * belongs to.
+ *
+ * The design system's diagram requires a word on every relation, and there was no
+ * vocabulary to draw one from, so the words are the verbs of `DAG_ARIA` below: the
+ * sentence that already names the pipeline in full, and the one string a screen
+ * reader hears for the drawing. Each word is the third-person form of a verb already
+ * in that sentence, so the drawing adds no claim the sentence does not make. The
+ * observer's edges are drawn dashed and say what the canvas's dashed edges said.
+ */
+export const DAG_VERBS = {
+  flows: 'flow through',
+  transforms: 'transformed by',
+  queries: 'queried by',
+  governs: 'governed by',
+  delivers: 'delivered to',
+  observes: 'observes',
+} as const;
+
+/**
+ * The relations, as the canvas drew them: the fifteen edges of the pipeline and the
+ * observer's two dashed ones.
+ *
+ * Each pair is the canvas's own list, moved rather than rewritten, and the verb is
+ * the stage's own. The canvas drew these edges without one word on any of them, so
+ * the words are the only new visible text in the drawing and they are accounted for
+ * one for one in the content-parity ledger.
+ */
+export const DAG_RELATIONS: ReadonlyArray<{
+  from: string;
+  to: string;
+  verb: keyof typeof DAG_VERBS;
+  indirect?: boolean;
+}> = [
+  { from: 'AD', to: 'Blueprint', verb: 'flows' },
+  { from: 'AD', to: 'Trailhead', verb: 'flows' },
+  { from: 'Workday', to: 'Blueprint', verb: 'flows' },
+  { from: 'Workday', to: 'Trailhead', verb: 'flows' },
+  { from: 'SQL Fleet', to: 'Trailhead', verb: 'flows' },
+  { from: 'Blueprint', to: 'Bedrock', verb: 'flows' },
+  { from: 'Trailhead', to: 'Bedrock', verb: 'flows' },
+  { from: 'Bedrock', to: 'Forge', verb: 'transforms' },
+  { from: 'Forge', to: 'Overlook', verb: 'queries' },
+  { from: 'Overlook', to: 'Atlas', verb: 'governs' },
+  { from: 'Overlook', to: 'OPA', verb: 'governs' },
+  { from: 'Atlas', to: 'Compass', verb: 'delivers' },
+  { from: 'OPA', to: 'Compass', verb: 'governs' },
+  { from: 'Watchtower', to: 'Bedrock', verb: 'observes', indirect: true },
+  { from: 'Watchtower', to: 'Forge', verb: 'observes', indirect: true },
+];
+
 export const DAG_ARIA =
   'The digital-twin pipeline: directory, HR, and database sources flow through schema and ingest into the Bedrock lakehouse, are transformed by Forge, queried by Overlook, governed by Atlas with OPA policy, and delivered to the Compass UI. Watchtower observes.';
-
-// The status ticker under the hero — the page's honesty devices, up front.
-export const TICKER = [
-  'access traversal → available today',
-  'blast radius → planned',
-  'stale & unused access → planned',
-  'playground → fully mocked',
-] as const;
