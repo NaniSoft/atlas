@@ -6,24 +6,37 @@
 
 Part of the five-site Nanisoft web platform (www + nexus + atlas + alphalens + prism), one design language: Prism.
 
-## The one rule
+## How to build here
 
-Compose from the design system's catalogue. There is no local component and no local override path: a section this site needs and the catalogue does not have is a finding to report, not a component to write.
-
-- Items come from their own subpath, never the root barrel: `@nanisoft/prism-ui/blocks/<item>`, `/components/<item>`, `/pages/<page>`, and `/theming` for the pack and mode vocabulary. The one exception is `@nanisoft/prism-ui/pages`, which is the barrel the documentation template already imported by name before this rule existed, and the design system publishes `DocsShell` under it.
+- Items come from their own subpath, never the root barrel: `@nanisoft/prism-ui/blocks/<item>`, `/components/<item>`, `/pages/<page>`, and `/theming` for the pack and mode vocabulary. The one exception is `@nanisoft/prism-ui/pages`, which is the barrel the documentation template already imported by name, and the design system publishes `DocsShell` under it.
 - `@nanisoft/prism-ui/styles.css` is imported once, in the root layout, before this site's own sheet. It carries every token, every utility and every base rule.
-- A Block takes data and content as props. If one cannot express something, the answer is upstream.
+- A Block takes data and content as props.
 - A consumer cannot write a Prism utility class: the consumer does not run Tailwind, so a utility exists in the emitted sheet only if a Prism component already uses it. Anything this site needs for itself goes in `app/globals.css` as a site class.
+- Two attributes on `<html>`, from `lib/site.ts`: `data-pack` for the ground and `class="dark"` for the mode. A blocking `PrismThemeScript` in `<head>` applies a stored choice before first paint and is the only writer of the theme's origin.
+- A pack boundary is an attribute on an element: it repoints that pack's colour **and** its corner radius beneath it, and it wears the mode of the nearest ancestor carrying `.dark`. `scripts/pack-map.json` is the map, `scripts/pack-regions.mjs` names a region from the DOM, and the gate checks the map from the built export in both modes.
 
-## Theming
+## What is enforced, and where the words live
 
-Two attributes on `<html>`, and nothing else: `data-pack` for the ground and `class="dark"` for the mode, both from `lib/site.ts`. A blocking `PrismThemeScript` in `<head>` applies a stored choice to them before first paint, and is the only writer of the theme's origin. There is no provider, no client runtime, no baked stylesheet and no pack class. A page is correct with scripting disabled.
+The laws are not in this file. They are the failure messages of the gates in
+`@nanisoft/prism-ui/gates`, so a fix to one reaches this site in one release and
+cannot be declined here. The four repositories that run them share the programs and
+hold none of the wording.
 
-A pack boundary is an attribute on an element: it repoints that pack's colour **and** its corner radius beneath it, and it wears the mode of the nearest ancestor carrying `.dark`. So a boundary belongs on a fully rounded mark and nowhere else. The site's pack map is `scripts/pack-map.json`, and it is checked from the built export in both modes.
+This site's own halves are in `prism-gates.json` and the two files it names.
+
+`pnpm check` still runs this repository's own copies of those gates, because the
+package version this site pins does not carry `gates/` yet. `pnpm check:prism-gates`
+is the command that does, and it fails until the release lands; replacing the `check`
+chain with it is a release-gated sweep rather than a choice.
 
 ## Wayfinding
 
-This file is this repository's own instructions. `README.md` is what the site is and how it is built and deployed. `CONSISTENCY.md` is the cross-repository law, and the pinned package version is its version. The published docs are `content/docs/`; `content/blog/` is the blog. The wayfinder map these sites were built from is retired, so its ticket numbers are history — don't cite them.
+This file is this repository's own instructions. `README.md` is what the site is
+and how it is built and deployed. `prism-gates.json` is this site's half of the
+cross-repository contract, and it holds only what this site knows. The published
+docs are `content/docs/`; `content/blog/` is the blog. The wayfinder map these sites
+were built from is retired, so its ticket numbers are history and should not be
+cited.
 
 ## Stack
 
@@ -37,7 +50,7 @@ This file is this repository's own instructions. `README.md` is what the site is
 - `pnpm dev` — dev server
 - `pnpm build` — static export to `out/`
 - `pnpm lint` / `pnpm typecheck` / `pnpm test`
-- `pnpm check` — the gates (see README); run it after `pnpm build`, because three of them read the built export
+- `pnpm check` — the docs-tree gate and the consumer gate kit (see README); run it after `pnpm build`, because the kit reads the built export
 - `pnpm deploy` — build + wrangler deploy (local wrangler auth)
 
 <!-- BEGIN:nextjs-agent-rules -->

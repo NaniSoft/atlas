@@ -18,8 +18,11 @@ import { describe, expect, it } from 'vitest';
  * `'use client'` line at the top of a component is exactly that: nothing throws, the
  * page still builds, and the reader gets a runtime that resolves colours once at
  * mount and paints them on a dark page in light values. The retired line had both
- * laws written down in `CONSISTENCY.md` and violated the reveal one on every page of
- * the landing, because prose cannot fail.
+ * laws written down in a prose contract mirrored in four repositories and violated
+ * the reveal one on every page of the landing, because prose cannot fail. Both laws
+ * are now the failure messages of gates in `@nanisoft/prism-ui/gates`; this file is
+ * the half only this repository can assert, which is that its tree is empty of the
+ * client code the laws are about.
  *
  * If a future change needs client code on this site, this test is where the argument
  * happens, and the answer is a question rather than a deletion: what does the client
@@ -79,11 +82,18 @@ describe('the site has no client code', () => {
   });
 
   it('reads no token at runtime, and takes no colour from a computed style', () => {
-    // The canvas law, as an assertion about the whole tree rather than about a canvas.
-    // The retired line's hero read `--prism-color-primary` from one element and
-    // repainted five hundred pixels with it, which meant a scoped pack boundary above
-    // it handed the drawing the wrong pack's values and nothing said so.
-    const pattern = /getPropertyValue|getComputedStyle|prismBrandPacks|prismCssVarKey|usePrismTheme/;
+    // The runtime token-read law, as an assertion about the whole tree rather than
+    // about a canvas. The law's wording, and the retired line's own names, are in the
+    // gate kit: its `runtime-token-read` gate scans this same tree for every one of
+    // them. What this test is for is the file list above, which is the half a gate
+    // cannot assert. A test that spells the law out is a second copy of it, and four
+    // copies of a sentence is the failure this programme exists to end.
+    //
+    // The one name that stays here is `usePrismTheme`, because it is a live export of
+    // the current design system rather than a name from the retired line: a consumer
+    // that imported it would have a client boundary, and that is a fact about this
+    // repository's structure rather than about the law.
+    const pattern = /getPropertyValue|getComputedStyle|usePrismTheme/;
     const offenders = files.filter((file) => pattern.test(readFileSync(file, 'utf8')));
     expect(offenders, `a runtime token read in ${offenders.join(', ')}`).toEqual([]);
   });

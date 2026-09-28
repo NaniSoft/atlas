@@ -7,7 +7,7 @@ Part of the [NaniSoft](https://www.nanisoft.com) web platform — five sites, on
 - **Live**: https://atlas.nanisoft.com (Custom Domain, auto-created on deploy)
 - **Pack**: `mint` on the document element, and it does not change. Four other packs are on marks: the header's product switcher carries `sky`, `lavender`, `blush` and `peach`, and the products section carries the three its rows name. That is the whole five-pack layering, and `scripts/pack-map.json` is the map and `scripts/check-pack-map.mjs` is the gate, checked in both light and dark mode
 - **Stack**: Next 16 static export · fumadocs-mdx · pnpm · TypeScript strict · oxlint · Vitest (jsdom + Testing Library) · Cloudflare Workers
-- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.7.0 with [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) 0.6.0, both pinned exactly and deliberately at different numbers. There is no local component and no client runtime: every page is a server component, so the site ships no JavaScript of its own
+- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.7.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. There is no local component and no client runtime: every page is a server component, so the site ships no JavaScript of its own
 
 ## What ships
 
@@ -45,12 +45,13 @@ Prism component uses it. `mb-12` is safe; a utility Prism happens not to use wou
 nothing and say nothing. Anything this site needs for itself goes in
 `app/globals.css` as a site class.
 
-**The site stylesheet owns almost nothing, and that is a rule.** It must not declare
-the page ground, the body ink, a focus outline or a hairline colour on a selector
-with no class in it, and it must not carry a `:focus` rule at all: the design system's
-base layer is layered and this sheet is not, so a bare-element rule here wins the
-cascade whatever the cascade then does with it. `scripts/check-stylesheet-ownership.mjs`
-is why that is enforced rather than remembered.
+**The site stylesheet owns almost nothing.** It must not declare the page ground, the
+body ink, a focus outline or a hairline colour on a selector with no class in it, and
+it must not carry a `:focus` rule at all: the design system's base layer is layered
+and this sheet is not, so a bare-element rule here wins the cascade whatever the
+cascade then does with it. That sentence is the reason the gate exists rather than the
+gate's rule: the rule is the failure message, and when `pnpm check` is red the message
+says which of these it was and why it matters.
 
 **A pack boundary is not only colour.** It repoints the pack's corner radius beneath
 it, and it wears the mode of the nearest ancestor carrying `.dark`, which is why a
@@ -69,35 +70,45 @@ pnpm build        # static export to out/
 pnpm lint         # oxlint
 pnpm typecheck    # next typegen && tsc --noEmit
 pnpm test         # vitest
-pnpm check        # the gates; run it after pnpm build
+pnpm check        # the docs-tree gate and the consumer gate kit; run it after pnpm build
 ```
 
-The gates, and what each is for:
+`pnpm check` runs this site's own docs-tree gate and then `prism-gates`, the gate
+kit in `@nanisoft/prism-ui/gates`. The laws themselves are not in this repository:
+they are the failure messages of those gates, so a fix to one reaches this site in
+one release and cannot be declined here. The four repositories of the family run
+the same programs and hold none of the wording. What this site holds is its own
+half, in `prism-gates.json` and the two files it names: its stylesheets, its pack
+map and the reason each region exists, its region resolver, and its coverage
+floors. Every one of those is data.
 
-| gate | what it holds |
+| gate | law |
 | --- | --- |
-| `check:antd` | No trace of the retired line: no dependency, no import, no generated stylesheet, no build step, no living instruction, and no sentence still telling a later implementer to route imports through a file that was deleted. The lockfile is read as a dependency graph, and both design-system pins must be exact. |
-| `check:stylesheet` | The site's own sheet competes with nothing the design system declares, and no `color-mix()` takes a `var()` as an operand. |
-| `check:docs-tree` | The nine-page single-section group, on its own, so a reviewer of the deepest documentation tree in this family is pointed at one command. |
-| `check:links` | Every internal destination and every in-page fragment resolves to something this site emits. |
-| `check:pack-map` | The pack map, from the built export, in both light and dark mode: the region set, the identifiers, the boundary count, a boundary on a mark and nowhere else, and each boundary's own pack resolved against the published token contract. |
+| `check:docs-tree` | The nine-page single-section group, on its own, so a reviewer of the deepest documentation tree in this family is pointed at one command. This one is this site's, not the kit's. |
+| `pin` | The design system is an exact version, and the token package is the component package's dependency rather than this site's. |
+| `retired-line` | No trace of the retired component library, including no sentence still telling a later implementer to route imports through a file that was deleted. The lockfile is read as a graph. |
+| `stylesheet-ownership` | This site's sheet owns no surface the design system owns, and no `color-mix()` takes a `var()` as an operand. |
+| `token-read` | Every custom property this sheet reads is declared. A read that resolves to nothing is not a wrong colour; it is no declaration at all. |
+| `links` | Every internal destination and every in-page fragment resolves to something this site emits. |
+| `pack-boundary` | The pack map, from the built export, in both modes: the region set, the identifiers, a boundary on a mark and nowhere else, and each boundary's own pack resolved against the published token contract. |
+| `runtime-token-read` | No token is read at runtime, because a read resolves once and a resolved value does not follow the cascade. |
 
-The content-parity comparison is a sixth tool and is not in `pnpm check`, because its
-baseline lives outside the repository and is destroyed at the close of the sweep:
+The kit's limits, which it prints on every run: it reads text rather than resolving
+a cascade, it reads the emitted export rather than a browser, and it cannot see an
+attribute a runtime sets after paint.
 
-```bash
-node scripts/check-content-parity.mjs --record <file>            # cut a baseline
-node scripts/check-content-parity.mjs --baseline <file> \
-  --expect scripts/content-parity-expectations.json              # compare
-```
-
-It reads the built export through a document parser, so it sees the copy in
-`lib/content/landing.ts` and in JSX as well as the copy in `content/`, which a digest
-of the content tree would have been blind to. It reads the header **and** the footer
-as chrome, because the copy it shipped with read only the header while its own
-documentation claimed both. Every difference must be declared in
-`scripts/content-parity-expectations.json` with the reason it is a rendering change
-and not a copy change, and a declaration that matches nothing is itself a finding.
+The content-parity comparison was a one-time instrument for the migration sweep and is
+gone with its baseline, which lived outside the repository and was destroyed at the
+close of that sweep. What it did is worth recording, because it is the reason
+`links` is the gate that survived: it read the built export through a document parser
+rather than a digest of `content/`, so it saw the copy in `lib/content/landing.ts`
+and in JSX, which a content-tree digest would have been blind to. It read the header
+**and** the footer as chrome, because the copy it shipped with read only the header
+while its own documentation claimed both. Every difference had to be declared in
+`scripts/content-parity-expectations.json` with the reason it was a rendering change
+and not a copy change, and a declaration that matched nothing was itself a finding.
+The permanent successor asks a question that is true of every future build rather
+than of one migration: does a reader who follows a link on this site arrive somewhere.
 
 ## Deploy
 
@@ -117,8 +128,11 @@ than a running platform. The pack is `mint` and the mode defaults to beam-dark.
 
 The wayfinder map these sites were built from is retired, and it and its ticket numbers
 are gone from this repository's documents. The standing references are `AGENTS.md`
-(this repository's own scope, stack and commands), `CONSISTENCY.md` (the
-cross-repository law and the gate that holds each clause) and this file.
+(this repository's own scope, stack and commands), `prism-gates.json` (this site's
+half of the cross-repository contract, which is data only) and this file. The laws
+themselves are not a reference in this repository: they are the failure messages of
+the gates in `@nanisoft/prism-ui/gates`, which this site installs by pinning that
+package exactly.
 
 ## What the move cost, recorded so it is not rediscovered
 
