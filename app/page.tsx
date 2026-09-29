@@ -2,14 +2,10 @@ import type { Metadata } from 'next';
 import type { ReactElement } from 'react';
 
 import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
-import {
-  Diagram,
-  type DiagramNode,
-  type DiagramRelation,
-} from '@nanisoft/prism-ui/components/diagram';
-import { Section, SectionHeading } from '@nanisoft/prism-ui/components/section';
+import { Section } from '@nanisoft/prism-ui/components/section';
 import { Cta01 } from '@nanisoft/prism-ui/blocks/cta-01';
 import { FeatureGrid01 } from '@nanisoft/prism-ui/blocks/feature-grid-01';
+import { Hero01 } from '@nanisoft/prism-ui/blocks/hero-01';
 import { InstrumentPanel01 } from '@nanisoft/prism-ui/blocks/instrument-panel-01';
 import { LogoStrip01 } from '@nanisoft/prism-ui/blocks/logo-strip-01';
 import { NoteGrid01 } from '@nanisoft/prism-ui/blocks/note-grid-01';
@@ -20,16 +16,12 @@ import {
 import { ProductGrid01 } from '@nanisoft/prism-ui/blocks/product-grid-01';
 import { StackGrid01 } from '@nanisoft/prism-ui/blocks/stack-grid-01';
 import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
+import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 
 import {
   BUILT_ON_NEXUS,
   DAG_ARIA,
-  DAG_COLUMNS,
-  DAG_OBSERVER,
-  DAG_RELATIONS,
-  DAG_ROWS,
-  DAG_STAGES,
-  DAG_VERBS,
+  DAG_PULSE,
   DATA_PATH,
   DATA_PATH_LEDE,
   FINAL_CTA,
@@ -67,67 +59,6 @@ export const metadata: Metadata = {
     absolute: 'Atlas — Model the real world digitally',
   },
 };
-
-/* ------------------------------------------------------------------ *
- * The hero's drawing
- * ------------------------------------------------------------------ */
-
-/**
- * The design system diagram's own inner box, in its user units.
- *
- * The Component fits a caller's coordinates into its own canvas and keeps their
- * aspect ratio, so handing it the canvas's own proportions is what makes the
- * drawing use the whole box rather than a band across the middle of it. These
- * are geometry, which is the one thing the component package is authoritative
- * for; they are not tokens and they are not pixels.
- */
-const ROOM_X = 528;
-const ROOM_Y = 288;
-
-/** One pipeline column's names, spread down the band the deleted canvas spread them through. */
-function rowsIn(column: ReadonlyArray<string>): number[] {
-  if (column.length === 1) return [DAG_ROWS.single];
-  return column.map(
-    (_, index) => DAG_ROWS.first + ((DAG_ROWS.last - DAG_ROWS.first) * index) / (column.length - 1),
-  );
-}
-
-/**
- * The pipeline as nodes, from the same list the deleted canvas read.
- *
- * The observer is the one name the canvas added rather than took from the list, and
- * it floats over the transform stage, which is where the canvas put it. Exactly one
- * node is emphasised: the diagram treats emphasis as "the one this drawing is about"
- * and says outright that two of them is a caller's mistake, so the three hubs the
- * canvas ringed in the pack's hue collapse to the engine itself.
- */
-function dagNodes(): DiagramNode[] {
-  const nodes: DiagramNode[] = [];
-  DAG_STAGES.forEach((names, column) => {
-    const x = (DAG_COLUMNS[column] ?? 0.5) * ROOM_X;
-    rowsIn(names).forEach((row, index) => {
-      const name = names[index] as string;
-      nodes.push({ id: name, name, x, y: row * ROOM_Y, emphasis: name === 'Atlas' });
-    });
-  });
-  nodes.push({
-    id: DAG_OBSERVER.name,
-    name: DAG_OBSERVER.name,
-    x: (DAG_COLUMNS[DAG_OBSERVER.column] ?? 0.5) * ROOM_X,
-    y: DAG_OBSERVER.row * ROOM_Y,
-  });
-  return nodes;
-}
-
-/** The same fifteen edges, each carrying the verb the drawing's own name gives it. */
-function dagRelations(): DiagramRelation[] {
-  return DAG_RELATIONS.map((relation) => ({
-    from: relation.from,
-    to: relation.to,
-    label: DAG_VERBS[relation.verb],
-    indirect: relation.indirect,
-  }));
-}
 
 /**
  * The data path as a rail, and the one place on this page where a cast is load-bearing.
@@ -184,42 +115,50 @@ function dataPathSteps(): ProcessRail01Steps {
 export default function Landing(): ReactElement {
   return (
     <>
-      {/* The thesis, and the page's own h1, with the pipeline beside it. The hero is
-          a two-column band because the panel is a column and a column that runs the
-          page's width is not a column. */}
-      <Section className="site-hero">
-        <div className="site-hero-grid">
-          <div>
-            <SectionHeading
-              as="h1"
-              align="left"
-              eyebrow={`${HERO.eyebrow} — ${HERO.positioning}`}
-              title={
-                <>
-                  {HERO.h1Leading}
-                  <em>{HERO.h1Em}</em>
-                  {HERO.h1Trailing}
-                </>
-              }
-              description={HERO.sub}
+      {/* The thesis, the page's own h1, and the pipeline running beside it.
+
+          The band is the design system's rather than this page's: the column split,
+          the gap and the width at which the columns stack are one decision made
+          once, in the place that owns the container contract. The old band was four
+          site classes and a media query, hand-written here because no Block offered
+          a hero with a figure in it.
+
+          The figure is the same twelve nodes and fifteen edges the static drawing
+          used, on the same geometry, with the pipeline's own columns marked as lanes
+          so a rail runs under them and a marker travels it. Nothing in the picture is
+          new: a reader who stops every animation is looking at the drawing this
+          page shipped before, which is the test the second law of motion sets. */}
+      <Hero01
+        headingLevel="h1"
+        eyebrow={`${HERO.eyebrow} — ${HERO.positioning}`}
+        title={
+          <>
+            {HERO.h1Leading}
+            <em>{HERO.h1Em}</em>
+            {HERO.h1Trailing}
+          </>
+        }
+        description={HERO.sub}
+        actions={[
+          { ...USE_CASES_MORE.cta, newTab: true },
+          { ...FINAL_CTA.secondary, variant: 'outline' as const },
+        ]}
+        instrument={
+          <InstrumentPanel01
+            label={DAG_PULSE.panel.label}
+            state="live"
+            stateLabel={DAG_PULSE.panel.mode}
+            caption={DAG_ARIA}
+            footnote={DAG_PULSE.panel.footnote}
+          >
+            <PulseGraph
+              nodes={DAG_PULSE.nodes}
+              relations={DAG_PULSE.relations}
+              label={DAG_ARIA}
             />
-            <div className="site-actions">
-              <CtaLink href={USE_CASES_MORE.cta.href} size="lg" newTab>
-                {USE_CASES_MORE.cta.label}
-              </CtaLink>
-              <CtaLink href={FINAL_CTA.secondary.href} size="lg" variant="outline">
-                {FINAL_CTA.secondary.label}
-              </CtaLink>
-            </div>
-          </div>
-          {/* The frame the deleted canvas was painted inside, now a server Component
-              whose every stroke and fill names a semantic token, so a pack boundary
-              above it would restyle the whole drawing through the cascade. */}
-          <InstrumentPanel01 label="live view — the estate, as one graph">
-            <Diagram label={DAG_ARIA} nodes={dagNodes()} relations={dagRelations()} />
           </InstrumentPanel01>
-        </div>
-      </Section>
+        }
+      />
 
       {/* The transition band between the thesis and the first numbered section: the
           page's honesty devices, up front, where a reader meets them before any

@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 import Landing from '@/app/page';
 import {
+  DAG_PULSE,
   IN_HOUSE,
   STACK_PRODUCTS,
   STATUS_LABEL,
@@ -47,16 +48,26 @@ describe('landing', () => {
 
   it('renders every word of the hero, the panel and the status strip', () => {
     renderLanding();
-    expect(screen.getByText(/live view — the estate, as one graph/)).toBeTruthy();
+    expect(screen.getByText(DAG_PULSE.panel.label)).toBeTruthy();
+    expect(screen.getByText(DAG_PULSE.panel.mode)).toBeTruthy();
     for (const item of TICKER) {
       expect(screen.getByText(item)).toBeTruthy();
     }
   });
 
-  it('draws the pipeline as a server-rendered diagram, not a canvas', () => {
+  it('draws the pipeline as a server-rendered running figure, not a canvas', () => {
     renderLanding();
+    // The drawing is a `PulseGraph` rather than the static `Diagram` it was, and the
+    // two carry the same twelve nodes and fifteen edges on the same geometry. What is
+    // new is that the pipeline's own columns are lanes, so a rail runs under them and
+    // a marker travels it, and that every edge which moves something grew a head.
+    //
+    // None of that is decoration: a reader who stops every animation is looking at the
+    // drawing this page shipped before. That is the test the design system's second
+    // law of motion sets, and it is why the same nodes and edges are asserted below.
     const diagram = screen.getByRole('img', { name: /digital-twin pipeline/i });
     expect(diagram).toBeTruthy();
+    expect(diagram.getAttribute('data-slot')).toBe('pulse-graph');
     // Every node name the deleted canvas drew is still drawn, and the drawing says
     // which relations it resolved: a line that silently did not draw is the failure
     // the design system made impossible.
@@ -67,6 +78,31 @@ describe('landing', () => {
     // Exactly one emphasised node: the diagram treats emphasis as "the one this
     // drawing is about" and says two of them is a caller's mistake.
     expect(diagram.querySelectorAll('[data-emphasis]')).toHaveLength(1);
+
+    // The rail and its marker are the claim about order, and both are in the initial
+    // HTML: nothing here waited for a script, an intersection or a scroll position.
+    expect(diagram.querySelector('[data-slot="pulse-graph-rail-line"]')).toBeTruthy();
+    expect(diagram.querySelector('[data-slot="pulse-graph-marker"]')).toBeTruthy();
+
+    // Eleven of the twelve nodes are stages on the rail, one per name across the
+    // pipeline's seven columns, and the twelfth is the observer. It watches the twin
+    // rather than being a stage of it, and a drawing that put it on the rail would
+    // claim it was one, so it is the one node with no lane.
+    const lanes = [...diagram.querySelectorAll('[data-slot="pulse-graph-node"]')].map((node) =>
+      node.getAttribute('data-lane'),
+    );
+    expect(lanes).toHaveLength(12);
+    expect(lanes.filter((lane) => lane !== null)).toHaveLength(11);
+    expect(lanes).toContain(null);
+
+    // Fifteen edges, thirteen of which carry something and two of which do not, and
+    // the two are the observer's. A reader with every animation stopped can still see
+    // which edges were carrying, which is the whole reason the carrying mark is a
+    // head rather than a moving dash.
+    expect(diagram.querySelectorAll('[data-slot="pulse-graph-flow"]')).toHaveLength(13);
+    expect(
+      diagram.querySelectorAll('[data-slot="pulse-graph-relation"][data-carries]'),
+    ).toHaveLength(13);
   });
 
   it('preserves each use case status exactly', () => {
