@@ -140,7 +140,13 @@ describe('the landing renders from the catalogue', () => {
     const { container } = render(<HomePage />);
     expect(container.querySelector('canvas')).toBeNull();
     expect(container.querySelector('[data-reveal]')).toBeNull();
-    expect(container.querySelector('svg[data-slot="diagram"]')).toBeTruthy();
+    // The pipeline is drawn as the running figure rather than the static diagram,
+    // and it is still server markup: the old landing needed a theme provider, a
+    // scroll-reveal observer and a canvas, and the figure that replaced the canvas
+    // needs none of the three because its motion is CSS in the design system's own
+    // stylesheet rather than a loop in this page's JavaScript.
+    expect(container.querySelector('svg[data-slot="pulse-graph"]')).toBeTruthy();
+    expect(container.querySelector('.prism-ambient-travel')).toBeTruthy();
   });
 });
 

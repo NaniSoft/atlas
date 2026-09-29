@@ -296,3 +296,83 @@ export const DAG_RELATIONS: ReadonlyArray<{
 
 export const DAG_ARIA =
   'The digital-twin pipeline: directory, HR, and database sources flow through schema and ingest into the Bedrock lakehouse, are transformed by Forge, queried by Overlook, governed by Atlas with OPA policy, and delivered to the Compass UI. Watchtower observes.';
+
+/**
+ * The pipeline as a running figure, which is the shape the hero draws.
+ *
+ * The same nodes, the same edges and the same observer the static drawing above
+ * already used, with two things added and nothing removed. Each column of the
+ * pipeline is a `lane`, so the drawing grows a rail with a marker travelling it and
+ * the left-to-right order reads as an order rather than as spacing. Each edge that
+ * moves something is `carries`, so it grows a head at its far end.
+ *
+ * Both additions are claims the static drawing was already making in a weaker
+ * form, which is the test this system's second law of motion sets: stop the
+ * animation and the figure is unchanged in what it says. The observer's two edges
+ * carry nothing and stay dashed, because Watchtower watches the twin rather than
+ * moving anything through it, and that is the one distinction in the drawing a
+ * reader should be able to see with every animation stopped.
+ *
+ * The layout numbers are the canvas's own, moved here rather than rewritten: a
+ * column sits at its normalised x, its names spread through the band the deleted
+ * canvas spread them through, and the observer floats over the transform stage.
+ * The pulse graph fits a caller's coordinates the way the static diagram does, so
+ * the picture a reader has seen is the picture they get.
+ */
+export const DAG_PULSE: {
+  nodes: ReadonlyArray<{
+    id: string;
+    name: string;
+    x: number;
+    y: number;
+    lane?: number;
+    emphasis?: boolean;
+  }>;
+  relations: ReadonlyArray<{ from: string; to: string; carries: boolean; indirect?: boolean }>;
+  panel: { label: string; mode: string; footnote: string };
+} = {
+  nodes: [
+    ...DAG_STAGES.flatMap((names, column) =>
+      names.map((name, index) => ({
+        id: name,
+        name,
+        x: DAG_COLUMNS[column] ?? 0.5,
+        // A column of one sits on the centre line; a column of several spreads
+        // through the band, which is the geometry the deleted canvas used and the
+        // reason a three-name column and a one-name column do not sit at the same
+        // height.
+        y:
+          names.length === 1
+            ? DAG_ROWS.single
+            : DAG_ROWS.first +
+              ((DAG_ROWS.last - DAG_ROWS.first) * index) / (names.length - 1),
+        lane: column,
+        emphasis: name === 'Atlas',
+      })),
+    ),
+    // The observer floats over the transform stage, and carries no lane: it is not
+    // a stage of the pipeline, and a drawing that put it on the rail would claim it
+    // was one.
+    {
+      id: DAG_OBSERVER.name,
+      name: DAG_OBSERVER.name,
+      x: DAG_COLUMNS[DAG_OBSERVER.column] ?? 0.5,
+      y: DAG_OBSERVER.row,
+    },
+  ],
+  relations: DAG_RELATIONS.map((relation) => ({
+    from: relation.from,
+    to: relation.to,
+    // The observer's edges are the only ones that move nothing, and the reason is
+    // the only reason: it watches. Every other edge in the pipeline is a thing
+    // arriving somewhere.
+    carries: relation.verb !== 'observes',
+    indirect: relation.indirect,
+  })),
+  panel: {
+    label: 'the estate, as one graph',
+    mode: 'live',
+    footnote:
+      'The pipeline a twin is built on: sources, schema, the Bedrock lakehouse, the transformation and query layers, and the two that govern and deliver it. The rail under the row is the order a finding travels. Watchtower observes rather than carries, which is why its two edges are the dashed ones.',
+  },
+};

@@ -67,33 +67,6 @@
 /* ---------- the landing's own layout ---------- */
 
 /*
- * The hero is a two-column band, and the two columns are the only part of the landing
- * this site still draws itself: the catalogue's Blocks are full-width bands, and the
- * one place two things sit beside each other is the page's own arrangement. The panel
- * is a column and a column that runs the page's width is not a column, so the grid is
- * here rather than inside a Block that would have to claim it owns the composition.
- */
-.site-hero {
-  padding-top: 4rem;
-}
-
-.site-hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-  gap: clamp(2rem, 5vw, 4.5rem);
-  align-items: center;
-}
-
-/* A row of calls to action. `CtaLink` is the control and this is the arrangement, so
-   no catalogue item is restyled; the design system ships no hero-actions slot. */
-.site-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 2rem;
-}
-
-/*
  * A band that carries one thing and inherits the section rhythm above it.
  *
  * `Section` owns its own vertical padding, and the playground link under the use-case
@@ -104,16 +77,6 @@
  */
 .site-band {
   padding-block: 0 4rem;
-}
-
-@media (max-width: 60rem) {
-  .site-hero {
-    padding-top: 3rem;
-  }
-
-  .site-hero-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* ---------- the documentation section index ---------- */
