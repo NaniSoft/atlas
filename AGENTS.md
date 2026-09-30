@@ -24,10 +24,9 @@ hold none of the wording.
 
 This site's own halves are in `prism-gates.json` and the two files it names.
 
-`pnpm check` still runs this repository's own copies of those gates, because the
-package version this site pins does not carry `gates/` yet. `pnpm check:prism-gates`
-is the command that does, and it fails until the release lands; replacing the `check`
-chain with it is a release-gated sweep rather than a choice.
+`pnpm check` runs `prism-gates` and then this repository's own docs-tree gate. The kit
+carries the seven gates named in `prism-gates.json` plus `token-read`, which it always
+runs, so a run reports eight. Nothing in this repository can add or remove one of them.
 
 ## Wayfinding
 

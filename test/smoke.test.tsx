@@ -1,29 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { describe, expect, it, vi } from 'vitest';
-
-const ROOT = path.resolve(__dirname, '..');
-
-/**
- * `next/font/google` is a build-time loader: the export it hands back is a function
- * the bundler replaces while it downloads and hashes the typeface, and under this
- * runner there is no bundler stage, so importing the layout without a stand-in throws
- * `Inter is not a function` before a single assertion runs. The stand-in returns the
- * same shape the real loader does, so the layout's own exports are still the ones
- * under test and only the font download is skipped.
- */
-vi.mock('next/font/google', () => ({
-  // The real loader returns a generated class name, not the variable's value, which is
-  // why this stub names one: the assertion below is about the class reaching the
-  // document element, not about the name the loader happens to pick.
-  Inter: () => ({ variable: 'font-inter-stub', className: 'font-inter-stub' }),
-}));
+import { describe, expect, it } from 'vitest';
 
 import NotFound from '@/app/not-found';
 import HomePage, { metadata } from '@/app/page';
 import RootLayout, { metadata as layoutMetadata } from '@/app/layout';
 import { DEFAULT_MODE, GROUND_PACK, PRODUCTS, SITE_PRODUCT, THEME_ATTRIBUTES } from '@/lib/site';
+
+const ROOT = path.resolve(__dirname, '..');
 
 /**
  * The site's identity, and the one published string that must not drift.
@@ -92,44 +77,38 @@ describe('the absolute page title', () => {
   });
 });
 
-describe('the two document-element classes', () => {
-  it('carries the font file and the mode together, not one over the other', () => {
+describe('the document element', () => {
+  it('carries the mode, and the ground, and nothing else', () => {
     render(<RootLayout>{null}</RootLayout>);
     const root = document.documentElement;
-    // The font loader and the theme both want a className, and only one prop exists.
-    // Whichever is spread last wins, and the loser is silent: the page builds, the
-    // stylesheet still resolves `--font-sans`, and every page renders in the
-    // platform's UI face with nothing in the build saying so. So both are asserted.
-    expect(root.classList.contains('dark')).toBe(true);
-    expect(root.classList.contains('font-inter-stub')).toBe(true);
+    // Two attributes and no class. There is no font variable here any more, so there
+    // is no second `className` for the theme to be spread over: prism 0.10.2 ships
+    // the typeface in its own stylesheet, so this site loads no font file and has no
+    // class to lose.
+    expect(root.className).toBe('dark');
     expect(root.getAttribute('data-pack')).toBe('mint');
   });
 
-  it('repeats the design system\'s own fallback list behind the loaded family', () => {
-    // The list is prism's, verbatim, with the one entry that resolves first. A
-    // shorter list is a different decision about what a reader sees when the
-    // download fails, and that decision is not this site's to make. The match is
-    // anchored on a line of its own so the sheet's own prose, which quotes prism's
-    // declaration, is not the thing being read.
+  it('leaves the typeface to the design system', () => {
+    // The sheet must not repoint `--font-sans`. It used to, at a cost of a second
+    // declaration of a family prism already declares and a build-time download from
+    // Google, and the only reason was a version that predates prism shipping a font
+    // file. Asserting the absence is the cheap half of keeping it that way.
     const css = readFileSync(path.join(ROOT, 'app', 'globals.css'), 'utf8');
-    const declaration = /^\s*--font-sans:\s*([^;]+);/ms.exec(css)?.[1] ?? '';
-    for (const family of [
-      'var(--font-inter)',
-      'Inter',
-      'ui-sans-serif',
-      'system-ui',
-      '-apple-system',
-      "'Segoe UI'",
-      'Roboto',
-      "'Helvetica Neue'",
-      'Arial',
-      'sans-serif',
-    ]) {
-      expect(declaration, `${family} is missing from --font-sans`).toContain(family);
+    expect(css).not.toMatch(/--font-sans\s*:/);
+    expect(css).not.toMatch(/--font-inter/);
+  });
+
+  it('repeats no utility class the design system may not emit', () => {
+    // A consumer cannot write a Prism utility class: the emitted sheet is compiled
+    // from the design system's own source, so a utility exists in it only if a Prism
+    // component uses it. A class named here that prism never uses would do nothing and
+    // say nothing, so the two figures' classes are asserted to be site classes rather
+    // than invented utilities.
+    const css = readFileSync(path.join(ROOT, 'app', 'globals.css'), 'utf8');
+    for (const name of ['site-figure__node', 'site-figure__edge', 'site-figures', 'site-actions']) {
+      expect(css, `${name} is used in markup and must be declared in the sheet`).toContain(`.${name}`);
     }
-    // And it is a token, not a declaration on a bare element: prism's base is
-    // layered and this sheet is not.
-    expect(css).not.toMatch(/^\s*(body|html)\s*\{[^}]*font-family/ms);
   });
 });
 

@@ -7,8 +7,6 @@
 // Content is the constant; structure lives in app/page.tsx.
 
 export const HERO = {
-  eyebrow: 'nanisoft · atlas',
-  positioning: 'Model the real world digitally',
   h1Leading: 'Digital ',
   h1Em: 'twin',
   h1Trailing: ' of the IT estate.',
@@ -185,23 +183,52 @@ export const FINAL_CTA = {
     'In-browser, guided, and fully mocked — nothing to install. Watch a query traverse the twin end to end.',
 } as const;
 
-// The status ticker under the hero — the page's honesty devices, up front.
-export const TICKER = [
-  'access traversal → available today',
-  'blast radius → planned',
-  'stale & unused access → planned',
-  'playground → fully mocked',
-] as const;
+/* ------------------------------------------------------------------ *
+ * The figures
+ * ------------------------------------------------------------------ */
 
-/**
- * The ticker's accessible name.
+/*
+ * Two drawings, and why the page now has any.
  *
- * The strip is a list of states and the design system requires every list of states
- * to name itself, because a Block that shipped no copy would be naming a consumer's
- * data for it. It is an `aria-label` and not visible text, so it is a word a reader
- * hears and not a word this site publishes on the page.
+ * Before these the landing carried exactly one visual: the hero's running pipeline.
+ * Everything below the fold was a heading over a grid of words, which is why the page
+ * read as a document wearing a landing page's clothes. These two are here to be
+ * looked at rather than read, and neither invents anything: each one draws the
+ * sentence it sits next to, so a reader who never sees the drawing loses the sentence
+ * and a reader who sees it loses nothing.
+ *
+ * `caption` is the accessible name and is never printed. The panel prints `label` and
+ * `footnote`; `caption` is what a screen reader hears and what a figure is when its
+ * annotation layer is hidden on a phone.
  */
-export const TICKER_LABEL = 'Status';
+
+/** The band they share, and the one line that says what the two are. */
+export const FIGURES_LEDE =
+  'What the estate turns into, and what one question walks through to answer itself.';
+
+export const FIGURES_TITLE = 'The graph, and one walk through it';
+
+export const ESTATE_FIGURE = {
+  panel: {
+    label: 'what the twin is made of',
+    footnote: 'Four source systems become nodes. Memberships, grants and activity become edges.',
+  },
+  caption:
+    'Four source systems (a directory, an HR system, a database and an application) are conformed across one boundary into a single graph, whose nodes are people and products and whose edges are memberships, grants and activity.',
+} as const;
+
+export const TRAVERSAL_FIGURE = {
+  panel: {
+    label: 'what a traversal returns',
+    footnote: 'One person, three routes to one sensitive product, each checked against policy.',
+  },
+  caption:
+    'One person reaches one sensitive product by three routes at once: a group membership, a direct grant, and a right inherited through a nested group. Every route is checked against policy before the answer is returned.',
+} as const;
+
+/** The six capabilities, named as the four stages above rather than as a second inventory. */
+export const PATH_FEATURES_TITLE = 'What each stage is made of';
+export const PATH_FEATURES_LEDE = 'The capabilities behind the four stages above.';
 
 /* ------------------------------------------------------------------ *
  * The hero's drawing: the pipeline, as data
@@ -329,7 +356,7 @@ export const DAG_PULSE: {
     emphasis?: boolean;
   }>;
   relations: ReadonlyArray<{ from: string; to: string; carries: boolean; indirect?: boolean }>;
-  panel: { label: string; mode: string; footnote: string };
+  panel: { label: string; footnote: string };
 } = {
   nodes: [
     ...DAG_STAGES.flatMap((names, column) =>
@@ -371,8 +398,7 @@ export const DAG_PULSE: {
   })),
   panel: {
     label: 'the estate, as one graph',
-    mode: 'live',
     footnote:
-      'The pipeline a twin is built on: sources, schema, the Bedrock lakehouse, the transformation and query layers, and the two that govern and deliver it. The rail under the row is the order a finding travels. Watchtower observes rather than carries, which is why its two edges are the dashed ones.',
+      'Sources, schema, the lakehouse, transform and query, then the two that govern and deliver it. The rail is the order a finding travels.',
   },
 };

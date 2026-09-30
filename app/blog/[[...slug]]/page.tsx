@@ -16,11 +16,28 @@ interface PageProps {
   params: Promise<{ slug?: string[] }>;
 }
 
+/**
+ * Published posts, newest first.
+ *
+ * **The second key is not decoration.** All four launch posts carry the same date, and
+ * the one-key comparator this used to sort by (`a < b ? 1 : -1`) returns `-1` in both
+ * directions for a tie, which is not a consistent ordering: the sort falls back to the
+ * order `getPages()` happens to return, and that is directory order. So the index and
+ * the whole previous/next trail were a property of the checkout rather than a
+ * property of the corpus, and could reorder between a maintainer's machine and CI's
+ * without a single byte of the repository changing.
+ *
+ * The tie is broken on the URL, which is stable, derived from the folder name, and
+ * cannot change without a post changing its address. The result is a defined order for
+ * a set of posts that is not otherwise ordered by time.
+ */
 function published() {
   return blogSource
     .getPages()
     .filter((post) => !post.data.draft)
-    .sort((a, b) => (a.data.date < b.data.date ? 1 : -1));
+    .sort((a, b) =>
+      a.data.date === b.data.date ? a.url.localeCompare(b.url) : a.data.date < b.data.date ? 1 : -1,
+    );
 }
 
 export function generateStaticParams(): Array<{ slug?: string[] }> {

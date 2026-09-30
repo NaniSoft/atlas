@@ -4,10 +4,12 @@ import { describe, expect, it } from 'vitest';
 import Landing from '@/app/page';
 import {
   DAG_PULSE,
+  ESTATE_FIGURE,
+  FIGURES_TITLE,
   IN_HOUSE,
   STACK_PRODUCTS,
   STATUS_LABEL,
-  TICKER,
+  TRAVERSAL_FIGURE,
   USE_CASES,
   WHAT_IT_IS,
 } from '@/lib/content/landing';
@@ -37,8 +39,14 @@ function renderLanding() {
 describe('landing', () => {
   it('states the product frame and the flagship instance in order', () => {
     renderLanding();
-    const eyebrow = screen.getByText(/Model the real world digitally/);
-    expect(eyebrow.textContent).toContain('nanisoft · atlas');
+
+    // The hero carries no eyebrow. It used to carry `nanisoft · atlas — Model the real
+    // world digitally`, which the Block draws as a small filled lozenge: fifty
+    // characters inside a pill narrower than the sentence is long. The words it held
+    // are the page's absolute title, so nothing was lost by dropping them from the
+    // one place they were smallest, and the assertion is that they are gone from the
+    // hero rather than merely moved.
+    expect(screen.queryByText(/nanisoft · atlas/)).toBeNull();
 
     const h1 = screen.getByRole('heading', { level: 1 });
     expect(h1.textContent).toContain('Digital ');
@@ -46,13 +54,43 @@ describe('landing', () => {
     expect(h1.textContent).toContain(' of the IT estate.');
   });
 
-  it('renders every word of the hero, the panel and the status strip', () => {
+  it('does not claim the pipeline panel is live', () => {
     renderLanding();
+    // The panel's state is `neutral` and prints no state word. It used to sit beside a
+    // green dot reading `live`, over a node-and-edge list authored in
+    // `lib/content/landing.ts` rather than read from the estate. The Block throws when
+    // a state is set with no word beside it, so the assertion is on the absence of the
+    // word: a freshness claim about a drawing of a mechanism is the one claim this
+    // page is not allowed to make.
+    expect(screen.queryByText('live')).toBeNull();
     expect(screen.getByText(DAG_PULSE.panel.label)).toBeTruthy();
-    expect(screen.getByText(DAG_PULSE.panel.mode)).toBeTruthy();
-    for (const item of TICKER) {
-      expect(screen.getByText(item)).toBeTruthy();
-    }
+    // The rail marker still travels, so the figure still moves.
+    const diagram = screen.getByRole('img', { name: /digital-twin pipeline/i });
+    expect(diagram.querySelector('[data-slot="pulse-graph-marker"]')).toBeTruthy();
+  });
+
+  it('draws both figures as server-rendered images with their own sentences', () => {
+    renderLanding();
+    expect(screen.getByRole('heading', { level: 2, name: FIGURES_TITLE })).toBeTruthy();
+
+    // Both are `img` with a caption as their accessible name, so a reader who never
+    // sees a drawing loses the sentence rather than the claim. The caption is never
+    // printed: it is the accessible name and nothing else.
+    const estate = screen.getByRole('img', { name: ESTATE_FIGURE.caption });
+    expect(estate.getAttribute('data-slot')).toBe('estate-graph');
+    expect(estate.textContent).not.toContain(ESTATE_FIGURE.caption);
+
+    const traversal = screen.getByRole('img', { name: TRAVERSAL_FIGURE.caption });
+    expect(traversal.getAttribute('data-slot')).toBe('traversal');
+
+    // Each figure draws the words the page already publishes, rather than decorating
+    // it. These are the copy's own nouns, asserted so a rewrite of either cannot
+    // quietly turn a drawing into an illustration that says something else.
+    expect(estate.textContent).toContain('Directory');
+    expect(estate.textContent).toContain('membership');
+    expect(traversal.textContent).toContain('One person');
+    expect(traversal.textContent).toContain('Sensitive product');
+    expect(traversal.textContent).toContain('policy');
   });
 
   it('draws the pipeline as a server-rendered running figure, not a canvas', () => {

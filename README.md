@@ -7,17 +7,21 @@ Part of the [NaniSoft](https://www.nanisoft.com) web platform — five sites, on
 - **Live**: https://atlas.nanisoft.com (Custom Domain, auto-created on deploy)
 - **Pack**: `mint` on the document element, and it does not change. Four other packs are on marks: the header's product switcher carries `sky`, `lavender`, `blush` and `peach`, and the products section carries the three its rows name. That is the whole five-pack layering, and `scripts/pack-map.json` is the map and the pack-boundary gate in `@nanisoft/prism-ui/gates` is the gate, checked in both light and dark mode
 - **Stack**: Next 16 static export · fumadocs-mdx · pnpm · TypeScript strict · oxlint · Vitest (jsdom + Testing Library) · Cloudflare Workers
-- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.7.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. There is no local component and no client runtime: every page is a server component, so the site ships no JavaScript of its own
+- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.10.2, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. There is no local component and no client runtime: every page is a server component, so the site ships no JavaScript of its own
+- **Typeface**: none of this site's own. Prism ships Inter as three static woff2 files under the OFL and declares the `@font-face` rules in its own emitted sheet, so `--font-sans` resolves as published and nothing here loads, re-declares or repoints a family
 
 ## What ships
 
-- **Landing** (`/`) — the thesis and the pipeline beside it in one panel, the status strip, then five numbered sections: **the twin** (three points) · **the data path** (four stages, on a rail) · **use cases** (three rows, statuses visible, the playground underneath) · **how it is built** (sixteen composed parts and four built in-house) · **built on Nexus** (three products, each row a mark in that product's own pack and a whole-row link), the six things the lakehouse path is made of, and the closing call to action.
+- **Landing** (`/`) — the thesis and the pipeline beside it in one panel, then five numbered sections: **the twin** (three points) · **the data path** (four stages, on a rail) · **what each stage is made of** (six capabilities) · **use cases** (three rows, statuses visible) · **the graph and one walk through it** (two hand-drawn figures) · **how it is built** (sixteen composed parts and four built in-house) · **built on Nexus** (three products, each row a mark in that product's own pack and a whole-row link), then the closing call to action.
 - **Docs** (`/docs`) — the section index, and then Introduction, Concepts, Architecture, Guides, Reference over `content/docs/`. The rail is the design system's, and **Architecture is nine pages under one heading**: a section with no index page of its own, which the design system renders as a label rather than as a link.
 - **Blog** (`/blog`) — the four launch posts over `content/blog/` (folder-per-post, required date, drafts excluded). The post is the design system's page; the list is this site's own, because the four blog lists in this family are four deliberate designs.
 - **About** (`/about`) — the product's story: estates, then twin, then traversal, with the honesty devices stated.
 - **Not found** — the design system's page: the code as the page's heading, the sentence under it, and three ways out.
+- **`/sitemap.xml` and `/robots.txt`** — emitted from the same two content sources the pages are rendered from, so a drafted post or a deleted page leaves the sitemap by leaving the corpus.
 
-Honesty devices are content, not chrome: use-case statuses (access traversal = available; blast radius and stale and unused access = planned) and the playground, always described as fully mocked.
+Honesty devices are content, not chrome: use-case statuses (access traversal = available; blast radius and stale and unused access = planned) and the playground, always described as fully mocked. They are also *not* duplicated: each status is stated once, in the ledger that carries it, rather than in a strip above the fold that repeated it.
+
+**The hero panel does not claim to be live.** It shows an architecture diagram over a node-and-edge list authored in `lib/content/landing.ts`, so its state is `neutral` and it prints no state word. The rail marker still travels. A green dot and the word `live` over a drawing of a mechanism is the one claim this page is not allowed to make.
 
 ## How it is put together
 
@@ -60,6 +64,26 @@ fully rounded mark and nowhere else, and a page that put a second pack on a sect
 would be encoding its section index in its corner radius. The map says where two
 regions may carry a second pack; the gate says the count and the identifiers, in both
 modes, and a third region fails the build.
+
+**The em dash is this site's punctuation, deliberately.** 221 of them are published
+across the landing, About, the docs and the blog, and one of them is inside the
+absolute page title, where `test/smoke.test.tsx` pins it as a byte rather than as
+punctuation. They are not being kept out of inertia: the voice this site publishes in
+is declarative and engineering-literal, an em dash is how that voice sets off a
+consequence ("Atlas is one of three Nanisoft products on one platform — and the
+platform has a factory behind it"), and no gate here can tell a habit from a
+decision. If a reviewer wants them gone, that is a copy decision with a ledger entry
+attached, not a lint rule.
+
+**Two figures are hand-drawn, and they draw sentences rather than decorate.** Before
+them the landing carried exactly one visual, the hero's pipeline, and everything below
+the fold was a heading over a grid of words. `components/estate-graph-figure.tsx` and
+`components/traversal-figure.tsx` draw two claims the page had no picture for: what the
+estate turns into, and what the flagship question walks through. Each transcribes copy
+the page already publishes, `InstrumentPanel01` owns the frame, and every colour in
+both is a class in `app/globals.css` rather than a hex value, so a pack boundary
+repaints them. Neither carries a `'use client'` line, so neither costs the page any
+JavaScript.
 
 ## Develop
 
@@ -154,6 +178,52 @@ worked around:
   over a paragraph, and the three use-case names were never headings and still are not.
 - The contents rail on every documentation page is a rail of **named** links. It used
   to be one anchor per heading with no accessible name at all.
-- The two typography stacks this site vendored are gone; the design system names
-  Inter and ships no font file, so the site loads the file the token already names.
-  The design system shipping a typeface is a separate open item.
+- The two typography stacks this site vendored are gone, and so is the `next/font` load
+  that replaced them. Prism named Inter and, for a while, shipped no file for it, so
+  this site downloaded the family at build time and repointed `--font-sans` at the
+  result. Prism 0.10.2 ships the typeface itself, so the arrangement now declared the
+  same family twice, made every build depend on a download from Google, and put a
+  second copy of the glyphs on the wire. Resolved upstream, not worked around here.
+
+## What the recomposition cost
+
+A later pass fixed what the composition above got wrong, and the changes worth
+recording are the ones a future pass would be tempted to undo:
+
+- The hero lost its eyebrow. `Hero01` draws an eyebrow as a small filled lozenge, and
+  this site's was `nanisoft · atlas — Model the real world digitally`: fifty characters
+  inside a pill narrower than the sentence is long. The words survive as the page's
+  absolute title and About's lede. The hero now carries four text elements, which is
+  its ceiling.
+- The status strip under the hero is gone. It restated the three use-case statuses that
+  the ledger states again further down, in the same words, and `playground → fully
+  mocked` is carried by the closing band's footnote. Each status is now stated once.
+- The band that held a single anchor under the ledger holds the two figures instead. It
+  used to wrap a section's whole vertical rhythm around one link, with the playground
+  printed for the third time on the page.
+- The six cards between the data path and the use cases had no heading at all. They now
+  have one, scoped to the four stages above them rather than to the platform, which is
+  surveyed two bands later.
+- The hero's title is set by `.site-hero h1` in `app/globals.css`, because `Hero01`
+  offers no slot to scale one and the catalogue caps a section title at
+  `sm:text-4xl`. It is a class rule on purpose: an unlayered rule beats prism's layered
+  utility, and a bare `h1` rule would be a competing declaration the ownership gate
+  rejects.
+- The header's `actions` slot carries the playground. The Block has a right-hand slot
+  for exactly one control, it was empty, and the playground was this site's single
+  honest ask and its most-named destination.
+- `app/icon.svg` was Prism's mark: a white beam refracted into blue inks on a navy
+  ground, shipped as the favicon for a mint site on a near-black ground. It is now
+  Atlas's own, three nodes and the edges among them, in values out of the mint pack's
+  dark block.
+- `published()` sorts the blog by date alone, and all four launch posts share one date,
+  so the index and the whole previous/next trail were ordered by directory order. The
+  tie is broken on the URL now.
+
+Two defects were left standing, deliberately. The nav has no current-page mark: the
+Block renders `aria-current="page"` from a `current` flag, and a header composed once in
+the root layout of a static export has no request to read a path from. And the brand
+lockup prints "Atlas" beside a switcher whose current entry is also "Atlas": the Block
+draws the brand and the switcher unconditionally and offers no way to suppress either,
+and suppressing the switcher would hide four of the five products from the one page
+whose job is to say what they are.

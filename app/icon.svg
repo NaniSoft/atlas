@@ -1,12 +1,29 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Prism mark: a white beam entering a prism, refracted into the blue inks
-       (ADR-0001 — the beam is neutral, refraction is the brand). -->
-  <rect width="32" height="32" rx="4" fill="#0B1220" />
-  <g stroke-linecap="round">
-    <path d="M4 16 L13 16" stroke="#E8EEF9" stroke-width="2.5" />
-    <path d="M15 14 L28 8" stroke="#2563EB" stroke-width="2.5" />
-    <path d="M15 16 L28 16" stroke="#3B82F6" stroke-width="2.5" />
-    <path d="M15 18 L28 24" stroke="#2563EB" stroke-width="2.5" />
-    <path d="M13 12 L15 20 L13 20 Z" fill="#93B2FF" stroke="none" />
+  <!--
+    Atlas's own mark, and the page's own ground.
+
+    This file used to be Prism's: a white beam refracted into blue inks, on a navy
+    ground, which is the design system's mark and not this product's. It shipped as the
+    favicon for a mint site on a near-black ground, so every tab, bookmark and search
+    result for atlas.nanisoft.com wore another product's identity and a colour from
+    neither its pack nor its mode.
+
+    The glyph is the claim the product makes and the one the docs lead with: three
+    nodes and the edges among them, drawn as a graph. The emphasised node is the twin,
+    and the two beside it are what it is made of. Six marks of mint on the page's own
+    dark ground, legible at 16px, and no colour here that is not a value out of the
+    mint pack's dark block (`#161917` ground, `#9ddcad` primary, `#bcecc7` brand ink).
+    A favicon is an image rather than a surface, so these are values and not tokens:
+    there is no cascade to resolve a token against in a file the browser reads as an
+    image.
+  -->
+  <rect width="32" height="32" rx="4" fill="#161917" />
+  <g fill="none" stroke="#bcecc7" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.55">
+    <path d="M9 22 L23 22" />
+    <path d="M9 22 L16 8" />
+    <path d="M23 22 L16 8" />
   </g>
+  <circle cx="9" cy="22" r="2.6" fill="none" stroke="#bcecc7" stroke-width="1.6" />
+  <circle cx="23" cy="22" r="2.6" fill="none" stroke="#bcecc7" stroke-width="1.6" />
+  <circle cx="16" cy="8" r="3.4" fill="#9ddcad" />
 </svg>

@@ -1,13 +1,11 @@
 import type { Metadata } from 'next';
 import type { ReactElement } from 'react';
 
-import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
-import { Section } from '@nanisoft/prism-ui/components/section';
+import { Section, SectionHeading } from '@nanisoft/prism-ui/components/section';
 import { Cta01 } from '@nanisoft/prism-ui/blocks/cta-01';
 import { FeatureGrid01 } from '@nanisoft/prism-ui/blocks/feature-grid-01';
 import { Hero01 } from '@nanisoft/prism-ui/blocks/hero-01';
 import { InstrumentPanel01 } from '@nanisoft/prism-ui/blocks/instrument-panel-01';
-import { LogoStrip01 } from '@nanisoft/prism-ui/blocks/logo-strip-01';
 import { NoteGrid01 } from '@nanisoft/prism-ui/blocks/note-grid-01';
 import {
   ProcessRail01,
@@ -18,22 +16,26 @@ import { StackGrid01 } from '@nanisoft/prism-ui/blocks/stack-grid-01';
 import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 
+import { EstateGraphFigure } from '@/components/estate-graph-figure';
+import { TraversalFigure } from '@/components/traversal-figure';
 import {
   BUILT_ON_NEXUS,
   DAG_ARIA,
   DAG_PULSE,
   DATA_PATH,
   DATA_PATH_LEDE,
+  FIGURES_LEDE,
+  FIGURES_TITLE,
   FINAL_CTA,
   HERO,
   HOW_BUILT_LEDE,
   IN_HOUSE,
   INTEGRATIONS_NOTE,
   PATH_FEATURES,
+  PATH_FEATURES_LEDE,
+  PATH_FEATURES_TITLE,
   STACK_PRODUCTS,
   STATUS_LABEL,
-  TICKER,
-  TICKER_LABEL,
   USE_CASES,
   USE_CASES_LEDE,
   USE_CASES_MORE,
@@ -119,9 +121,19 @@ export default function Landing(): ReactElement {
 
           The band is the design system's rather than this page's: the column split,
           the gap and the width at which the columns stack are one decision made
-          once, in the place that owns the container contract. The old band was four
-          site classes and a media query, hand-written here because no Block offered
-          a hero with a figure in it.
+          once, in the place that owns the container contract. Two things here are this
+          page's, and both are in `app/globals.css` because a Block offers no slot for
+          either: `site-hero` trims the top padding, which at the catalogue's `py-24`
+          is 96px of nothing above the headline, and `site-hero h1` sets the one scale
+          on the page a product landing is allowed to have.
+
+          **The hero carries no eyebrow.** It used to carry `nanisoft · atlas — Model
+          the real world digitally`, which `Hero01` draws as a small filled lozenge:
+          fifty characters, two middle dots and a dash, inside a pill narrower than the
+          sentence is long. The same words are the page's absolute title and the About
+          page's lede, so nothing was lost by dropping them from the one place they
+          were smallest. What was lost was a fifth text element in a hero that has a
+          ceiling of four.
 
           The figure is the same twelve nodes and fifteen edges the static drawing
           used, on the same geometry, with the pipeline's own columns marked as lanes
@@ -129,8 +141,8 @@ export default function Landing(): ReactElement {
           new: a reader who stops every animation is looking at the drawing this
           page shipped before, which is the test the second law of motion sets. */}
       <Hero01
+        className="site-hero"
         headingLevel="h1"
-        eyebrow={`${HERO.eyebrow} — ${HERO.positioning}`}
         title={
           <>
             {HERO.h1Leading}
@@ -144,26 +156,17 @@ export default function Landing(): ReactElement {
           { ...FINAL_CTA.secondary, variant: 'outline' as const },
         ]}
         instrument={
-          <InstrumentPanel01
-            label={DAG_PULSE.panel.label}
-            state="live"
-            stateLabel={DAG_PULSE.panel.mode}
-            caption={DAG_ARIA}
-            footnote={DAG_PULSE.panel.footnote}
-          >
-            <PulseGraph
-              nodes={DAG_PULSE.nodes}
-              relations={DAG_PULSE.relations}
-              label={DAG_ARIA}
-            />
+          /* The panel's state is `neutral` and carries no state word. It used to say
+             `live` beside a green dot, over a node-and-edge list that is authored in
+             `lib/content/landing.ts` rather than read from the estate: a freshness
+             claim about a drawing of a mechanism. The rail marker still travels, so
+             the figure still moves; what is gone is a dot that said the estate was
+             being read while a static array was being drawn. */
+          <InstrumentPanel01 label={DAG_PULSE.panel.label} footnote={DAG_PULSE.panel.footnote} caption={DAG_ARIA}>
+            <PulseGraph nodes={DAG_PULSE.nodes} relations={DAG_PULSE.relations} label={DAG_ARIA} />
           </InstrumentPanel01>
         }
       />
-
-      {/* The transition band between the thesis and the first numbered section: the
-          page's honesty devices, up front, where a reader meets them before any
-          claim. */}
-      <LogoStrip01 items={[...TICKER]} label={TICKER_LABEL} />
 
       {/* 01, the twin itself. Three instruments. */}
       <NoteGrid01
@@ -189,17 +192,24 @@ export default function Landing(): ReactElement {
       {/* The six things the lakehouse path is made of. They were six h4s under a
           hand-written rule before; a card's title is not a heading, which is a real
           loss for a reader navigating by heading and is the design system's decision
-          rather than this site's. */}
+          rather than this site's.
+
+          It used to render with no `title` at all, which meant no heading and no
+          lede: six cards sitting between two numbered sections with nothing above
+          them. The title it now carries is scoped to the four stages directly above
+          rather than to the platform, because the platform is surveyed two bands
+          later and a reader who met two inventories in a row read the second one as
+          filler. */}
       <FeatureGrid01
         variant="bare"
+        title={PATH_FEATURES_TITLE}
+        description={PATH_FEATURES_LEDE}
         features={PATH_FEATURES.map((feature) => ({ title: feature.title, body: feature.body }))}
       />
 
       {/* 03, the use cases, with the statuses visible. The tier is the design
           system's four and the words are this product's, which is the whole reason
-          the Block takes both. The playground link has no slot on the item that
-          draws this section, so it is a real anchor directly under the ledger
-          rather than a sentence with a link welded into it. */}
+          the Block takes both. */}
       <StatusLedger01
         eyebrow="03"
         title="Use cases — one twin, many questions"
@@ -212,10 +222,27 @@ export default function Landing(): ReactElement {
         }))}
         caption={USE_CASES_MORE.line}
       />
-      <Section className="site-band">
-        <CtaLink href={USE_CASES_MORE.cta.href} variant="outline" newTab>
-          {USE_CASES_MORE.cta.label}
-        </CtaLink>
+
+      {/* The two figures, and the band that replaced an empty one.
+
+          This band used to be a `Section` holding a single `CtaLink` under the ledger:
+          a section's vertical rhythm wrapped around one anchor, with the playground
+          printed for the third time on the page and nothing else in the space. What
+          stands here now draws the two claims the page had no picture for at all,
+          which is what was actually missing from it: what the estate turns into, and
+          what the flagship question walks through.
+
+          Both figures are hand-drawn and both transcribe a sentence the page already
+          publishes. `InstrumentPanel01` owns the frame, the radius and the pack, so
+          the two files that draw them own nothing but geometry. The band carries no
+          eyebrow, so the page's five section indices stay five rather than becoming
+          six. */}
+      <Section>
+        <SectionHeading as="h2" align="left" title={FIGURES_TITLE} description={FIGURES_LEDE} />
+        <div className="site-figures">
+          <EstateGraphFigure />
+          <TraversalFigure />
+        </div>
       </Section>
 
       {/* 04, how it is built: the survey of composed parts, then the four that are

@@ -17,7 +17,7 @@
     "test": "vitest run",
     "check:docs-tree": "vitest run test/docs-tree.test.tsx",
     "check:prism-gates": "prism-gates",
-    "check": "pnpm check:prism-gates && pnpm pnpm check:docs-tree"
+    "check": "pnpm check:prism-gates && pnpm check:docs-tree"
   },
   "dependencies": {
     "@nanisoft/prism-ui": "0.10.2",

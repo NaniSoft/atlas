@@ -30,33 +30,11 @@
  * What is left is the blog index, which the catalogue deliberately does not ship (four
  * sites, four deliberate blog lists), the documentation section index, which it
  * deliberately does not ship either (a Page is judged on what it encodes, and three
- * sites file their documentation three different ways), and three small layout
- * classes the landing's own composition needs. Nothing here restyles a catalogue
- * item, and no link below is given a focus indicator: a plain anchor keeps the
- * browser's own, which is the only indicator on an element no Prism component drew.
+ * sites file their documentation three different ways), and the handful of layout and
+ * figure classes the landing's own composition needs. Nothing here restyles a
+ * catalogue item, and no link below is given a focus indicator: a plain anchor keeps
+ * the browser's own, which is the only indicator on an element no Prism component drew.
  */
-
-/*
- * The one thing this sheet declares that is not a site class: the design system's
- * first family, supplied.
- *
- * prism's emitted sheet declares `--font-sans: Inter, ui-sans-serif, system-ui, ...`
- * and 0.7.0 ships no font file, so the first entry is a name nothing resolves to and
- * every page on the site renders in the platform's UI face. `app/layout.tsx` loads
- * the file under `--font-inter`; this supplies it in front of prism's own fallback
- * list, repeated verbatim, so the design system's intent is unchanged and only its
- * first entry becomes real.
- *
- * It is a custom property rather than a `font-family` on a bare element on purpose: a
- * site stylesheet must not declare `font-family` on a selector with no class in it,
- * because prism's base is layered and this sheet is not. A token is not that, and a
- * token is the one place a consumer is allowed to repoint the system's own name.
- */
-
-:root {
-  --font-sans: var(--font-inter), Inter, ui-sans-serif, system-ui, -apple-system,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-}
 
 /* Keeps the footer below the fold on a short page. Layout, so it is a class rule
    and not a bare-element one, and it competes with nothing prism declares. */
@@ -65,6 +43,49 @@
 }
 
 /* ---------- the landing's own layout ---------- */
+
+/*
+ * The hero's own measure, and the one place this site overrides a catalogue Block's
+ * typography.
+ *
+ * `Hero01` renders its heading through `SectionHeading`, which caps a title at
+ * `sm:text-4xl`, and it offers no slot to scale one: its `className` lands on the
+ * `Section`, not on the heading. So the hero's title is set here, by a descendant of
+ * a class the Block does accept.
+ *
+ * It wins because of the same mechanism the ownership rule above exists to keep to
+ * declarations prism does not make: prism's utilities are in `@layer utilities`,
+ * this sheet is not, and an unlayered rule beats a layered one whatever the layer
+ * order says. That is also why this is a class rule and not a bare `h1` rule, which
+ * would be a competing declaration.
+ *
+ * `font-size` is not one of the properties prism's base layer declares, so this
+ * competes with nothing; it only beats the utility on the element.
+ */
+.site-hero h1 {
+  padding-block-end: 0.08em;
+  font-size: clamp(2.5rem, 5.5vw, 3.75rem);
+  /* The design system's semibold, by its own token. Not a weight between the shipped
+     faces: prism ships Inter as three static files at 400, 500 and 600, so anything
+     above 600 matches 600 and gets synthetic bolding on top, which is a heavier and
+     uglier heading than the one asked for. A page that cannot load a weight is a page
+     that must ask for a weight that exists. */
+  font-weight: var(--font-weight-semibold);
+  letter-spacing: -0.02em;
+  line-height: 1.08;
+}
+
+/*
+ * The hero's vertical rhythm, trimmed.
+ *
+ * `Section` opens with `py-16 sm:py-24`, and on the hero that is 96px of nothing
+ * above a headline the reader has to scroll to reach. The top is what costs the fold:
+ * the bottom gap is the next band's own padding as well as this band's, so the two
+ * add up. Only the top is set here, and only downward.
+ */
+.site-hero {
+  padding-block: 3rem 0;
+}
 
 /*
  * A band that carries one thing and inherits the section rhythm above it.
@@ -77,6 +98,120 @@
  */
 .site-band {
   padding-block: 0 4rem;
+}
+
+/*
+ * A row of this site's own calls to action.
+ *
+ * This class was used by `/about` and never declared, so the three links it wraps
+ * laid out as inline elements with no gap between them and no wrap of their own. It
+ * is here now because a class used in markup and missing from the sheet is invisible
+ * to every gate in `prism-gates.json`: each of them has a floor on the rules a sheet
+ * *declares*, and none of them cross-references the class names a source file uses
+ * against the class names a sheet defines.
+ */
+.site-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* ---------- the landing's own figures ---------- */
+
+/*
+ * The two figures, side by side where there is room for them and stacked where there
+ * is not. One declaration for the collapse rather than a fixed column count: at the
+ * width where the hero's own columns stack, these stack with them.
+ */
+.site-figures {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .site-figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/*
+ * The annotation layer of a figure: the words inside the drawing.
+ *
+ * A figure is drawn on a fixed canvas and scaled to whatever column it lands in, so
+ * a word sized for a 530px column is 7px on a 360px phone. The words go rather than
+ * the drawing: every figure here carries the whole sentence in its `aria-label`, so
+ * the annotation is the one layer a reader loses and nothing else is.
+ *
+ * `display: none` is safe here for a second reason. Each figure is an `img` with an
+ * accessible name, so the words inside it were never announced, and hiding them
+ * cannot remove a fact from a screen reader. It could only remove a duplicate.
+ */
+@media (max-width: 639px) {
+  .site-figure__annotation {
+    display: none;
+  }
+}
+
+/*
+ * A figure's own colours, as tokens and never as values.
+ *
+ * The drawing is authored in `currentColor`, so a rule here is the whole of its
+ * colour. That is what keeps the site's law true on a figure: colour is a token, a
+ * figure follows the pack beneath it, and a hand-written hex in an SVG attribute
+ * would be the one surface on the page that a pack boundary could not repaint.
+ *
+ * Every rule is class-scoped, which is the sheet's standing rule, so `color` here is
+ * not a competing declaration of the property prism's base layer declares.
+ */
+.site-figure__source {
+  color: var(--muted-foreground);
+}
+
+.site-figure__node {
+  color: var(--foreground);
+}
+
+.site-figure__edge {
+  color: var(--border);
+}
+
+.site-figure__edge--carried {
+  color: var(--muted-foreground);
+}
+
+.site-figure__emphasis {
+  color: var(--primary);
+}
+
+.site-figure__annotation {
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+}
+
+/*
+ * A name inside a drawing, in the page's own face.
+ *
+ * Separate from the annotation above because the two carry different registers: an
+ * annotation is machine vocabulary (`conform`, `policy`, `membership`) and reads as
+ * mono, and a name is a thing in the estate (`One person`, `Sensitive product`) and
+ * reads as prose. One class per register, so a drawing never mixes the two inside a
+ * single line.
+ */
+.site-figure__label {
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+/*
+ * The emphasised end of a drawing, in the pack's own brand value.
+ *
+ * `primary` is a fill in this system and never text, which is the design system's own
+ * rule and the reason the resource's border wears it and its name does not. The
+ * name takes `--foreground` instead, so the one element a reader is meant to arrive
+ * at is the one element whose words are not carried by a pastel.
+ */
+.site-figure__label--emphasis {
+  color: var(--foreground);
 }
 
 /* ---------- the documentation section index ---------- */
