@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, within } from '@testing-library/react';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
@@ -131,13 +131,27 @@ describe('the landing renders from the catalogue', () => {
 
 describe('404', () => {
   it('offers the ways back into the site', () => {
-    render(<NotFound />);
+    const { container } = render(<NotFound />);
+    // Scoped to `<main>`, because the page now renders the chrome and the footer's two
+    // column titles are headings too. The scoping is the fix rather than switching to
+    // `getAllByRole` with an index: this is about the page's own outline, and a query
+    // that returns the footer's headings alongside it was always going to be about the
+    // document rather than the page.
+    const main = within(container.querySelector('main') as HTMLElement);
     // The design system's Page makes the code the page's heading and the sentence an
     // h2 under it, which is the reverse of the order a reader sees them in.
-    expect(screen.getByRole('heading', { level: 1 }).textContent).toBe('404');
-    expect(screen.getByRole('heading', { level: 2 }).textContent).toBe('No node here.');
-    expect(screen.getByRole('link', { name: 'Back to the landing' })).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Read the docs' })).toBeTruthy();
-    expect(screen.getByRole('link', { name: 'Read the blog' })).toBeTruthy();
+    expect(main.getByRole('heading', { level: 1 }).textContent).toBe('404');
+    expect(main.getByRole('heading', { level: 2 }).textContent).toBe('No node here.');
+    expect(main.getByRole('link', { name: 'Back to the landing' })).toBeTruthy();
+    expect(main.getByRole('link', { name: 'Read the docs' })).toBeTruthy();
+    expect(main.getByRole('link', { name: 'Read the blog' })).toBeTruthy();
+  });
+
+  it('arrives with the same bar as every other page, and marks nothing current', () => {
+    // A 404 is not one of the three destinations, so the bar is the one the reader
+    // arrived with rather than one that claims a page it is not serving.
+    const { container } = render(<NotFound />);
+    expect(container.querySelector('[data-slot="site-navbar"]')).toBeTruthy();
+    expect(container.querySelector('a[aria-current="page"]')).toBeNull();
   });
 });

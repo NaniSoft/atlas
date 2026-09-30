@@ -6,6 +6,8 @@ import { Prose } from '@nanisoft/prism-ui/components/prose';
 import { Section, SectionHeading } from '@nanisoft/prism-ui/components/section';
 import { NoteGrid01 } from '@nanisoft/prism-ui/blocks/note-grid-01';
 
+import { SiteChrome } from '@/components/site-chrome';
+
 export const metadata: Metadata = {
   title: 'About',
   description:
@@ -65,7 +67,7 @@ const KEEP_GOING: ReadonlyArray<{ label: string; href: string; newTab?: boolean 
  */
 export default function AboutPage(): ReactElement {
   return (
-    <>
+    <SiteChrome current="/about">
       <Section>
         <SectionHeading
           as="h1"
@@ -121,6 +123,6 @@ export default function AboutPage(): ReactElement {
           ))}
         </div>
       </Section>
-    </>
+    </SiteChrome>
   );
 }

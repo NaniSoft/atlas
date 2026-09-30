@@ -5,9 +5,9 @@
 Part of the [NaniSoft](https://www.nanisoft.com) web platform — five sites, one design language ([Prism](https://prism.nanisoft.com)).
 
 - **Live**: https://atlas.nanisoft.com (Custom Domain, auto-created on deploy)
-- **Pack**: `mint` on the document element, and it does not change. Four other packs are on marks: the header's product switcher carries `sky`, `lavender`, `blush` and `peach`, and the products section carries the three its rows name. That is the whole five-pack layering, and `scripts/pack-map.json` is the map and the pack-boundary gate in `@nanisoft/prism-ui/gates` is the gate, checked in both light and dark mode
+- **Pack**: `mint` on the document element, and it does not change. The only region of a page carrying a pack which is not the ground is the products section, which carries the three its rows name. The family's five marks live in the bar's menu now, and a closed menu paints nothing: a reader at first paint sees one pack, and the second packs reach them when they ask to leave. That is the whole five-pack layering, and `scripts/pack-map.json` is the map and the pack-boundary gate in `@nanisoft/prism-ui/gates` is the gate, checked in both light and dark mode
 - **Stack**: Next 16 static export · fumadocs-mdx · pnpm · TypeScript strict · oxlint · Vitest (jsdom + Testing Library) · Cloudflare Workers
-- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.10.2, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. There is no local component and no client runtime: every page is a server component, so the site ships no JavaScript of its own
+- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.13.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. This repository authors no client module: every page is a server component, so the only JavaScript this site ships is the bar's own controls, and those are client components inside the pinned package rather than a boundary drawn here
 - **Typeface**: none of this site's own. Prism ships Inter as three static woff2 files under the OFL and declares the `@font-face` rules in its own emitted sheet, so `--font-sans` resolves as published and nothing here loads, re-declares or repoints a family
 
 ## What ships
@@ -18,6 +18,7 @@ Part of the [NaniSoft](https://www.nanisoft.com) web platform — five sites, on
 - **About** (`/about`) — the product's story: estates, then twin, then traversal, with the honesty devices stated.
 - **Not found** — the design system's page: the code as the page's heading, the sentence under it, and three ways out.
 - **`/sitemap.xml` and `/robots.txt`** — emitted from the same two content sources the pages are rendered from, so a drafted post or a deleted page leaves the sitemap by leaving the corpus.
+- **Search** (`/api/search`) — twenty-seven entries as one JSON array, prerendered because the export has no server: nineteen documents with their section's declared title as a breadcrumb, the four posts, and four pages of this site's own. The bar's search control fetches it when it opens and filters in the browser, which is a static file of about 59 KB and no request per keystroke. It is not in `sitemap.xml`, because a search index is not a page a reader navigates to.
 
 Honesty devices are content, not chrome: use-case statuses (access traversal = available; blast radius and stale and unused access = planned) and the playground, always described as fully mocked. They are also *not* duplicated: each status is stated once, in the ledger that carries it, rather than in a strip above the fold that repeated it.
 
@@ -26,14 +27,17 @@ Honesty devices are content, not chrome: use-case statuses (access traversal = a
 ## How it is put together
 
 ```
-app/layout.tsx        the document: two theme attributes, the boot script, the chrome
+app/layout.tsx        the document: two theme attributes, the boot script, the page
 app/page.tsx          the landing, composed from catalogue items and nothing else
 app/globals.css       about 250 lines: the design system's own font family, the two
                       site-owned lists, and three layout classes for the hero
 app/docs/…            the section index (this site's) and the document (the catalogue's)
 app/blog/…            the blog list (this site's) and the blog post (the catalogue's)
+app/api/search/route.ts  the search index, prerendered because the export has no server
+components/site-chrome.tsx  the bar, the main, the footer, and the current page
 lib/site.json         the ground, the default mode, the product directory
 lib/site.ts           those facts, typed by the design system's pack vocabulary
+lib/bar.ts            the bar's own data and every word it prints
 lib/content/landing.ts every word of the landing, as data
 lib/to-prism-tree.ts  fumadocs' page tree -> the documentation rail's three shapes
 scripts/              the gates, the pack map, the parity expectations
@@ -61,9 +65,12 @@ says which of these it was and why it matters.
 it, and it wears the mode of the nearest ancestor carrying `.dark`, which is why a
 server-rendered boundary has no mode class of its own. So a boundary belongs on a
 fully rounded mark and nowhere else, and a page that put a second pack on a section
-would be encoding its section index in its corner radius. The map says where two
-regions may carry a second pack; the gate says the count and the identifiers, in both
-modes, and a third region fails the build.
+would be encoding its section index in its corner radius. The map says where a region
+may carry a second pack; the gate says the count and the identifiers, in both modes, and
+a second region fails the build. The one region left is named `landing.products`, after
+the Block that draws the rows rather than after the `05` the band prints above its own
+heading, because a page that renumbers itself would then have renamed a region a gate
+was holding it to.
 
 **The em dash is this site's punctuation, deliberately.** 221 of them are published
 across the landing, About, the docs and the blog, and one of them is inside the
@@ -84,6 +91,39 @@ the page already publishes, `InstrumentPanel01` owns the frame, and every colour
 both is a class in `app/globals.css` rather than a hex value, so a pack boundary
 repaints them. Neither carries a `'use client'` line, so neither costs the page any
 JavaScript.
+
+## The bar is the design system's, and this site composes it
+
+The bar is `@nanisoft/prism-ui/blocks/site-navbar`, and `components/site-chrome.tsx`
+holds it, the `<main>` and the footer, with each page rendering that chrome against the
+page it is serving. Three decisions belong to this site and the rest belong to the Block,
+so they are worth separating rather than describing as one thing.
+
+**The chrome is composed per page, and that is not a client boundary.** It used to live
+in the root layout, which is rendered once per route and is handed no pathname, so the
+bar could never mark the page a reader was on. Moving the chrome down one level is the
+whole of that fix, and it costs no JavaScript this repository authors, because a server
+render is handed the route it is rendering. The Block offers a second way to do this,
+`currentPath`, which resolves the mark in the browser; that would have been this site's
+first runtime, and taking the first way is why `test/server-only.test.ts` still reads
+zero client modules.
+
+**The family is a menu, and the mark is the reason.** The set used to be a row of five
+marks at first paint, which put four other packs above the fold of all twenty-nine routes
+and gave `scripts/pack-map.json` a `header.switcher` region to police. It is now one
+control at the right-hand end, and the marks are drawn when a reader opens it. That is a
+real improvement and it is also a change in what a static export contains, so the pack map
+and the region resolver lost that region together rather than one at a time. The resolver
+still names `header.brand` and `footer.brand`, because the wordmark is still on the page
+at first paint; the switcher's rule was not moved anywhere, it was deleted, and
+`test/pack-map.test.tsx` now expects one second-pack region rather than two and renders
+the real pages rather than a header it assembles itself.
+
+**Search is a static index, because this site is a static export.** There is no server to
+ask, so `app/api/search/route.ts` prerenders an index of twenty-seven entries and the
+dialog filters it in the browser. The mode control is the one other piece of state, and
+it is the design system's: a stored choice applied by the same `PrismThemeScript` that
+was already in `<head>` before this migration.
 
 ## Develop
 
@@ -181,9 +221,10 @@ worked around:
 - The two typography stacks this site vendored are gone, and so is the `next/font` load
   that replaced them. Prism named Inter and, for a while, shipped no file for it, so
   this site downloaded the family at build time and repointed `--font-sans` at the
-  result. Prism 0.10.2 ships the typeface itself, so the arrangement now declared the
-  same family twice, made every build depend on a download from Google, and put a
-  second copy of the glyphs on the wire. Resolved upstream, not worked around here.
+  result. Prism 0.10.2 was the first release that shipped the typeface itself, so the
+  arrangement now declared the same family twice, made every build depend on a download
+  from Google, and put a second copy of the glyphs on the wire. Resolved upstream, not
+  worked around here.
 
 ## What the recomposition cost
 
@@ -209,9 +250,6 @@ recording are the ones a future pass would be tempted to undo:
   `sm:text-4xl`. It is a class rule on purpose: an unlayered rule beats prism's layered
   utility, and a bare `h1` rule would be a competing declaration the ownership gate
   rejects.
-- The header's `actions` slot carries the playground. The Block has a right-hand slot
-  for exactly one control, it was empty, and the playground was this site's single
-  honest ask and its most-named destination.
 - `app/icon.svg` was Prism's mark: a white beam refracted into blue inks on a navy
   ground, shipped as the favicon for a mint site on a near-black ground. It is now
   Atlas's own, three nodes and the edges among them, in values out of the mint pack's
@@ -219,11 +257,28 @@ recording are the ones a future pass would be tempted to undo:
 - `published()` sorts the blog by date alone, and all four launch posts share one date,
   so the index and the whole previous/next trail were ordered by directory order. The
   tie is broken on the URL now.
+- The bar's `actions` slot carries the playground. The Block has a right-hand slot for
+  exactly one control, it was empty, and the playground was this site's single honest ask
+  and its most-named destination. It is still the slot it was: the bar now composes four
+  controls of its own on that side, and the playground is the one a product owns.
 
-Two defects were left standing, deliberately. The nav has no current-page mark: the
-Block renders `aria-current="page"` from a `current` flag, and a header composed once in
-the root layout of a static export has no request to read a path from. And the brand
-lockup prints "Atlas" beside a switcher whose current entry is also "Atlas": the Block
-draws the brand and the switcher unconditionally and offers no way to suppress either,
-and suppressing the switcher would hide four of the five products from the one page
-whose job is to say what they are.
+Two defects were fixed rather than left standing, and one was never real.
+
+The nav now has a current-page mark. It could not have one before, and the README said so
+at length: the bar was composed once in the root layout, a layout of a static export has
+no request to read a path from, and `headers()` does not exist under `output: export`.
+The conclusion was wrong and the premise was beside the point. The API that cannot answer
+is the one that reads the request, and a server render never needed it: each page renders
+`components/site-chrome.tsx` with the route it is serving, so the mark is a prop. The bar
+moved out of the root layout for this and nothing else, and no client boundary came with
+it, because the Block resolves `aria-current` on the server.
+
+The brand lockup no longer prints "Atlas" beside a row of five marks whose current entry
+is also "Atlas". That was a real duplicate, and it was never something the Block forced:
+the family is a menu now, and a menu is closed until a reader opens it, so the two words
+are never adjacent at first paint. The marks are unchanged and appear on the same terms
+as before the moment the menu opens.
+
+What did not change is the number of packs on the page. The family still carries five
+`ProductMark`s and the products section still carries three, and the difference is entirely
+in when they paint rather than in what they say.

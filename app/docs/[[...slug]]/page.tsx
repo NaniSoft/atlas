@@ -4,6 +4,7 @@ import type { ReactElement } from 'react';
 
 import { DocArticle } from '@/components/doc-article';
 import { SectionIndex, type IndexGroup } from '@/components/section-index';
+import { SiteChrome } from '@/components/site-chrome';
 import { docsSource } from '@/lib/source';
 
 // Optional catch-all: `/docs` renders the section index, `/docs/<section>/<slug>`
@@ -73,17 +74,28 @@ export default async function DocsPage({ params }: PageProps): Promise<ReactElem
   // index one of them owns would be an index the other three had to argue with.
   if (!slug) {
     return (
-      <SectionIndex
-        title="Atlas docs"
-        description="Atlas models the real world digitally; its first proven domain is the IT estate. These docs cover the twin itself, the lakehouse path that produces it, and what you can ask of it today."
-        groups={docGroups()}
-        emptyMessage="No docs yet."
-      />
+      <SiteChrome current="/docs">
+        <SectionIndex
+          title="Atlas docs"
+          description="Atlas models the real world digitally; its first proven domain is the IT estate. These docs cover the twin itself, the lakehouse path that produces it, and what you can ask of it today."
+          groups={docGroups()}
+          emptyMessage="No docs yet."
+        />
+      </SiteChrome>
     );
   }
 
   const page = docsSource.getPage(slug);
   if (!page) notFound();
 
-  return <DocArticle page={page} tree={docsSource.getPageTree()} />;
+  // `/docs` marks the navigation and every document under it does too, because the
+  // bar's three destinations are this site's own top level rather than every route
+  // beneath it. A reader twenty pages into the twin is still in the docs, and a bar
+  // that had stopped saying so would be a bar that had lost the answer to the
+  // question it exists to answer.
+  return (
+    <SiteChrome current="/docs">
+      <DocArticle page={page} tree={docsSource.getPageTree()} />
+    </SiteChrome>
+  );
 }

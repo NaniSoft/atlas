@@ -7,8 +7,8 @@
     "export (the script below, which reads the emitted HTML and the emitted CSS).",
     "",
     "The rule being enforced, in one sentence: a pack boundary lands on a mark and",
-    "nowhere else, and exactly two regions of a page may carry a pack that is not the",
-    "page's own ground.",
+    "nowhere else, and a declared region set is the whole of what may carry a pack that",
+    "is not the page's own ground.",
     "",
     "The second half is arithmetic rather than taste. A boundary re-points --radius,",
     "and this page's ground is mint at 0.625rem while the other four run 0.5rem to",
@@ -20,26 +20,29 @@
     "`regions` lists every region that carries a boundary at all, with the exact",
     "multiset of packs each one carries, so a boundary added by accident is a finding",
     "in both readers. `secondPackRegions` is the rule restated, and it is asserted as",
-    "well as derived: a page that grows a third region carrying a second pack fails",
-    "the build."
+    "well as derived: a page that grows a second region carrying a second pack fails",
+    "the build.",
+    "",
+    "There is one of those regions rather than the two this file used to name. The bar's",
+    "switcher was the other, and the family's five sites are a menu now rather than a",
+    "row of marks at first paint, so they are not in the export this gate reads. That is",
+    "a change in what a reader receives before interacting with the page, which is the",
+    "only thing this gate has ever claimed to see; the marks are unchanged and appear on",
+    "the same terms as before as soon as the menu is opened."
   ],
   "ground": "mint",
-  "secondPackRegions": ["header.switcher", "landing.05"],
+  "secondPackRegions": ["landing.products"],
   "regions": {
-    "header.switcher": {
-      "why": "A product site is one of several, so its switcher is the whole product set, and a set that tells five products apart is the reason five packs are on one page at all. Four of the five are not this site's ground. Every one of those five marks is a ProductMark, which is a fully rounded disc, so the boundary moves nothing about its shape.",
-      "packs": ["sky", "lavender", "mint", "blush", "peach"]
-    },
     "header.brand": {
-      "why": "The header's brand lockup is this site, and this site's pack is the page's pack, so its boundary is the ground rather than a second pack.",
+      "why": "The bar's brand lockup is this site, and this site's pack is the page's pack, so its boundary is the ground rather than a second pack.",
       "packs": ["mint"]
     },
     "footer.brand": {
       "why": "The same lockup, in the footer. A ground is stable for the life of a page, and a footer that wore a different hue from the page it closes would be a second claim about the same thing.",
       "packs": ["mint"]
     },
-    "landing.05": {
-      "why": "A product row's mark is that product's own hue, and it is the one claim on this page a reader makes a decision from: which product is this, and does its colour mean anything. The mark is a fully rounded disc, so the boundary moves nothing about its shape. The region is named by the ordinal the band publishes, so the map names it with a string a reader of the page can see. The retired line drew these three as coloured dots resolved in JavaScript from prism-tokens' own retired pack names (rose and blue), so all three looked alike and none of them was a boundary at all.",
+    "landing.products": {
+      "why": "A product row's mark is that product's own hue, and it is the one claim on this page a reader makes a decision from: which product is this, and does its colour mean anything. The mark is a fully rounded disc, so the boundary moves nothing about its shape. The region is named by the Block that draws the rows rather than by the ordinal the band publishes, because a page that renumbers its own sections would then have renamed a region a gate was holding it to. The retired line drew these three as coloured dots resolved in JavaScript from prism-tokens' own retired pack names (rose and blue), so all three looked alike and none of them was a boundary at all.",
       "packs": ["lavender", "blush", "peach"]
     }
   }

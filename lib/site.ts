@@ -4,7 +4,7 @@
  *
  * Three decisions live here and nowhere else, which is why they are one module: the
  * page's ground pack, the mode a visitor who has never chosen gets, and the set of
- * products the switcher moves between. The old line kept the same three facts in
+ * products the family's menu moves between. The old line kept the same three facts in
  * about twenty lines of theme module, and patching that module one import at a time
  * passed a read-through and failed a build.
  *
@@ -70,19 +70,26 @@ export const SITE_PRODUCT = {
 } as const;
 
 /**
- * The set of products the switcher moves between, in the order a reader meets them.
+ * The set of sites the family's menu moves between, in the order a reader meets them.
  *
- * Atlas is one of four products, so its switcher carries the whole set rather than a
- * subset: a switcher that moved between two of five would hide three products from the
- * one page whose job is to say what they are. Its own mark wears `mint`, which is the
- * ground, because a brand lockup drawn in the colour the page is painted in is the
- * honest mark for the page that is that product.
+ * Atlas is one of five sites, so the menu carries the whole set rather than a subset: a
+ * menu that moved between two of five would hide three products from the one page whose
+ * job is to say what they are. Its own mark wears `mint`, which is the ground, because a
+ * brand lockup drawn in the colour the page is painted in is the honest mark for the
+ * page that is that product.
  *
  * Every one of those five marks is a `data-pack` boundary, and a boundary is the one
  * thing the pack map in `scripts/pack-map.json` has to account for: it repoints the
  * corner radius as well as the colour, and the mark is a fully rounded disc, so
- * nothing about its shape moves. The gate checks the set, the identifiers and both
- * modes from the built export.
+ * nothing about its shape moves.
+ *
+ * **Four of the five are not in the map, and that is not an oversight.** They are a menu
+ * rather than a row at first paint, so a closed menu paints no mark and the pack-boundary
+ * gate, which reads the built export, has no boundary to name in the bar. The map
+ * declares `header.brand` at the ground and `footer.brand` at the ground, and
+ * `landing.products` as the one region carrying a second pack. The gate checks the
+ * identifiers and both modes from the built export, and the browser lane is the half
+ * that can open a menu and see the marks the gate cannot.
  *
  * The directory is a JSON file rather than a list in this module, because two
  * independent readers need it and a TypeScript module is not one of them: the test

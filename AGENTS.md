@@ -13,7 +13,8 @@ Part of the five-site Nanisoft web platform (www + nexus + atlas + alphalens + p
 - A Block takes data and content as props.
 - A consumer cannot write a Prism utility class: the consumer does not run Tailwind, so a utility exists in the emitted sheet only if a Prism component already uses it. Anything this site needs for itself goes in `app/globals.css` as a site class.
 - Two attributes on `<html>`, from `lib/site.ts`: `data-pack` for the ground and `class="dark"` for the mode. A blocking `PrismThemeScript` in `<head>` applies a stored choice before first paint and is the only writer of the theme's origin.
-- A pack boundary is an attribute on an element: it repoints that pack's colour **and** its corner radius beneath it, and it wears the mode of the nearest ancestor carrying `.dark`. `scripts/pack-map.json` is the map, `scripts/pack-regions.mjs` names a region from the DOM, and the gate checks the map from the built export in both modes.
+- A pack boundary is an attribute on an element: it repoints that pack's colour **and** its corner radius beneath it, and it wears the mode of the nearest ancestor carrying `.dark`. `scripts/pack-map.json` is the map, `scripts/pack-regions.mjs` names a region from the DOM, and the gate checks the map from the built export in both modes. A region is named after the structure the catalogue publishes, never after a number the page prints.
+- The bar is `@nanisoft/prism-ui/blocks/site-navbar` and this site supplies it data and copy only: `lib/bar.ts` holds the destinations, the family and every sentence the controls can say. The family is a menu rather than a row of marks, so it is not in the static export and the pack map does not declare a region for it.
 
 ## What is enforced, and where the words live
 
@@ -41,7 +42,8 @@ cited.
 
 - Next 16 static export (`output: 'export'`) at the repo root — flat single-app, no workspace.
 - pnpm + TypeScript strict + oxlint + Vitest (jsdom + Testing Library).
-- No client component anywhere: every page is a server component, so the site ships no JavaScript of its own. `test/server-only.test.ts` asserts the shape of the whole source tree, so a `'use client'` line cannot be added without failing a test.
+- No client component anywhere: every page is a server component, so the only JavaScript this site ships is the bar's own controls, and those are client components inside `@nanisoft/prism-ui`. `test/server-only.test.ts` asserts the shape of the whole source tree, so a `'use client'` line cannot be added without failing a test.
+- The chrome is `components/site-chrome.tsx` and every page renders it with the route it is serving, because a root layout is not told its own pathname and a bar that cannot be told cannot mark the reader's place. That is a server render reading its own route, not a client boundary.
 - Deploys: push to main → GitHub Actions runs the checks and then the deploy (`wrangler deploy`) with the org-level Cloudflare secrets. The deploy is a job that needs the checks, so a push that fails cannot deploy.
 
 ## Commands

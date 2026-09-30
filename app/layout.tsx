@@ -7,13 +7,9 @@ import type { ReactNode } from 'react';
 import '@nanisoft/prism-ui/styles.css';
 import './globals.css';
 
-import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
-import { SiteFooter } from '@nanisoft/prism-ui/blocks/site-footer';
-import { SiteHeader } from '@nanisoft/prism-ui/blocks/site-header';
 import { PrismThemeScript } from '@nanisoft/prism-ui/provider';
 
-import { PLAYGROUND_URL } from '@/lib/links';
-import { DEFAULT_MODE, GROUND_PACK, PRODUCTS, SITE_PRODUCT, THEME_ATTRIBUTES } from '@/lib/site';
+import { DEFAULT_MODE, GROUND_PACK, THEME_ATTRIBUTES } from '@/lib/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://atlas.nanisoft.com'),
@@ -38,62 +34,21 @@ export const metadata: Metadata = {
 };
 
 /**
- * Site nav — lean, only destinations this site actually substantiates.
+ * The document, and nothing else: the two theme attributes, one blocking script, the
+ * page.
  *
- * The labels and the destinations are the ones the old chrome published, unchanged.
- * `navLabel` is required by the Block and is the name this site's own navigation
- * takes, because a site that files a documentation section and a blog wants those two
- * regions named rather than lumped together under a word about the whole site.
+ * **The chrome left this file.** It is in `components/site-chrome.tsx` now, and each
+ * page renders it against the page it is serving, because a layout is rendered once
+ * per route and is handed no pathname, so a bar that lives here can never mark the
+ * page a reader is on. That was the one thing this layout could not do and the reason
+ * it is worth a file per page: a server render is handed the route it is rendering, so
+ * the current link is a prop rather than something the browser has to be asked for.
  *
- * **No link here declares `current`.** The Block renders `aria-current="page"` from
- * it, and it is the one piece of navigation state this site would like and cannot
- * have: the header is composed once in the root layout, a static export has no
- * request to read a path from, and the one API that would answer it
- * (`headers()`) does not exist under `output: export`. So a reader on a docs page
- * gets no current-page mark in the chrome. That is a property of the stack rather
- * than a choice, and it is recorded here rather than worked around with a client
- * effect, because this site ships no JavaScript.
- */
-const NAV = [
-  { label: 'Docs', href: '/docs' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'About', href: '/about' },
-] as const;
-
-/** The columns the footer has always published, as the Block's own shape. */
-const FOOTER_COLUMNS = [
-  {
-    title: 'Atlas',
-    links: [
-      { label: 'Docs', href: '/docs' },
-      { label: 'Blog', href: '/blog' },
-      { label: 'About', href: '/about' },
-    ],
-  },
-  {
-    title: 'See it run',
-    links: [
-      { label: 'Open the playground', href: 'https://playground.nanisoft.com', newTab: true },
-      { label: 'Access traversal', href: '/docs/guides/access-traversal' },
-      { label: 'The integration ledger', href: '/docs/reference/integration-ledger' },
-    ],
-  },
-] as const;
-
-/**
- * The line at the foot of the footer.
- *
- * It was published here before the move and it is published here now, unchanged and
- * byte for byte, because the design system's footer carries a slot for exactly this
- * and a footer that silently dropped its own legal line would be a rendering-layer
- * change that reads as a copy change. It is a string rather than a year plus a
- * string because the retired line never printed one and inventing one is a content
- * decision this migration is not making.
- */
-const FOOTER_LEGAL = '\u00a9 NaniSoft';
-
-/**
- * The document: the two theme attributes, one blocking script, the chrome, the page.
+ * The old comment here claimed the current-page mark was impossible on this site
+ * because `headers()` does not exist under `output: export`. That was true and it was
+ * the wrong conclusion: the API that cannot answer is the one that reads the request,
+ * and a server render never needed it. Composing the bar per page is what removed the
+ * question, so the claim is gone rather than left standing next to its own refutation.
  *
  * **No provider, no client runtime, no baked stylesheet, and no font loader.** The old
  * layout mounted a theme provider, imported a registry for a component library that no
@@ -106,18 +61,12 @@ const FOOTER_LEGAL = '\u00a9 NaniSoft';
  *
  * **This site loads no font file at all.** It used to: `next/font/google` was
  * downloading Inter at build time and `app/globals.css` was repointing `--font-sans`
- * at the result, on the stated ground that prism shipped no typeface. Prism 0.10.2
- * ships one — `dist/fonts/inter-latin-{400,500,600}.woff2` under the OFL, with three
- * `@font-face` rules in its emitted sheet — so that arrangement declared the same
- * family twice, made the build depend on a download from Google, and put a second
- * copy of every glyph on the wire. The design system owns the typeface now, and owns
- * it from its own stylesheet, which is the whole arrangement the migration was for.
- *
- * The switcher moves between the five members of the company's product set, so all
- * five published packs are on every page rather than on one page of one site. Four of
- * the five are not this site's ground. The header's navigation and the switcher are
- * two `nav` landmarks for the reason the design system gives: a reader who navigates
- * by landmark needs two regions rather than one region with two lists in it.
+ * at the result, on the stated ground that prism shipped no typeface. Prism ships one —
+ * `dist/fonts/inter-latin-{400,500,600}.woff2` under the OFL, with three `@font-face`
+ * rules in its emitted sheet — so that arrangement declared the same family twice,
+ * made the build depend on a download from Google, and put a second copy of every
+ * glyph on the wire. The design system owns the typeface now, and owns it from its
+ * own stylesheet, which is the whole arrangement the migration was for.
  */
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
@@ -128,28 +77,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             nothing a reader chose is ever cleared by this site. */}
         <PrismThemeScript defaultPack={GROUND_PACK} defaultMode={DEFAULT_MODE} />
       </head>
-      <body>
-        <SiteHeader
-          product={SITE_PRODUCT}
-          products={PRODUCTS}
-          nav={NAV}
-          navLabel="Atlas"
-          productsLabel="Products"
-          /* The playground is this site's single honest ask, and the Block has a slot
-             for exactly one control at the right-hand end of the bar. The slot was
-             empty, so the bar was a row of five product names and three page names
-             left-packed against a quarter of the viewport with nothing in it. This is
-             the one destination that was named five times in the landing's copy and
-             reachable from nowhere above the fold. */
-          actions={
-            <CtaLink href={PLAYGROUND_URL} size="sm" newTab>
-              Open the playground
-            </CtaLink>
-          }
-        />
-        <main className="site-main">{children}</main>
-        <SiteFooter product={SITE_PRODUCT} columns={FOOTER_COLUMNS} legal={FOOTER_LEGAL} />
-      </body>
+      <body>{children}</body>
     </html>
   );
 }

@@ -17,6 +17,7 @@ import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
+import { SiteChrome } from '@/components/site-chrome';
 import { TraversalFigure } from '@/components/traversal-figure';
 import {
   BUILT_ON_NEXUS,
@@ -108,15 +109,20 @@ function dataPathSteps(): ProcessRail01Steps {
  * heading's eyebrow, which is the one slot a Block offers for a machine annotation
  * above a title, so the string rendered is the same string either way.
  *
- * **Two regions carry a second pack, and both are in `scripts/pack-map.json`.** The
- * product section and the header's switcher. Every one of those boundaries lands on a
- * `ProductMark`, which is a fully rounded disc, and nowhere else, because a boundary
- * re-points `--radius` as well as the colour and anything that is not fully rounded
- * changes shape with its pack.
+ * **One region carries a second pack, and it is in `scripts/pack-map.json`.** The
+ * product section. Every one of those boundaries lands on a `ProductMark`, which is a
+ * fully rounded disc, and nowhere else, because a boundary re-points `--radius` as well
+ * as the colour and anything that is not fully rounded changes shape with its pack.
+ *
+ * The bar's family of five was the other region, and it is a menu rather than a row of
+ * marks now, so it is not in the export the gate reads and the map is one region
+ * shorter. The reason it was ever a region is the reason the menu is an improvement:
+ * four other packs above the fold of every page, drawn in brand ink, in the position a
+ * reader looks for this site's own name.
  */
 export default function Landing(): ReactElement {
   return (
-    <>
+    <SiteChrome>
       {/* The thesis, the page's own h1, and the pipeline running beside it.
 
           The band is the design system's rather than this page's: the column split,
@@ -288,6 +294,6 @@ export default function Landing(): ReactElement {
         secondaryAction={FINAL_CTA.secondary}
         note={FINAL_CTA.footnote}
       />
-    </>
+    </SiteChrome>
   );
 }

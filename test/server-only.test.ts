@@ -58,6 +58,7 @@ describe('the site has no client code', () => {
     // that matters: a file that is not in the list is a file no law here reaches.
     expect(files.map((file) => path.relative(ROOT, file).split(path.sep).join('/')).sort()).toEqual([
       'app/about/page.tsx',
+      'app/api/search/route.ts',
       'app/blog/[[...slug]]/page.tsx',
       'app/docs/[[...slug]]/page.tsx',
       'app/layout.tsx',
@@ -68,7 +69,9 @@ describe('the site has no client code', () => {
       'components/doc-article.tsx',
       'components/estate-graph-figure.tsx',
       'components/section-index.tsx',
+      'components/site-chrome.tsx',
       'components/traversal-figure.tsx',
+      'lib/bar.ts',
       'lib/content/landing.ts',
       'lib/links.ts',
       'lib/mdx-components.tsx',
@@ -81,6 +84,13 @@ describe('the site has no client code', () => {
   });
 
   it('carries no use client directive', () => {
+    // The bar is a server component with one client island inside the package: the
+    // sites menu, the search dialog, the mode control and the panel below the row's
+    // threshold are four pieces of reader state, and they are client components in
+    // `@nanisoft/prism-ui` rather than a boundary drawn here. The chrome moved out of
+    // the root layout so the bar could mark the page a reader is on, and that cost this
+    // repository nothing: a server render is handed the route it is rendering, so
+    // `aria-current` is a prop rather than something the browser has to be asked for.
     const offenders = files.filter((file) => /^\s*['"]use client['"]/m.test(readFileSync(file, 'utf8')));
     expect(offenders, `a client boundary in ${offenders.join(', ')}`).toEqual([]);
   });

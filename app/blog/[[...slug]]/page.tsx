@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { BlogPostPage } from '@nanisoft/prism-ui/pages/blog-post-page';
 
 import { getMdxComponents } from '@/lib/mdx-components';
+import { SiteChrome } from '@/components/site-chrome';
 import { blogSource } from '@/lib/source';
 
 // Optional catch-all: `/blog` renders the reverse-chronological index,
@@ -79,37 +80,39 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
   if (!slug) {
     const posts = published();
     return (
-      <div className="site-index site-index--blog">
-        <header className="site-index__head">
-          <p className="site-index__eyebrow">atlas · blog</p>
-          <h1 className="site-index__title">Notes from the build</h1>
-          <p className="site-index__lede">
-            Why a produced twin beats assembled dashboards, how a graph earns trust, and what it costs to
-            compose instead of fork.
-          </p>
-        </header>
-        {posts.length === 0 ? (
-          <p className="site-empty">
-            Nothing published yet. Posts land as <code>content/blog/&lt;slug&gt;/index.mdx</code> —
-            folder-per-post, required date, display-only tags.
-          </p>
-        ) : (
-          <ul className="site-blog-list">
-            {posts.map((post) => (
-              <li key={post.url}>
-                <Link href={post.url} className="site-blog-list__title">
-                  {post.data.title}
-                </Link>
-                <p className="site-blog-list__description">{post.data.description}</p>
-                <p className="site-mono site-blog-list__meta">
-                  <time dateTime={post.data.date}>{post.data.date}</time>
-                  {post.data.tags.length > 0 && <span> · {post.data.tags.join(' · ')}</span>}
-                </p>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
+      <SiteChrome current="/blog">
+        <div className="site-index site-index--blog">
+          <header className="site-index__head">
+            <p className="site-index__eyebrow">atlas · blog</p>
+            <h1 className="site-index__title">Notes from the build</h1>
+            <p className="site-index__lede">
+              Why a produced twin beats assembled dashboards, how a graph earns trust, and what it costs to
+              compose instead of fork.
+            </p>
+          </header>
+          {posts.length === 0 ? (
+            <p className="site-empty">
+              Nothing published yet. Posts land as <code>content/blog/&lt;slug&gt;/index.mdx</code> —
+              folder-per-post, required date, display-only tags.
+            </p>
+          ) : (
+            <ul className="site-blog-list">
+              {posts.map((post) => (
+                <li key={post.url}>
+                  <Link href={post.url} className="site-blog-list__title">
+                    {post.data.title}
+                  </Link>
+                  <p className="site-blog-list__description">{post.data.description}</p>
+                  <p className="site-mono site-blog-list__meta">
+                    <time dateTime={post.data.date}>{post.data.date}</time>
+                    {post.data.tags.length > 0 && <span> · {post.data.tags.join(' · ')}</span>}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </SiteChrome>
     );
   }
 
@@ -127,18 +130,20 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
   const MDX = page.data.body;
 
   return (
-    <BlogPostPage
-      title={page.data.title}
-      description={page.data.description}
-      date={page.data.date}
-      dateTime={page.data.date}
-      tags={page.data.tags.map((tag) => ({ label: tag }))}
-      previous={previous && { title: previous.data.title, href: previous.url }}
-      next={next && { title: next.data.title, href: next.url }}
-      trailLabels={TRAIL_LABELS}
-      trailLabel="More posts"
-    >
-      <MDX components={getMdxComponents({ itemKey: page.url.replace(/^\//, '') })} />
-    </BlogPostPage>
+    <SiteChrome current="/blog">
+      <BlogPostPage
+        title={page.data.title}
+        description={page.data.description}
+        date={page.data.date}
+        dateTime={page.data.date}
+        tags={page.data.tags.map((tag) => ({ label: tag }))}
+        previous={previous && { title: previous.data.title, href: previous.url }}
+        next={next && { title: next.data.title, href: next.url }}
+        trailLabels={TRAIL_LABELS}
+        trailLabel="More posts"
+      >
+        <MDX components={getMdxComponents({ itemKey: page.url.replace(/^\//, '') })} />
+      </BlogPostPage>
+    </SiteChrome>
   );
 }
