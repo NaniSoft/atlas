@@ -7,6 +7,7 @@ import { BlogPostPage } from '@nanisoft/prism-ui/pages/blog-post-page';
 import { getMdxComponents } from '@/lib/mdx-components';
 import { SiteChrome } from '@/components/site-chrome';
 import { blogSource } from '@/lib/source';
+import { displayDate, isoDate } from '@/lib/post-date';
 
 // Optional catch-all: `/blog` renders the reverse-chronological index,
 // `/blog/<slug>` the post. The optional root keeps the static export
@@ -104,7 +105,7 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
                   </Link>
                   <p className="site-blog-list__description">{post.data.description}</p>
                   <p className="site-mono site-blog-list__meta">
-                    <time dateTime={post.data.date}>{post.data.date}</time>
+                    <time dateTime={isoDate(post.data.date)}>{displayDate(post.data.date)}</time>
                     {post.data.tags.length > 0 && <span> · {post.data.tags.join(' · ')}</span>}
                   </p>
                 </li>
@@ -134,8 +135,8 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
       <BlogPostPage
         title={page.data.title}
         description={page.data.description}
-        date={page.data.date}
-        dateTime={page.data.date}
+        date={displayDate(page.data.date)}
+        dateTime={isoDate(page.data.date)}
         tags={page.data.tags.map((tag) => ({ label: tag }))}
         previous={previous && { title: previous.data.title, href: previous.url }}
         next={next && { title: next.data.title, href: next.url }}

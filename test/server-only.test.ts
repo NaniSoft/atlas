@@ -75,6 +75,7 @@ describe('the site has no client code', () => {
       'lib/content/landing.ts',
       'lib/links.ts',
       'lib/mdx-components.tsx',
+      'lib/post-date.ts',
       'lib/site.ts',
       'lib/source.ts',
       'lib/to-prism-tree.ts',
