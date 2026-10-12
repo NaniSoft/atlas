@@ -70,6 +70,7 @@ describe('the site has no client code', () => {
       'components/doc-article.tsx',
       'components/estate-graph-figure.tsx',
       'components/json-ld.tsx',
+      'components/logo.tsx',
       'components/section-index.tsx',
       'components/site-chrome.tsx',
       'components/traversal-figure.tsx',

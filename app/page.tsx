@@ -17,6 +17,7 @@ import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
+import { AtlasLogo } from '@/components/logo';
 import { JsonLd } from '@/components/json-ld';
 import { SiteChrome } from '@/components/site-chrome';
 import { TraversalFigure } from '@/components/traversal-figure';
@@ -208,8 +209,18 @@ export default function Landing(): ReactElement {
              claim about a drawing of a mechanism. The rail marker still travels, so
              the figure still moves; what is gone is a dot that said the estate was
              being read while a static array was being drawn. */
-          <InstrumentPanel01 label={DAG_PULSE.panel.label} footnote={DAG_PULSE.panel.footnote} caption={DAG_ARIA}>
-            <PulseGraph nodes={DAG_PULSE.nodes} relations={DAG_PULSE.relations} label={DAG_ARIA} />
+          <InstrumentPanel01
+            label={DAG_PULSE.panel.label}
+            footnote={DAG_PULSE.panel.footnote}
+            caption={DAG_ARIA}
+            actions={<AtlasLogo size={22} className="site-panel-logo" />}
+          >
+            <PulseGraph
+              nodes={DAG_PULSE.nodes}
+              relations={DAG_PULSE.relations}
+              label={DAG_ARIA}
+              className="w-full min-w-0"
+            />
           </InstrumentPanel01>
         }
       />
