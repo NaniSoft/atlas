@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { BlogPostPage } from '@nanisoft/prism-ui/pages/blog-post-page';
 
 import { getMdxComponents } from '@/lib/mdx-components';
+import { JsonLd } from '@/components/json-ld';
 import { SiteChrome } from '@/components/site-chrome';
 import { blogSource } from '@/lib/source';
 import { displayDate, isoDate } from '@/lib/post-date';
@@ -53,12 +54,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!slug) {
     return {
       title: 'Blog',
-      description: 'Notes from the Atlas build — the twin, the lakehouse behind it, and what composing open source buys.',
+      alternates: { canonical: '/blog' },
+      description: 'Notes from the Atlas build: the twin, the lakehouse behind it, and what composing open source buys.',
     };
   }
   const page = blogSource.getPage(slug);
   if (!page) return {};
-  return { title: page.data.title, description: page.data.description };
+  return {
+    title: page.data.title,
+    description: page.data.description,
+    alternates: { canonical: page.url },
+  };
 }
 
 /**
@@ -84,7 +90,6 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
       <SiteChrome current="/blog">
         <div className="site-index site-index--blog">
           <header className="site-index__head">
-            <p className="site-index__eyebrow">atlas · blog</p>
             <h1 className="site-index__title">Notes from the build</h1>
             <p className="site-index__lede">
               Why a produced twin beats assembled dashboards, how a graph earns trust, and what it costs to
@@ -92,10 +97,7 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
             </p>
           </header>
           {posts.length === 0 ? (
-            <p className="site-empty">
-              Nothing published yet. Posts land as <code>content/blog/&lt;slug&gt;/index.mdx</code> —
-              folder-per-post, required date, display-only tags.
-            </p>
+            <p className="site-empty">Nothing published yet. The first post is being written.</p>
           ) : (
             <ul className="site-blog-list">
               {posts.map((post) => (
@@ -106,7 +108,15 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
                   <p className="site-blog-list__description">{post.data.description}</p>
                   <p className="site-mono site-blog-list__meta">
                     <time dateTime={isoDate(post.data.date)}>{displayDate(post.data.date)}</time>
-                    {post.data.tags.length > 0 && <span> · {post.data.tags.join(' · ')}</span>}
+                    {post.data.tags.length > 0 && (
+                      <span className="site-blog-list__tags">
+                        {post.data.tags.map((tag) => (
+                          <span className="site-blog-list__tag" key={tag}>
+                            {tag}
+                          </span>
+                        ))}
+                      </span>
+                    )}
                   </p>
                 </li>
               ))}
@@ -130,8 +140,22 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
 
   const MDX = page.data.body;
 
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: page.data.title,
+    description: page.data.description,
+    datePublished: isoDate(page.data.date),
+    inLanguage: 'en',
+    url: `https://atlas.nanisoft.com${page.url}`,
+    mainEntityOfPage: `https://atlas.nanisoft.com${page.url}`,
+    author: { '@type': 'Organization', name: 'NaniSoft', url: 'https://nanisoft.com' },
+    publisher: { '@type': 'Organization', name: 'NaniSoft', url: 'https://nanisoft.com' },
+  };
+
   return (
     <SiteChrome current="/blog">
+      <JsonLd data={jsonLd} />
       <BlogPostPage
         title={page.data.title}
         description={page.data.description}

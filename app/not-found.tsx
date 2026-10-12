@@ -27,7 +27,7 @@ export default function NotFound(): ReactNode {
       <NotFoundPage
         code="404"
         title="No node here."
-        description="This page does not exist (yet). The estate is fully mapped — this URL just is not in the graph."
+        description="This page does not exist (yet). The estate is fully mapped. This URL just is not in the graph."
         links={[
           { label: 'Back to the landing', href: '/' },
           { label: 'Read the docs', href: '/docs' },

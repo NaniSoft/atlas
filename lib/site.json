@@ -21,10 +21,34 @@
   "ground": "mint",
   "defaultMode": "dark",
   "products": [
-    { "id": "www", "name": "NaniSoft", "pack": "sky", "href": "https://www.nanisoft.com" },
-    { "id": "nexus", "name": "Nexus", "pack": "lavender", "href": "https://nexus.nanisoft.com" },
-    { "id": "atlas", "name": "Atlas", "pack": "mint", "href": "https://atlas.nanisoft.com" },
-    { "id": "alphalens", "name": "AlphaLens", "pack": "blush", "href": "https://alphalens.nanisoft.com" },
-    { "id": "prism", "name": "Prism", "pack": "peach", "href": "https://prism.nanisoft.com" }
+    {
+      "id": "www",
+      "name": "NaniSoft",
+      "pack": "sky",
+      "href": "https://www.nanisoft.com"
+    },
+    {
+      "id": "nexus",
+      "name": "Nexus",
+      "pack": "cyan",
+      "href": "https://nexus.nanisoft.com"
+    },
+    {
+      "id": "atlas",
+      "name": "Atlas",
+      "pack": "mint",
+      "href": "https://atlas.nanisoft.com"
+    },
+    {
+      "id": "alphalens",
+      "name": "AlphaLens",
+      "pack": "gold",
+      "href": "https://alphalens.nanisoft.com"
+    },
+    {
+      "id": "prism",
+      "name": "Prism",
+      "href": "https://prism.nanisoft.com"
+    }
   ]
 }

@@ -20,7 +20,7 @@ export const WHAT_IT_IS = [
   },
   {
     title: 'Produced, not assembled',
-    body: 'The twin comes off a real data platform — ingestion, transformation, quality gates, versioned layers — so it stays trustworthy as the estate changes.',
+    body: 'The twin comes off a real data platform (ingestion, transformation, quality gates, versioned layers), so it stays trustworthy as the estate changes.',
   },
   {
     title: 'Built for questions',
@@ -29,7 +29,7 @@ export const WHAT_IT_IS = [
 ] as const;
 
 export const WHAT_IT_IS_LEDE =
-  'Atlas builds a living representation of a real system — and its first proven domain is the IT estate.';
+  'Atlas builds a living representation of a real system, and its first proven domain is the IT estate.';
 
 export const DATA_PATH = [
   {
@@ -40,7 +40,7 @@ export const DATA_PATH = [
   {
     step: '02',
     title: 'Conform',
-    body: 'Records are cleaned, joined, and resolved until identities are stable. One person, one node — that’s Silver.',
+    body: 'Records are cleaned, joined, and resolved until identities are stable. One person, one node. That’s Silver.',
   },
   {
     step: '03',
@@ -55,13 +55,13 @@ export const DATA_PATH = [
 ] as const;
 
 export const DATA_PATH_LEDE =
-  'Built like a lakehouse — because it is one. Every fact lands raw, gets conformed, and is promoted layer by layer until it becomes part of the twin.';
+  'Built like a lakehouse, because it is one. Every fact lands raw, gets conformed, and is promoted layer by layer until it becomes part of the twin.';
 
 export const PATH_FEATURES = [
-  { title: 'Orchestrated end to end', body: 'Trailhead sequences every move — ingestion, promotion, maintenance — as reviewable DAGs.' },
+  { title: 'Orchestrated end to end', body: 'Trailhead sequences every move (ingestion, promotion, maintenance) as reviewable DAGs.' },
   { title: 'Versioned at every layer', body: 'The lakehouse catalog keeps history, so last quarter’s twin can be reproduced exactly.' },
   { title: 'Promoted only when clean', body: 'Quality gates decide what advances. Bad input stops at the boundary and never reaches the twin.' },
-  { title: 'Watched continuously', body: 'Watchtower observes every component — pipelines, queries, engine — from one place.' },
+  { title: 'Watched continuously', body: 'Watchtower observes every component (pipelines, queries, engine) from one place.' },
   { title: 'Governed by default', body: 'Policy checks sit in front of the graph, and every answer is logged.' },
   { title: 'Declared as code', body: 'Anchor declares the infrastructure; Conveyor delivers it. No snowflake deployments.' },
 ] as const;
@@ -79,7 +79,7 @@ export const USE_CASES: ReadonlyArray<{
     bullets: [
       'Trace every path between a person and a sensitive product: group memberships, direct grants, inherited rights.',
       'The audit surfaces views of sensitive products with no membership backing them. Each one is a finding.',
-      'Read the same finding three ways — as graph edges, as a table row, as a dashboard chart.',
+      'Read the same finding three ways: as graph edges, as a table row, as a dashboard chart.',
     ],
   },
   {
@@ -88,7 +88,7 @@ export const USE_CASES: ReadonlyArray<{
     bullets: [
       'Ask what an account, a key, or a host can actually reach from where it sits.',
       'Rehearse containment before you need it, against the graph you already have.',
-      'Next on the roadmap — designed on the twin, no new connectors.',
+      'Next on the roadmap, designed on the twin, no new connectors.',
     ],
   },
   {
@@ -119,7 +119,7 @@ export const STATUS_LABEL: Record<UseCaseStatus, string> = {
 export const USE_CASES_LEDE = 'One twin, many questions. Today, the flagship is access.';
 
 export const USE_CASES_MORE = {
-  line: 'More use-cases are coming — small utilities, composed largely from open-source parts.',
+  line: 'More use-cases are coming: small utilities, composed largely from open-source parts.',
   cta: { label: 'Open the playground', href: 'https://playground.nanisoft.com' },
 } as const;
 
@@ -150,28 +150,29 @@ export const IN_HOUSE = [
 ] as const;
 
 export const HOW_BUILT_LEDE =
-  'Sixteen proven open-source products carry the platform — eight under their real names, eight wrapped under codenames with the real product shown beneath. We build four things ourselves.';
+  'Sixteen proven open-source products carry the platform: eight under their real names, eight wrapped under codenames with the real product shown beneath. We build four things ourselves.';
 
 export const INTEGRATIONS_NOTE =
-  'Every off-the-shelf product runs unmodified — integrated through its APIs, configured, never forked. Codenamed entries are the real product shown beneath the codename, not a fork.';
+  'Every off-the-shelf product runs unmodified: integrated through its APIs, configured, never forked. Codenamed entries are the real product shown beneath the codename, not a fork.';
 
 // The platform story (ticket 07: a section the old site never had). Honesty
 // law from ticket 06 applies here too: Nexus is the engine that makes building
-// products repeatable — in active development; never claim it built this site.
+// products repeatable, in active development; never claim it built this site.
 //
 // The three packs are the published ones for those three products, read from the
 // family map rather than from the retired line's names: `rose` and `blue` are not
 // packs any rule emits, so a mark carrying one painted the page's own ground and
-// the three products looked identical. `lavender`, `blush` and `peach` are the
-// identifiers the design system publishes, and each mark is now the only element on
-// the page carrying a boundary besides the header's switcher.
+// the three products looked identical. `cyan` and `gold` are the identifiers the
+// design system publishes for Nexus and AlphaLens. Prism carries no pack at all,
+// which is the one case `ProductMark` draws as the full spectrum, so its row's
+// mark owns no hue and needs no boundary.
 export const BUILT_ON_NEXUS = {
-  lede: 'Atlas is one of three Nanisoft products on one platform — and the platform has a factory behind it.',
-  body: 'Nexus is Nanisoft’s agent factory: it turns an issue into a reviewed, merged change, so building each product becomes repeatable. It is in active development and building in the open — the same honesty this page applies to the twin.',
+  lede: 'Atlas is one of three Nanisoft products on one platform, and the platform has a factory behind it.',
+  body: 'Nexus is Nanisoft’s agent factory: it turns an issue into a reviewed, merged change, so building each product becomes repeatable. It is in active development and building in the open, the same honesty this page applies to the twin.',
   products: [
-    { id: 'nexus', name: 'Nexus', tagline: 'The Agent Factory', pack: 'lavender', url: 'https://nexus.nanisoft.com' },
-    { id: 'alphalens', name: 'AlphaLens', tagline: 'Market research, quantified', pack: 'blush', url: 'https://alphalens.nanisoft.com' },
-    { id: 'prism', name: 'Prism', tagline: 'The design system this site wears', pack: 'peach', url: 'https://prism.nanisoft.com' },
+    { id: 'nexus', name: 'Nexus', tagline: 'The Agent Factory', pack: 'cyan', url: 'https://nexus.nanisoft.com' },
+    { id: 'alphalens', name: 'AlphaLens', tagline: 'Market research, quantified', pack: 'gold', url: 'https://alphalens.nanisoft.com' },
+    { id: 'prism', name: 'Prism', tagline: 'The design system this site wears', url: 'https://prism.nanisoft.com' },
   ],
 } as const;
 
@@ -180,7 +181,7 @@ export const FINAL_CTA = {
   primary: { label: 'Open the playground', href: 'https://playground.nanisoft.com' },
   secondary: { label: 'Read the docs', href: '/docs' },
   footnote:
-    'In-browser, guided, and fully mocked — nothing to install. Watch a query traverse the twin end to end.',
+    'In-browser, guided, and fully mocked: nothing to install. Watch a query traverse the twin end to end.',
 } as const;
 
 /* ------------------------------------------------------------------ *
@@ -254,7 +255,7 @@ export const DAG_STAGES: ReadonlyArray<ReadonlyArray<string>> = [
 ];
 
 /** The observer, and the column it floats over. The canvas drew it; the list did not. */
-export const DAG_OBSERVER = { name: 'Watchtower', column: 3, row: 0.08 };
+export const DAG_OBSERVER = { name: 'Watchtower', column: 3, row: 0.28 };
 
 /**
  * Where each column sits across the drawing, and how far down each of its names.
@@ -263,11 +264,28 @@ export const DAG_OBSERVER = { name: 'Watchtower', column: 3, row: 0.08 };
  * both numbers are handed to the design system's diagram as a caller's coordinate
  * space rather than as pixels, so the Component fits them to its own canvas and the
  * drawing is a function of the shape rather than of the scale.
+ *
+ * **The spread is sized for the names, and the first layout was not.** The drawing's
+ * uniform scale is the smaller of width over x-span and height over y-span, and the
+ * first layout's y-span ran from the observer at 0.08 to the last row at 0.82, so the
+ * height governed and the seven columns landed about 57 pixels apart at the panel's
+ * rendered size. Nine characters of mono at the drawing's own size is sixty-five
+ * pixels, and `SQL Fleet` and `Trailhead` share a row across two adjacent columns, so
+ * the two names printed through each other and `Bedrock`, `Forge` and `Overlook`, a
+ * column apart on the centre line, did the same.
+ *
+ * **The fix is to let the width govern.** The rows now run 0.40 to 0.68 with the
+ * observer at 0.28, which shortens the y-span to 0.40: the height no longer decides
+ * the scale, the full seven columns get the drawing's whole width, and adjacent
+ * columns sit 88 pixels apart against the widest same-row pair at 65. The three
+ * source names keep 87 pixels of vertical pitch in their own column, and Watchtower
+ * floats 169 pixels above the centre row it watches. Measured on the rendered page,
+ * not in this comment alone.
  */
-export const DAG_COLUMNS = [0.09, 0.245, 0.395, 0.53, 0.665, 0.81, 0.94] as const;
+export const DAG_COLUMNS = [0.1, 0.26, 0.4, 0.53, 0.66, 0.8, 0.91] as const;
 
 /** The band the names are spread through, as the canvas spread them. */
-export const DAG_ROWS = { first: 0.26, last: 0.82, single: 0.52 } as const;
+export const DAG_ROWS = { first: 0.4, last: 0.68, single: 0.54 } as const;
 
 /**
  * The verbs the drawing labels its relations with, keyed by the stage the relation

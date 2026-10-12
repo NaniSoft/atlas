@@ -1,4 +1,4 @@
-// Content sources — the prism recipe's per-section loaders, reduced to the two
+// Content sources: the prism recipe's per-section loaders, reduced to the two
 // collections a product site needs (docs + blog).
 //
 // The fumadocs-mdx Macro API is compile-time: `defineDocs`/`defineCollections`

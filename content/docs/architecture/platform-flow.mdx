@@ -1,6 +1,6 @@
 ---
 title: Platform flow
-description: The spine — sources, schema, ingestion, lakehouse, transform, serving, core, UI — and the four phases it reads as.
+description: The spine (sources, schema, ingestion, lakehouse, transform, serving, core, UI) and the four phases it reads as.
 ---
 
 The platform is a directed spine. Every component sits at exactly one stage of it, and the [architecture docs](/docs/architecture/orchestration) follow that order rather than the order the parts were built in.
@@ -23,16 +23,16 @@ sources → schema → ingestion → lakehouse → transform → serving → cor
 | **Core** | Atlas, OPA | Traverse, authorize, log. |
 | **UI** | Compass | Render the traversal as a graph. |
 
-**Watchtower** — Prometheus, Grafana, Loki — observes the whole spine from above it rather than sitting inside one stage. See [Observability](/docs/architecture/observability).
+**Watchtower** (Prometheus, Grafana, Loki) observes the whole spine from above it rather than sitting inside one stage. See [Observability](/docs/architecture/observability).
 
 ## The four phases
 
 The same spine reads as four phases, which is how the playground walks it and how the [guides](/docs/guides/access-traversal) narrate it:
 
-1. **Schema** — author the object type (e.g. add `Sensitive: bool` to Product), bridge it to Bedrock DDL, refresh Atlas's schema cache.
-2. **Ingestion** — orchestrate extraction from source systems and land raw rows in Bronze, independent of Atlas.
-3. **Transform** — conform, snapshot (SCD2), and confidence-score the raw rows into Silver tables and the Gold graph.
-4. **Investigation** — query, govern, and visualize the Gold graph: surface the finding as a Trino row, Compass edges, or a Superset dashboard.
+1. **Schema**: author the object type (e.g. add `Sensitive: bool` to Product), bridge it to Bedrock DDL, refresh Atlas's schema cache.
+2. **Ingestion**: orchestrate extraction from source systems and land raw rows in Bronze, independent of Atlas.
+3. **Transform**: conform, snapshot (SCD2), and confidence-score the raw rows into Silver tables and the Gold graph.
+4. **Investigation**: query, govern, and visualize the Gold graph. Surface the finding as a Trino row, Compass edges, or a Superset dashboard.
 
 ## Edges, not just nodes
 

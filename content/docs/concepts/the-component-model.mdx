@@ -3,17 +3,17 @@ title: The component model
 description: Codenames over real products, four things built in-house, and why nothing is forked.
 ---
 
-Atlas is **composed, not written**. Sixteen proven open-source products carry the platform; four components are built in-house. The whole thing is named in a published component model — the same model that drives the [playground](https://playground.nanisoft.com) and the [integration ledger](/docs/reference/integration-ledger).
+Atlas is **composed, not written**. Sixteen proven open-source products carry the platform; four components are built in-house. The whole thing is named in a published component model, the same model that drives the [playground](https://playground.nanisoft.com) and the [integration ledger](/docs/reference/integration-ledger).
 
 ## Codenames, with the real product beneath
 
 Most of the platform runs under a codename: **Trailhead** is Airflow, **Forge** is Spark + dbt, **Bedrock** is Nessie over Iceberg, **Overlook** is Trino, **Blueprint** is DataGerry.
 
-The codename is a seam, not a disguise. Every codenamed entry carries the real product with it — in the ledger, in the architecture docs, and in the playground's own component inspector. The point is portability: the platform's contracts are the codenames, so the product underneath can be swapped without rewriting the estate's model of itself.
+The codename is a seam, not a disguise. Every codenamed entry carries the real product with it: in the ledger, in the architecture docs, and in the playground's own component inspector. The point is portability: the platform's contracts are the codenames, so the product underneath can be swapped without rewriting the estate's model of itself.
 
 Two things the codenames are **not**:
 
-- **Not a fork.** Every off-the-shelf product runs unmodified — integrated through its APIs, configured, never patched.
+- **Not a fork.** Every off-the-shelf product runs unmodified: integrated through its APIs, configured, never patched.
 - **Not a rebrand of our own work.** The four things Nanisoft actually builds are named plainly, with no codename at all.
 
 ## The four built in-house
@@ -25,7 +25,7 @@ Two things the codenames are **not**:
 | **DataGerry Bridge** | Glue that syncs authored schema into the lakehouse and refreshes the engine's schema cache. |
 | **Scout** | Connectors for the few internal source systems no off-the-shelf catalog covers. |
 
-Everything else — orchestration, transform, storage and catalog, query, dashboards, infrastructure, GitOps, secrets, observability, and the connector platform — is composed. See [In-house components](/docs/architecture/in-house-components) and the [integration ledger](/docs/reference/integration-ledger).
+Everything else (orchestration, transform, storage and catalog, query, dashboards, infrastructure, GitOps, secrets, observability, and the connector platform) is composed. See [In-house components](/docs/architecture/in-house-components) and the [integration ledger](/docs/reference/integration-ledger).
 
 ## Why compose
 

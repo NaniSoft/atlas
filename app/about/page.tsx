@@ -10,11 +10,12 @@ import { SiteChrome } from '@/components/site-chrome';
 
 export const metadata: Metadata = {
   title: 'About',
+  alternates: { canonical: '/about' },
   description:
-    'Atlas, the Digital Twin Platform — why it models the real world digitally, and why the IT estate came first.',
+    'Atlas, the Digital Twin Platform: why it models the real world digitally, and why the IT estate came first.',
 };
 
-// The product's story (ticket 07: estates → twin → traversal) — not the team's.
+// The product's story (ticket 07: estates → twin → traversal), not the team's.
 // The old site's company-level about copy stays on www; the substance of what
 // it said about the twin migrates here, re-framed from the product's side.
 // Every honesty device carries over: statuses stated, the playground always
@@ -23,13 +24,13 @@ export const metadata: Metadata = {
 const STORY: ReadonlyArray<string> = [
   'Estates were hard to reason about before they were mapped. Almost every team could answer a question about one system, and almost none could answer a question that crossed three.',
   'Atlas exists because assembling exports was never going to close that gap. So the twin is produced instead: a graph off a real data platform, with quality gates and versioned layers, that stays trustworthy as the estate changes.',
-  'The first use case is access traversal, and it is available today. Blast radius and stale-access cleanup follow, off the same graph — designed, not yet built, and labelled that way everywhere they appear.',
+  'The first use case is access traversal, and it is available today. Blast radius and stale-access cleanup follow, off the same graph: designed, not yet built, and labelled that way everywhere they appear.',
 ];
 
 const CAPABILITIES: ReadonlyArray<{ title: string; body: string }> = [
   {
     title: 'Produce the twin',
-    body: 'Ingest, conform, and resolve source data into a versioned graph — Bronze to Gold — with quality gates at every boundary.',
+    body: 'Ingest, conform, and resolve source data into a versioned graph, Bronze to Gold, with quality gates at every boundary.',
   },
   {
     title: 'Serve traversals',
@@ -74,7 +75,7 @@ export default function AboutPage(): ReactElement {
           align="left"
           eyebrow="atlas · about"
           title="A living map of the systems you already run."
-          description="Atlas models the real world digitally — living representations of systems, assets, and operations. In practice, today, that means one thing done thoroughly: the IT estate, turned into a queryable graph."
+          description="Atlas models the real world digitally: living representations of systems, assets, and operations. In practice, today, that means one thing done thoroughly: the IT estate, turned into a queryable graph."
         />
       </Section>
 
@@ -97,7 +98,7 @@ export default function AboutPage(): ReactElement {
             <a href="https://playground.nanisoft.com" target="_blank" rel="noopener noreferrer">
               playground
             </a>{' '}
-            is a fully mocked, in-browser tour of the twin — nothing to install and no real data in it.
+            is a fully mocked, in-browser tour of the twin, nothing to install and no real data in it.
             The platform&rsquo;s component model is a published package, so every codename can be
             unwrapped to the off-the-shelf product behind it.
           </p>

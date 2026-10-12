@@ -27,13 +27,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!slug) {
     return {
       title: 'Docs',
+      alternates: { canonical: '/docs' },
       description:
-        'The Atlas docs — the twin, the lakehouse path behind it, traversal and policy, and the platform it is produced on.',
+        'The Atlas docs: the twin, the lakehouse path behind it, traversal and policy, and the platform it is produced on.',
     };
   }
   const page = docsSource.getPage(slug);
   if (!page) return {};
-  return { title: page.data.title, description: page.data.description };
+  return {
+    title: page.data.title,
+    description: page.data.description,
+    alternates: { canonical: page.url },
+  };
 }
 
 /** The docs IA (ticket 07 §3), read off the content tree's own folders. */

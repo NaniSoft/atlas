@@ -1,6 +1,6 @@
 // Headless MDX component mapping (fumadocs-core headless: we own the HTML).
 // Prose elements are plain HTML styled by `.site-prose`; Atlas maps no custom
-// components today, so the map is empty — the seam stays because the docs page
+// components today, so the map is empty; the seam stays because the docs page
 // passes it and a future mapping (figures, callouts) should not need a rewrite.
 
 import type { ComponentType } from 'react';

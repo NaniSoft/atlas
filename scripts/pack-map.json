@@ -31,19 +31,28 @@
     "the same terms as before as soon as the menu is opened."
   ],
   "ground": "mint",
-  "secondPackRegions": ["landing.products"],
+  "secondPackRegions": [
+    "landing.products"
+  ],
   "regions": {
     "header.brand": {
       "why": "The bar's brand lockup is this site, and this site's pack is the page's pack, so its boundary is the ground rather than a second pack.",
-      "packs": ["mint"]
+      "packs": [
+        "mint"
+      ]
     },
     "footer.brand": {
       "why": "The same lockup, in the footer. A ground is stable for the life of a page, and a footer that wore a different hue from the page it closes would be a second claim about the same thing.",
-      "packs": ["mint"]
+      "packs": [
+        "mint"
+      ]
     },
     "landing.products": {
       "why": "A product row's mark is that product's own hue, and it is the one claim on this page a reader makes a decision from: which product is this, and does its colour mean anything. The mark is a fully rounded disc, so the boundary moves nothing about its shape. The region is named by the Block that draws the rows rather than by the ordinal the band publishes, because a page that renumbers its own sections would then have renamed a region a gate was holding it to. The retired line drew these three as coloured dots resolved in JavaScript from prism-tokens' own retired pack names (rose and blue), so all three looked alike and none of them was a boundary at all.",
-      "packs": ["lavender", "blush", "peach"]
+      "packs": [
+        "cyan",
+        "gold"
+      ]
     }
   }
 }

@@ -99,6 +99,8 @@ export const SITE_PRODUCT = {
 export const PRODUCTS: readonly SwitcherProduct[] = site.products.map((product) => ({
   id: product.id,
   name: product.name,
-  pack: pack(product.pack),
+  // Prism carries no pack, which is the one case `ProductMark` draws as the full
+  // spectrum: the system itself owns every hue the products wear.
+  pack: product.pack ? pack(product.pack) : undefined,
   href: product.href,
 }));

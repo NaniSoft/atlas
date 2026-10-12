@@ -246,7 +246,7 @@
 .site-index__title {
   margin: 0;
   font-size: clamp(2rem, 4.2vw, 3.25rem);
-  font-weight: 620;
+  font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.05;
   text-wrap: balance;
@@ -291,7 +291,7 @@
 
 .site-index__item strong {
   font-size: 1rem;
-  font-weight: 620;
+  font-weight: 600;
 }
 
 .site-index__item span {
@@ -337,8 +337,9 @@
   width: fit-content;
   color: inherit;
   font-size: 1.1875rem;
-  font-weight: 620;
+  font-weight: 600;
   text-decoration: none;
+  transition: color var(--duration-fast) var(--ease-out);
 }
 
 .site-blog-list__description {
@@ -350,8 +351,47 @@
 }
 
 .site-blog-list__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.875rem;
   margin: 0;
   color: var(--muted-foreground);
   font-size: 0.6875rem;
   letter-spacing: 0.05em;
+}
+
+/*
+ * The tags, as a row of words rather than a list glued together with separators.
+ * A middot is punctuation a screen reader announces and a sighted reader parses as
+ * content, and a three-tag post used to carry two of them on one line. The gap
+ * between the words is the separator now, and the row reads as a set.
+ */
+.site-blog-list__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.375rem 0.625rem;
+}
+
+.site-blog-list__tag {
+  display: inline-block;
+  border: 1px solid var(--border);
+  border-radius: calc(var(--radius) * 0.8);
+  padding: 0.0625rem 0.5rem;
+}
+
+/*
+ * Motion, on the surfaces this site owns.
+ *
+ * Every transition reads the design system's duration and easing tokens and
+ * nothing else: no raw cubic-bezier, no keyframes authored here, no entrance
+ * states. The ambient motion on this site is the design system's own (the hero
+ * figure's travelling marker), and what this sheet adds is feedback: a hover
+ * answer that arrives at the speed the design system answers at. Under
+ * `prefers-reduced-motion: reduce` the design system's own sheet disables
+ * transitions globally, so this collapses with everything else.
+ */
+.site-blog-list__title:hover {
+  color: var(--brand-ink);
 }

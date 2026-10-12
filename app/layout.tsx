@@ -14,22 +14,18 @@ import { DEFAULT_MODE, GROUND_PACK, THEME_ATTRIBUTES } from '@/lib/site';
 export const metadata: Metadata = {
   metadataBase: new URL('https://atlas.nanisoft.com'),
   title: {
-    default: 'Atlas — Model the real world digitally',
+    default: 'Atlas: the Digital Twin Platform',
     template: '%s · Atlas',
   },
-  description: 'The Digital Twin Platform — living models of real systems.',
+  description:
+    'Atlas models the real world digitally: living representations of systems, assets, and operations. Its first proven domain is a digital twin of the IT estate.',
   openGraph: {
     type: 'website',
     siteName: 'Atlas',
     locale: 'en',
-    // No per-route image is declared, so a share of any route falls back to this one.
-    // It is the site's own mark rather than a generated card, which is a deliberate
-    // trade: a static export has no image pipeline, and a mark that is the product's
-    // own identity beats a card nobody reviewed.
-    images: [{ url: '/icon.svg', width: 32, height: 32, alt: 'Atlas' }],
   },
   twitter: {
-    card: 'summary',
+    card: 'summary_large_image',
   },
 };
 

@@ -185,7 +185,7 @@ describe('landing', () => {
     }
   });
 
-  it('renders the platform story as three whole-row links in three packs', () => {
+  it('renders the platform story as three whole-row links, two in their own packs', () => {
     renderLanding();
     const rows: ReadonlyArray<readonly [string, string]> = [
       ['Nexus', 'https://nexus.nanisoft.com'],
@@ -195,14 +195,19 @@ describe('landing', () => {
     for (const [name, href] of rows) {
       const card = screen.getByText(name).closest('a');
       expect(card?.getAttribute('href')).toBe(href);
-      // A pack that is not the one the page wears, on a mark, and nothing else.
+      // Nexus and AlphaLens wear their own packs, each a hue the page does not.
+      // Prism owns no hue, so its mark is the full spectrum and carries no boundary.
       const mark = card?.querySelector('[data-slot="product-mark"]');
-      expect(mark?.getAttribute('data-pack')).toBeTruthy();
-      expect(mark?.getAttribute('data-pack')).not.toBe('mint');
+      if (name === 'Prism') {
+        expect(mark?.getAttribute('data-pack')).toBeNull();
+      } else {
+        expect(mark?.getAttribute('data-pack')).toBeTruthy();
+        expect(mark?.getAttribute('data-pack')).not.toBe('mint');
+      }
     }
   });
 
-  it('keeps the single honest ask — the playground — with its footnote', () => {
+  it('keeps the single honest ask, the playground, with its footnote', () => {
     renderLanding();
     const cta = screen.getByRole('heading', { name: 'See the twin think.' }).closest('section');
     expect(cta).toBeTruthy();
@@ -228,7 +233,7 @@ describe('landing', () => {
     // definition list now, and a definition list carries terms rather than headings.
     // The words are unchanged and each is announced with its explanation, which is
     // the pairing a heading and a paragraph did not give a screen reader.
-    expect(screen.getByRole('heading', { level: 2, name: 'The twin — what it is' })).toBeTruthy();
+    expect(screen.getByRole('heading', { level: 2, name: 'The twin: what it is' })).toBeTruthy();
     for (const card of WHAT_IT_IS) {
       expect(screen.getByText(card.title)).toBeTruthy();
       expect(screen.getByText(card.body)).toBeTruthy();

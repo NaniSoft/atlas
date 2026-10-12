@@ -27,7 +27,7 @@ const ROOT = path.resolve(__dirname, '..');
  * change has to be made in both to go unnoticed, and either one alone is a
  * deliberate edit.
  */
-const ABSOLUTE_TITLE = 'Atlas — Model the real world digitally';
+const ABSOLUTE_TITLE = 'Atlas: the Digital Twin Platform';
 
 describe('site identity', () => {
   it('is atlas, in the published mint pack, beam-dark by default', () => {
@@ -41,15 +41,18 @@ describe('site identity', () => {
   it('wears mint as the ground and every other published pack on a mark', () => {
     expect(PRODUCTS.map((product) => [product.id, product.pack])).toEqual([
       ['www', 'sky'],
-      ['nexus', 'lavender'],
+      ['nexus', 'cyan'],
       ['atlas', 'mint'],
-      ['alphalens', 'blush'],
-      ['prism', 'peach'],
+      ['alphalens', 'gold'],
+      ['prism', undefined],
     ]);
     // Every one of those identifiers is a pack the token build emits. A name that
     // matches no emitted rule inherits the ground silently, which is how the retired
     // line's `green`, `rose` and `blue` all painted this page the same colour.
-    expect(PRODUCTS.every((product) => typeof product.pack === 'string')).toBe(true);
+    // Prism carries no pack: its mark is the one case ProductMark draws as the
+    // full spectrum, so undefined is the correct answer for it and a wrong hue is
+    // still a build error through the pack() validator for the four that have one.
+    expect(PRODUCTS.filter((product) => product.id !== 'prism').every((product) => typeof product.pack === 'string')).toBe(true);
   });
 });
 
@@ -69,11 +72,11 @@ describe('the absolute page title', () => {
     expect(ABSOLUTE_TITLE.endsWith('· Atlas')).toBe(false);
   });
 
-  it('keeps the em dash that is a published byte rather than punctuation', () => {
-    // A normalising tool would rewrite this to a hyphen, and the rewrite would be
-    // invisible in review and permanent in every reader's history.
-    expect(ABSOLUTE_TITLE).toContain('\u2014');
-    expect(ABSOLUTE_TITLE.split('\u2014')).toHaveLength(2);
+  it('is free of the em dash the old title published', () => {
+    // The old absolute title carried an em-dash as its separator, and the dash was
+    // a published byte in every SERP this site appeared in. The separator is a
+    // colon now, and the byte is gone from the one place it was most expensive.
+    expect(ABSOLUTE_TITLE).not.toContain('\u2014');
   });
 });
 

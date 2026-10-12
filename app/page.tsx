@@ -17,6 +17,7 @@ import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
+import { JsonLd } from '@/components/json-ld';
 import { SiteChrome } from '@/components/site-chrome';
 import { TraversalFigure } from '@/components/traversal-figure';
 import {
@@ -44,22 +45,60 @@ import {
   WHAT_IT_IS_LEDE,
 } from '@/lib/content/landing';
 
+const SITE_URL = 'https://atlas.nanisoft.com';
+
+const JSON_LD = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebSite',
+      '@id': `${SITE_URL}/#website`,
+      name: 'Atlas',
+      url: SITE_URL,
+      description:
+        'Atlas models the real world digitally: living representations of systems, assets, and operations.',
+      inLanguage: 'en',
+      publisher: { '@id': 'https://nanisoft.com/#organization' },
+    },
+    {
+      '@type': 'SoftwareApplication',
+      '@id': `${SITE_URL}/#application`,
+      name: 'Atlas',
+      applicationCategory: 'DeveloperApplication',
+      operatingSystem: 'Web',
+      url: SITE_URL,
+      description:
+        'The Digital Twin Platform: living representations of systems, assets, and operations, with a proven digital twin of the IT estate.',
+      producer: { '@type': 'Organization', name: 'NaniSoft', url: 'https://nanisoft.com' },
+    },
+  ],
+};
+
 export const metadata: Metadata = {
   /**
-   * The product frame first (ticket 07's migration law), the flagship
-   * instance second — the same order the hero reads in.
+   * The product frame first, the flagship instance second: the same order the
+   * hero reads in.
    *
-   * **The title is absolute, and the port does not disturb it.** This is the one
-   * page in this repository that publishes its title with `absolute`, so the
-   * layout's `%s · Atlas` template is not applied to it, and the dash in the
-   * middle is a published byte rather than punctuation. `test/smoke.test.tsx`
-   * pins this string so that a later change has to be deliberate, and the
-   * content-parity ledger records it as unchanged on this route.
+   * **The title is absolute, so the layout's `%s · Atlas` template is not
+   * applied to it.** `test/smoke.test.tsx` pins this string so that a later
+   * change has to be deliberate, and the home page is also the one route that
+   * carries the site's canonical claim, because it is the address every other
+   * route's canonical is relative to.
    */
   description:
-    'Atlas models the real world digitally — living representations of systems, assets, and operations. Its first proven domain: a digital twin of the IT estate.',
+    'Atlas models the real world digitally: living representations of systems, assets, and operations. Its first proven domain is a digital twin of the IT estate.',
   title: {
-    absolute: 'Atlas — Model the real world digitally',
+    absolute: 'Atlas: the Digital Twin Platform',
+  },
+  alternates: { canonical: '/' },
+  openGraph: {
+    type: 'website',
+    url: '/',
+    siteName: 'Atlas',
+    locale: 'en',
+    title: 'Atlas: the Digital Twin Platform',
+    description:
+      'Atlas models the real world digitally: living representations of systems, assets, and operations. Its first proven domain is a digital twin of the IT estate.',
   },
 };
 
@@ -123,6 +162,7 @@ function dataPathSteps(): ProcessRail01Steps {
 export default function Landing(): ReactElement {
   return (
     <SiteChrome>
+      <JsonLd data={JSON_LD} />
       {/* The thesis, the page's own h1, and the pipeline running beside it.
 
           The band is the design system's rather than this page's: the column split,
@@ -176,8 +216,7 @@ export default function Landing(): ReactElement {
 
       {/* 01, the twin itself. Three instruments. */}
       <NoteGrid01
-        eyebrow="01"
-        title="The twin — what it is"
+        title="The twin: what it is"
         description={WHAT_IT_IS_LEDE}
         notes={WHAT_IT_IS.map((card) => ({ title: card.title, body: card.body }))}
       />
@@ -188,8 +227,7 @@ export default function Landing(): ReactElement {
           position in the sequence, and the last step carries the label the old
           conveyor printed on its far end. */}
       <ProcessRail01
-        eyebrow="02"
-        title="The data path — lakehouse to twin"
+        title="The data path: lakehouse to twin"
         description={DATA_PATH_LEDE}
         finalLabel="serving"
         steps={dataPathSteps()}
@@ -217,8 +255,7 @@ export default function Landing(): ReactElement {
           system's four and the words are this product's, which is the whole reason
           the Block takes both. */}
       <StatusLedger01
-        eyebrow="03"
-        title="Use cases — one twin, many questions"
+        title="Use cases: one twin, many questions"
         description={USE_CASES_LEDE}
         rows={USE_CASES.map((useCase) => ({
           name: useCase.title,
@@ -257,8 +294,7 @@ export default function Landing(): ReactElement {
           reported rather than rewritten into the role line. Filed against the
           design system as a field on `StackPart`, counted per consumer. */}
       <StackGrid01
-        eyebrow="04"
-        title="How it’s built — compose, don’t fork"
+        title="How it’s built: compose, don’t fork"
         description={HOW_BUILT_LEDE}
         parts={STACK_PRODUCTS.map((product) => ({ name: product.name, role: product.role }))}
         own={IN_HOUSE.map((component) => ({ name: component.name, blurb: component.blurb }))}
@@ -266,17 +302,17 @@ export default function Landing(): ReactElement {
         caption={INTEGRATIONS_NOTE}
       />
 
-      {/* 05, the platform story. One of the two bands that carry a second pack: each
+      {/* 05, the platform story. The one band that carries a second pack: each
           row's mark is its product's own boundary, and the mark is the only element
-          in this section that carries one. */}
+          in this section that carries one. Prism carries no pack, so its mark is
+          the full spectrum and lands no boundary at all. */}
       <ProductGrid01
-        eyebrow="05"
-        title="Built on Nexus — one platform, one factory"
+        title="Built on Nexus: one platform, one factory"
         description={BUILT_ON_NEXUS.lede}
         products={BUILT_ON_NEXUS.products.map((product) => ({
           id: product.id,
           name: product.name,
-          pack: product.pack,
+          pack: 'pack' in product ? product.pack : undefined,
           tagline: product.tagline,
           href: product.url,
           newTab: true,
