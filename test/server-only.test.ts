@@ -81,6 +81,7 @@ describe('the site has no client code', () => {
       'lib/post-date.ts',
       'lib/site.ts',
       'lib/source.ts',
+      'lib/stats.ts',
       'lib/to-prism-tree.ts',
       'next.config.ts',
       'vitest.config.ts',
