@@ -14,6 +14,11 @@ describe('clamp', () => {
   it('returns value when in range', () => {
     expect(clamp(5, 0, 10)).toBe(5);
   });
+
+  it('keeps the bounds themselves, because the range is inclusive', () => {
+    expect(clamp(0, 0, 10)).toBe(0);
+    expect(clamp(10, 0, 10)).toBe(10);
+  });
 });
 
 describe('clampPercent', () => {
