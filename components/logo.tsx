@@ -3,13 +3,14 @@ import type { ReactElement } from 'react';
 /**
  * The Atlas mark, at the sizes a page draws it.
  *
- * One node of the estate, emphasised, with three of its neighbours around it: the
- * same claim the hero's graph makes, condensed to the five shapes a reader can
- * read at twenty-two pixels. Every stroke is `currentColor`, so the mark follows
- * the ink it sits beside, and the emphasised node is the pack's own primary
- * through a token class, so a pack boundary above it repaints the accent without
- * touching this file. A logo that named a hex would be the one element on the
- * page a theme could not reach.
+ * The twin, the claim the name makes: the estate on the left in ink and its
+ * living model on the right, one the mirror of the other across the peak where
+ * they agree, condensed to the three shapes a reader can read at twenty-two
+ * pixels. The estate stroke is `currentColor`, so the mark follows the ink it
+ * sits beside, and the twin stroke and the peak are the pack's own primary
+ * through token classes, so a pack boundary above it repaints the accent
+ * without touching this file. A logo that named a hex would be the one element
+ * on the page a theme could not reach.
  */
 export function AtlasLogo({
   size = 24,
@@ -28,15 +29,11 @@ export function AtlasLogo({
       aria-label="Atlas"
       className={className ? `site-logo ${className}` : 'site-logo'}
     >
-      <g stroke="currentColor" strokeWidth="1.6">
-        <path d="M16 16 L16 5.5" />
-        <path d="M16 16 L26 22" />
-        <path d="M16 16 L6 22" />
+      <g strokeLinecap="round" strokeWidth="2.5">
+        <path d="M4 21.5 L16 16" stroke="currentColor" />
+        <path d="M16 16 L28 21.5" className="site-logo__accent-stroke" />
       </g>
-      <circle cx="16" cy="16" r="3.2" className="site-logo__accent" />
-      <circle cx="16" cy="5.5" r="2.4" fill="currentColor" />
-      <circle cx="26" cy="22" r="2.4" fill="currentColor" />
-      <circle cx="6" cy="22" r="2.4" fill="currentColor" />
+      <circle cx="16" cy="16" r="2.4" className="site-logo__accent" />
     </svg>
   );
 }

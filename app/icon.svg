@@ -1,29 +1,20 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
   <!--
-    Atlas's own mark, and the page's own ground.
+    Atlas's own mark: the twin.
 
-    This file used to be Prism's: a white beam refracted into blue inks, on a navy
-    ground, which is the design system's mark and not this product's. It shipped as the
-    favicon for a mint site on a near-black ground, so every tab, bookmark and search
-    result for atlas.nanisoft.com wore another product's identity and a colour from
-    neither its pack nor its mode.
-
-    The glyph is the claim the product makes and the one the docs lead with: three
-    nodes and the edges among them, drawn as a graph. The emphasised node is the twin,
-    and the two beside it are what it is made of. Six marks of mint on the page's own
-    dark ground, legible at 16px, and no colour here that is not a value out of the
-    mint pack's dark block (`#161917` ground, `#9ddcad` primary, `#bcecc7` brand ink).
-    A favicon is an image rather than a surface, so these are values and not tokens:
-    there is no cascade to resolve a token against in a file the browser reads as an
-    image.
+    The graph it replaced, three nodes and the edges among them with the
+    emphasised node the twin, shared its whole silhouette with Nexus's loop:
+    two products, two triangles of nodes, one accent on top, and no way to tell
+    the tabs apart. The claim the name makes is the twin, so the mark is that:
+    the estate on the left in ink, its living model on the right in mint, one
+    the mirror of the other across the peak where they agree. Two strokes at
+    the family angle and one node, legible at 16px. No colour here that is not
+    a value out of the mint pack's dark block (`#161917` ground, `#9ddcad`
+    primary, `#ebeeeb` ink). A favicon is an image rather than a surface, so
+    these are values and not tokens.
   -->
   <rect width="32" height="32" rx="4" fill="#161917" />
-  <g fill="none" stroke="#bcecc7" stroke-width="1.6" stroke-linecap="round" stroke-opacity="0.55">
-    <path d="M9 22 L23 22" />
-    <path d="M9 22 L16 8" />
-    <path d="M23 22 L16 8" />
-  </g>
-  <circle cx="9" cy="22" r="2.6" fill="none" stroke="#bcecc7" stroke-width="1.6" />
-  <circle cx="23" cy="22" r="2.6" fill="none" stroke="#bcecc7" stroke-width="1.6" />
-  <circle cx="16" cy="8" r="3.4" fill="#9ddcad" />
+  <path d="M4 21.5 L16 16" fill="none" stroke="#ebeeeb" stroke-width="2.5" stroke-linecap="round" />
+  <path d="M16 16 L28 21.5" fill="none" stroke="#9ddcad" stroke-width="2.5" stroke-linecap="round" />
+  <circle cx="16" cy="16" r="2.4" fill="#9ddcad" />
 </svg>

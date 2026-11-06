@@ -34,20 +34,15 @@ const SPECTRUM =
   'linear-gradient(90deg, #ec88a0 0%, #bc97e7 25%, #73bf88 50%, #6cb2eb 75%, #e4965e 100%)'
 
 /**
- * The mark, as the card draws it: the estate's emphasised node and three of its
- * neighbours, painted in the card's own literals and embedded as a data URI,
- * because the renderer paints a bitmap and cannot resolve cascade classes.
+ * The mark, as the card draws it: the estate and its twin, mirrored across the
+ * peak where they agree, painted in the card's own literals and embedded as a
+ * data URI, because the renderer paints a bitmap and cannot resolve cascade
+ * classes.
  */
 const MARK_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="150" height="150" fill="none">
-  <g stroke="#9ddcad" stroke-width="1.6">
-    <path d="M16 16 L16 5.5"/>
-    <path d="M16 16 L26 22"/>
-    <path d="M16 16 L6 22"/>
-  </g>
-  <circle cx="16" cy="16" r="3.2" fill="#9ddcad"/>
-  <circle cx="16" cy="5.5" r="2.4" fill="#ebeeeb"/>
-  <circle cx="26" cy="22" r="2.4" fill="#ebeeeb"/>
-  <circle cx="6" cy="22" r="2.4" fill="#ebeeeb"/>
+  <path d="M4 21.5 L16 16" stroke="#ebeeeb" stroke-width="2.5" stroke-linecap="round"/>
+  <path d="M16 16 L28 21.5" stroke="#9ddcad" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="16" cy="16" r="2.4" fill="#9ddcad"/>
 </svg>`
 const MARK_URI = `data:image/svg+xml;base64,${Buffer.from(MARK_SVG).toString('base64')}`
 
