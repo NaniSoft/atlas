@@ -9,11 +9,11 @@ import {
   BAR_DEFAULT_PACK,
   BAR_PRODUCT,
   COPY,
-  FOOTER_SITE_LINKS,
   NAV,
   PLAYGROUND_ACTION,
   SITES,
 } from '@/lib/bar';
+import { AtlasLogo } from '@/components/logo';
 
 /**
  * The chrome, in one place, and the reason it is not in the root layout.
@@ -55,6 +55,15 @@ import {
  */
 export type SiteSection = '/docs' | '/blog' | '/about';
 
+/*
+ * The product, as the chrome draws it: the same three facts the bar and the
+ * footer have always read, plus the drawing. The mark is this site's own logo,
+ * and it is the sign in the row, in the mobile panel and at the foot of the
+ * page from this one fact, so a reader meets one sign three times rather than
+ * a disc twice and a drawing once.
+ */
+const PRODUCT = { ...BAR_PRODUCT, mark: <AtlasLogo className="site-product-mark" /> };
+
 export function SiteChrome({
   current,
   children,
@@ -66,7 +75,7 @@ export function SiteChrome({
   return (
     <>
       <SiteNavbar
-        product={BAR_PRODUCT}
+        product={PRODUCT}
         defaultPack={BAR_DEFAULT_PACK}
         defaultMode={BAR_DEFAULT_MODE}
         nav={NAV.map((link) => ({ ...link, current: current === link.href }))}
@@ -97,20 +106,41 @@ export function SiteChrome({
       />
       <main className="site-main">{children}</main>
       <SiteFooter
-        product={BAR_PRODUCT}
+        product={PRODUCT}
+        about={
+          // The one sentence a reader who reached the bottom has not been told
+          // yet, in this site's own words from its own description.
+          <p className="site-footer-about">
+            Atlas models the real world digitally: living representations of systems,
+            assets and operations.
+          </p>
+        }
         columns={[
-          // The same three destinations the bar carries, read from the same list rather
+          // The same destinations the bar carries, read from the same list rather
           // than written twice. This site holds itself to one name per door, and a
           // second list of the same three hrefs is where a fourth name for `/docs`
-          // would come from.
-          { title: 'Atlas', links: [...FOOTER_SITE_LINKS] },
+          // would come from. The playground rides along because it is this site's
+          // one ask, named here exactly as the bar names it.
           {
-            title: 'See it run',
+            title: 'This site',
             links: [
+              { label: 'Landing', href: '/' },
+              ...NAV.map((link) => ({ label: link.label, href: link.href })),
               { label: PLAYGROUND_ACTION.label, href: PLAYGROUND_ACTION.href, newTab: true },
-              { label: 'Access traversal', href: '/docs/guides/access-traversal' },
-              { label: 'The integration ledger', href: '/docs/reference/integration-ledger' },
             ],
+          },
+          {
+            // The family, read from the same directory the bar's menu reads,
+            // minus the member the reader is already on. Every site in the
+            // family holds this same column to this same rule, so the foot of
+            // one site answers the same question the foot of every other one
+            // does: where else does this company go.
+            title: 'The family',
+            links: SITES.filter((site) => site.id !== BAR_PRODUCT.id).map((site) => ({
+              label: site.name,
+              href: site.href,
+              newTab: true,
+            })),
           },
         ]}
         legal={'\u00a9 NaniSoft'}

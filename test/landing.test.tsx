@@ -186,14 +186,18 @@ describe('landing', () => {
   });
 
   it('renders the platform story as three whole-row links, two in their own packs', () => {
-    renderLanding();
+    const { container } = renderLanding();
+    // Scoped to the main region, because the footer's family column names the same
+    // three products on its way out of the site, and a page-scoped query for one of
+    // their names now finds two honest elements rather than one.
+    const main = within(container.querySelector('main') as HTMLElement);
     const rows: ReadonlyArray<readonly [string, string]> = [
       ['Nexus', 'https://nexus.nanisoft.com'],
       ['AlphaLens', 'https://alphalens.nanisoft.com'],
       ['Prism', 'https://prism.nanisoft.com'],
     ];
     for (const [name, href] of rows) {
-      const card = screen.getByText(name).closest('a');
+      const card = main.getByText(name).closest('a');
       expect(card?.getAttribute('href')).toBe(href);
       // Nexus and AlphaLens wear their own packs, each a hue the page does not.
       // Prism owns no hue, so its mark is the full spectrum and carries no boundary.

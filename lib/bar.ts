@@ -47,12 +47,6 @@ export const NAV: readonly SiteNavLink[] = [
   { label: 'About', href: '/about' },
 ];
 
-/**
- * The destinations that are this site's own pages, which is the half of the footer
- * that names where a reader can go next.
- */
-export const FOOTER_SITE_LINKS: readonly SiteNavLink[] = NAV;
-
 /** The family's five sites, which is the set the bar's sites menu moves between. */
 export const SITES: readonly SwitcherProduct[] = PRODUCTS;
 
