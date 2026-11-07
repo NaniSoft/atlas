@@ -6,6 +6,7 @@ import { Cta01 } from '@nanisoft/prism-ui/blocks/cta-01';
 import { FeatureGrid01 } from '@nanisoft/prism-ui/blocks/feature-grid-01';
 import { Hero01 } from '@nanisoft/prism-ui/blocks/hero-01';
 import { InstrumentPanel01 } from '@nanisoft/prism-ui/blocks/instrument-panel-01';
+import { MediaBand01 } from '@nanisoft/prism-ui/blocks/media-band-01';
 import { NoteGrid01 } from '@nanisoft/prism-ui/blocks/note-grid-01';
 import {
   ProcessRail01,
@@ -16,11 +17,13 @@ import { StackGrid01 } from '@nanisoft/prism-ui/blocks/stack-grid-01';
 import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 
+import { EstateEditorial } from '@/components/estate-editorial';
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
 import { AtlasLogo } from '@/components/logo';
 import { JsonLd } from '@/components/json-ld';
 import { SiteChrome } from '@/components/site-chrome';
 import { TraversalFigure } from '@/components/traversal-figure';
+import { TwinFinding } from '@/components/twin-finding';
 import {
   BUILT_ON_NEXUS,
   DAG_ARIA,
@@ -215,12 +218,15 @@ export default function Landing(): ReactElement {
             caption={DAG_ARIA}
             actions={<AtlasLogo size={22} className="site-panel-logo" />}
           >
-            <PulseGraph
-              nodes={DAG_PULSE.nodes}
-              relations={DAG_PULSE.relations}
-              label={DAG_ARIA}
-              className="w-full min-w-0"
-            />
+            <TwinFinding />
+            <div className="border-border mt-3 border-t pt-3">
+              <PulseGraph
+                nodes={DAG_PULSE.nodes}
+                relations={DAG_PULSE.relations}
+                label={DAG_ARIA}
+                className="w-full min-w-0"
+              />
+            </div>
           </InstrumentPanel01>
         }
       />
@@ -298,6 +304,22 @@ export default function Landing(): ReactElement {
           <TraversalFigure />
         </div>
       </Section>
+
+      {/*
+        The one editorial stop on the page. The twin is a graph, and a graph is
+        hard to feel; the band gives the claim a figure and a line. The drawing is
+        a placeholder for a real estate photograph and says so in the caption.
+      */}
+      <MediaBand01
+        headingLevel="h2"
+        size="tall"
+        tone="muted"
+        align="media-right"
+        title="The estate finally agrees with itself."
+        description="One graph, produced from the systems you already run. The flagship question walks it, the policy gate checks every answer, and the audit trail keeps the evidence."
+        media={<EstateEditorial />}
+        caption="A schematic of the estate, not a photograph. The highlighted path is the same traversal the figures above describe."
+      />
 
       {/* 04, how it is built: the survey of composed parts, then the four that are
           ours. The real product name under each codename has no slot on the item
