@@ -15,7 +15,10 @@ import {
 import { ProductGrid01 } from '@nanisoft/prism-ui/blocks/product-grid-01';
 import { StackGrid01 } from '@nanisoft/prism-ui/blocks/stack-grid-01';
 import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
+import { AuroraWash } from '@nanisoft/prism-ui/components/aurora-wash';
+import { ParticleField } from '@nanisoft/prism-ui/components/particle-field';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
+import { Reveal } from '@nanisoft/prism-ui/components/reveal';
 
 import { EstateEditorial } from '@/components/estate-editorial';
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
@@ -196,7 +199,10 @@ export default function Landing(): ReactElement {
         title={
           <>
             {HERO.h1Leading}
-            <em>{HERO.h1Em}</em>
+            {/* The emphasised word also carries the design system's spectrum
+                ink, the one motion on text it authors. The words stay the
+                content library's; only the ink is composed here. */}
+            <em className="prism-text-spectrum">{HERO.h1Em}</em>
             {HERO.h1Trailing}
           </>
         }
@@ -229,6 +235,12 @@ export default function Landing(): ReactElement {
             </div>
           </InstrumentPanel01>
         }
+        backdrop={
+          <>
+            <AuroraWash />
+            <ParticleField count={44} />
+          </>
+        }
       />
 
       {/* 01, the twin itself. Three instruments. */}
@@ -243,12 +255,16 @@ export default function Landing(): ReactElement {
           item for. The step numbers are the rail's own, drawn from each step's
           position in the sequence, and the last step carries the label the old
           conveyor printed on its far end. */}
+      {/* The bands a reader scrolls to arrive on the design system's own
+          reveal; the hero, the first notes and the closing ask stay still. */}
+      <Reveal>
       <ProcessRail01
         title="The data path: lakehouse to twin"
         description={DATA_PATH_LEDE}
         finalLabel="serving"
         steps={dataPathSteps()}
       />
+      </Reveal>
 
       {/* The six things the lakehouse path is made of. They were six h4s under a
           hand-written rule before; a card's title is not a heading, which is a real
@@ -271,6 +287,7 @@ export default function Landing(): ReactElement {
       {/* 03, the use cases, with the statuses visible. The tier is the design
           system's four and the words are this product's, which is the whole reason
           the Block takes both. */}
+      <Reveal delay={1}>
       <StatusLedger01
         title="Use cases: one twin, many questions"
         description={USE_CASES_LEDE}
@@ -282,6 +299,7 @@ export default function Landing(): ReactElement {
         }))}
         caption={USE_CASES_MORE.line}
       />
+      </Reveal>
 
       {/* The two figures, and the band that replaced an empty one.
 
@@ -297,6 +315,7 @@ export default function Landing(): ReactElement {
           the two files that draw them own nothing but geometry. The band carries no
           eyebrow, so the page's five section indices stay five rather than becoming
           six. */}
+      <Reveal>
       <Section>
         <SectionHeading as="h2" align="left" title={FIGURES_TITLE} description={FIGURES_LEDE} />
         <div className="site-figures">
@@ -304,12 +323,14 @@ export default function Landing(): ReactElement {
           <TraversalFigure />
         </div>
       </Section>
+      </Reveal>
 
       {/*
         The one editorial stop on the page. The twin is a graph, and a graph is
         hard to feel; the band gives the claim a figure and a line. The drawing is
         a placeholder for a real estate photograph and says so in the caption.
       */}
+      <Reveal delay={1}>
       <MediaBand01
         headingLevel="h2"
         size="tall"
@@ -320,12 +341,14 @@ export default function Landing(): ReactElement {
         media={<EstateEditorial />}
         caption="A schematic of the estate, not a photograph. The highlighted path is the same traversal the figures above describe."
       />
+      </Reveal>
 
       {/* 04, how it is built: the survey of composed parts, then the four that are
           ours. The real product name under each codename has no slot on the item
           that draws this section, so it is a loss of published copy and it is
           reported rather than rewritten into the role line. Filed against the
           design system as a field on `StackPart`, counted per consumer. */}
+      <Reveal>
       <StackGrid01
         title="How it’s built: compose, don’t fork"
         description={HOW_BUILT_LEDE}
@@ -334,11 +357,13 @@ export default function Landing(): ReactElement {
         ownLabel="built in-house"
         caption={INTEGRATIONS_NOTE}
       />
+      </Reveal>
 
       {/* 05, the platform story. The one band that carries a second pack: each
           row's mark is its product's own boundary, and the mark is the only element
           in this section that carries one. Prism carries no pack, so its mark is
           the full spectrum and lands no boundary at all. */}
+      <Reveal delay={2}>
       <ProductGrid01
         title="Built on Nexus: one platform, one factory"
         description={BUILT_ON_NEXUS.lede}
@@ -352,6 +377,7 @@ export default function Landing(): ReactElement {
         }))}
         caption={BUILT_ON_NEXUS.body}
       />
+      </Reveal>
 
       {/* The closing band. Both actions are anchors, and that is the one rendered
           change the whole migration exists to make: the old page passed a destination

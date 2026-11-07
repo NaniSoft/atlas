@@ -120,7 +120,15 @@ describe('the landing renders from the catalogue', () => {
     // The old landing needed a theme provider, a scroll-reveal observer and a canvas;
     // all three are gone, and the page still renders with nothing mounted above it.
     const { container } = render(<HomePage />);
-    expect(container.querySelector('canvas')).toBeNull();
+    // The design system's living field is the one canvas on the page, and it is
+    // the package's own: the field's floor is server-rendered markup the loop
+    // only ever moves, so even the canvas is not this page's client boundary.
+    // A canvas this repository authored would be the retired line's defect back.
+    const canvases = [...container.querySelectorAll('canvas')];
+    for (const canvas of canvases) {
+      expect(canvas.getAttribute('data-slot')).toBe('particle-field-canvas');
+    }
+    expect(container.querySelector('[data-slot="particle-field-floor"]')).toBeTruthy();
     expect(container.querySelector('[data-reveal]')).toBeNull();
     // The pipeline is drawn as the running figure rather than the static diagram,
     // and it is still server markup: the old landing needed a theme provider, a
