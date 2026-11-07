@@ -16,9 +16,11 @@ import { ProductGrid01 } from '@nanisoft/prism-ui/blocks/product-grid-01';
 import { StackGrid01 } from '@nanisoft/prism-ui/blocks/stack-grid-01';
 import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
 import { AuroraWash } from '@nanisoft/prism-ui/components/aurora-wash';
-import { ParticleField } from '@nanisoft/prism-ui/components/particle-field';
+import { HeaderTransparency } from '@nanisoft/prism-ui/components/header-transparency';
+import { AlphaLensMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 import { Reveal } from '@nanisoft/prism-ui/components/reveal';
+import { TsparticlesField } from '@nanisoft/prism-ui/components/tsparticles-field';
 
 import { EstateEditorial } from '@/components/estate-editorial';
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
@@ -129,6 +131,26 @@ function dataPathSteps(): ProcessRail01Steps {
   return steps as unknown as ProcessRail01Steps;
 }
 
+/**
+ * A section heading split for the spectrum ink, like the hero's own claim.
+ */
+function heading(label: string, spectrum: string) {
+  const leading = label.replace(spectrum, '').replace(/\s+$/, '');
+  return (
+    <>
+      {leading}{' '}
+      <span className="prism-text-spectrum">{spectrum}</span>
+    </>
+  );
+}
+
+/** The platform products' own marks, so the band draws logos rather than discs. */
+const PLATFORM_MARKS: Record<string, ReactElement> = {
+  nexus: <NexusMark className="site-product-mark" />,
+  alphalens: <AlphaLensMark className="site-product-mark" />,
+  prism: <PrismMark className="site-product-mark" />,
+};
+
 /* ------------------------------------------------------------------ *
  * The landing
  * ------------------------------------------------------------------ */
@@ -170,6 +192,15 @@ export default function Landing(): ReactElement {
   return (
     <SiteChrome>
       <JsonLd data={JSON_LD} />
+      <HeaderTransparency />
+      {/* The page's one continuous ground: light and a moving medium, fixed
+          behind every section so the whole page reads as one surface rather than
+          as a hero and a set of separate bands. It is `aria-hidden` because a
+          medium is not information. */}
+      <div aria-hidden className="site-atmosphere">
+        <AuroraWash />
+        <TsparticlesField />
+      </div>
       {/* The thesis, the page's own h1, and the pipeline running beside it.
 
           The band is the design system's rather than this page's: the column split,
@@ -234,12 +265,6 @@ export default function Landing(): ReactElement {
               />
             </div>
           </InstrumentPanel01>
-        }
-        backdrop={
-          <>
-            <AuroraWash />
-            <ParticleField count={44} />
-          </>
         }
       />
 
@@ -333,10 +358,11 @@ export default function Landing(): ReactElement {
       <Reveal delay={1}>
       <MediaBand01
         headingLevel="h2"
+        className="site-media-band"
         size="tall"
         tone="muted"
         align="media-right"
-        title="The estate finally agrees with itself."
+        title={heading('The estate finally agrees with itself.', 'agrees with itself.')}
         description="One graph, produced from the systems you already run. The flagship question walks it, the policy gate checks every answer, and the audit trail keeps the evidence."
         media={<EstateEditorial />}
         caption="A schematic of the estate, not a photograph. The highlighted path is the same traversal the figures above describe."
@@ -365,12 +391,13 @@ export default function Landing(): ReactElement {
           the full spectrum and lands no boundary at all. */}
       <Reveal delay={2}>
       <ProductGrid01
-        title="Built on Nexus: one platform, one factory"
+        title={heading('Built on Nexus: one platform, one factory', 'one platform, one factory')}
         description={BUILT_ON_NEXUS.lede}
         products={BUILT_ON_NEXUS.products.map((product) => ({
           id: product.id,
           name: product.name,
           pack: 'pack' in product ? product.pack : undefined,
+          mark: PLATFORM_MARKS[product.id],
           tagline: product.tagline,
           href: product.url,
           newTab: true,

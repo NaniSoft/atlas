@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
 import { SiteFooter } from '@nanisoft/prism-ui/blocks/site-footer';
 import { SiteNavbar } from '@nanisoft/prism-ui/blocks/site-navbar';
+import { AlphaLensMark, NaniSoftMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
 
 import {
   BAR_DEFAULT_MODE,
@@ -64,6 +65,21 @@ export type SiteSection = '/docs' | '/blog' | '/about';
  */
 const PRODUCT = { ...BAR_PRODUCT, mark: <AtlasLogo className="site-product-mark" /> };
 
+/**
+ * The family's marks, as the bar's sites menu draws them: each member's own logo
+ * rather than the two-colour disc.
+ */
+const SITE_MARKS: Record<string, ReactNode> = {
+  www: <NaniSoftMark className="site-product-mark" />,
+  nexus: <NexusMark className="site-product-mark" />,
+  atlas: <AtlasLogo className="site-product-mark" />,
+  alphalens: <AlphaLensMark className="site-product-mark" />,
+  prism: <PrismMark className="site-product-mark" />,
+};
+
+/** The family, with each member's drawn mark attached to its directory entry. */
+const SITES_WITH_MARKS = SITES.map((site) => ({ ...site, mark: SITE_MARKS[site.id] }));
+
 export function SiteChrome({
   current,
   children,
@@ -80,7 +96,7 @@ export function SiteChrome({
         defaultMode={BAR_DEFAULT_MODE}
         nav={NAV.map((link) => ({ ...link, current: current === link.href }))}
         navLabel={COPY.nav}
-        sites={SITES}
+        sites={SITES_WITH_MARKS}
         currentSiteId={BAR_PRODUCT.id}
         sitesLabel={COPY.sites}
         search={{
@@ -109,11 +125,15 @@ export function SiteChrome({
         product={PRODUCT}
         about={
           // The one sentence a reader who reached the bottom has not been told
-          // yet, in this site's own words from its own description.
-          <p className="site-footer-about">
-            Atlas models the real world digitally: living representations of systems,
-            assets and operations.
-          </p>
+          // yet, in this site's own words from its own description, under the
+          // page's claim in the ink of the brand.
+          <div className="site-footer-about">
+            <p className="site-footer-tagline">Model the real world digitally.</p>
+            <p>
+              Atlas models the real world digitally: living representations of systems,
+              assets and operations.
+            </p>
+          </div>
         }
         columns={[
           // The same destinations the bar carries, read from the same list rather
