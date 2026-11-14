@@ -34,23 +34,6 @@ export const BAR_DEFAULT_PACK = GROUND_PACK;
 export const BAR_DEFAULT_MODE = DEFAULT_MODE;
 
 /**
- * This site's own three destinations.
- *
- * The labels and the destinations are the ones this chrome has always published,
- * unchanged. The order is the order a reader is most likely to want them: the
- * documentation is what a reader came for, the blog is what they read next, and About
- * is the one they read once.
- */
-export const NAV: readonly SiteNavLink[] = [
-  { label: 'Docs', href: '/docs' },
-  { label: 'Blog', href: '/blog' },
-  { label: 'About', href: '/about' },
-];
-
-/** The family's five sites, which is the set the bar's sites menu moves between. */
-export const SITES: readonly SwitcherProduct[] = PRODUCTS;
-
-/**
  * The one destination above the fold that leaves this site and is not the family.
  *
  * The playground is this site's single honest ask. It was named five times in the
@@ -64,6 +47,42 @@ export const PLAYGROUND_ACTION = {
   label: 'Open the playground',
   href: PLAYGROUND_URL,
 } as const;
+
+/**
+ * This site's own destinations, with the playground among them.
+ *
+ * The three labels and destinations are the ones this chrome has always published,
+ * unchanged. The order is the order a reader is most likely to want them: the
+ * documentation is what a reader came for, the blog is what they read next, and About
+ * is the one they read once.
+ *
+ * The fourth entry is the playground, and it is a nav entry rather than the controls
+ * cluster's CTA on purpose. The cluster CTA overran the bar at phone width: the
+ * cluster's controls plus a 164-pixel CTA measured past the trigger, which put the
+ * panel's own trigger off the viewport and lost the navigation, not just the ask. The
+ * design system's own arrangement for that overrun pairs the CTA with a `mobileOnly`
+ * panel entry and hides the CTA below the width it stops fitting at, which its own
+ * site writes as `hidden sm:inline-flex`. This repository can write neither half: the
+ * published stylesheet emits only the utilities its own components use, so `hidden`
+ * and `sm:inline-flex` name no rule in it, and this repository's gate fails any
+ * variant class a consumer writes (UI008/UI011). So the destination renders once, as
+ * a row link above the panel's threshold and in the panel below it, and the cluster
+ * keeps the four controls it can afford at every width. The ask stays on the page: the
+ * hero's actions and the closing band carry the playground where a reader decides.
+ *
+ * The entry keeps `newTab` because the destination leaves the site. The panel's link
+ * is the navigation list and navigates in place: the panel's entry type carries no
+ * `newTab`, which is a gap filed upstream rather than worked around here.
+ */
+export const NAV: readonly SiteNavLink[] = [
+  { label: 'Docs', href: '/docs' },
+  { label: 'Blog', href: '/blog' },
+  { label: 'About', href: '/about' },
+  { ...PLAYGROUND_ACTION, newTab: true },
+];
+
+/** The family's five sites, which is the set the bar's sites menu moves between. */
+export const SITES: readonly SwitcherProduct[] = PRODUCTS;
 
 /**
  * Every sentence the bar and the search dialog can say.

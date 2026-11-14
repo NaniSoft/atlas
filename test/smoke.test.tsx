@@ -1,5 +1,5 @@
 import { render, within } from '@testing-library/react';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { describe, expect, it } from 'vitest';
 
@@ -93,24 +93,20 @@ describe('the document element', () => {
   });
 
   it('leaves the typeface to the design system', () => {
-    // The sheet must not repoint `--font-sans`. It used to, at a cost of a second
-    // declaration of a family prism already declares and a build-time download from
-    // Google, and the only reason was a version that predates prism shipping a font
-    // file. Asserting the absence is the cheap half of keeping it that way.
-    const css = readFileSync(path.join(ROOT, 'app', 'globals.css'), 'utf8');
-    expect(css).not.toMatch(/--font-sans\s*:/);
-    expect(css).not.toMatch(/--font-inter/);
+    // Zero-Custom-UI: there is no site stylesheet, so there is no sheet left that
+    // could repoint `--font-sans` or load a family. Asserting the absence holds.
+    expect(existsSync(path.join(ROOT, 'app', 'globals.css'))).toBe(false);
   });
 
-  it('repeats no utility class the design system may not emit', () => {
-    // A consumer cannot write a Prism utility class: the emitted sheet is compiled
-    // from the design system's own source, so a utility exists in it only if a Prism
-    // component uses it. A class named here that prism never uses would do nothing and
-    // say nothing, so the two figures' classes are asserted to be site classes rather
-    // than invented utilities.
-    const css = readFileSync(path.join(ROOT, 'app', 'globals.css'), 'utf8');
-    for (const name of ['site-figure__node', 'site-figure__edge', 'site-figures', 'site-actions']) {
-      expect(css, `${name} is used in markup and must be declared in the sheet`).toContain(`.${name}`);
+  it('authors no site classes the design system may not emit', () => {
+    // Zero-Custom-UI structural assert: no site stylesheet exists to declare one,
+    // and `pnpm ui:check` fails any site class in app source (UI004).
+    expect(existsSync(path.join(ROOT, 'app', 'globals.css'))).toBe(false);
+    const rootFiles = ['app/page.tsx', 'app/about/page.tsx', 'app/blog/[[...slug]]/page.tsx'];
+    const siteClassPattern = /site-(index|blog|hero|actions|product|panel|logo|main|figures|band|figure|footer|empty|mono|atmosphere|media)/;
+    for (const name of rootFiles) {
+      const text = readFileSync(path.join(ROOT, name), 'utf8');
+      expect(text, `${name} carries a site class`).not.toMatch(siteClassPattern);
     }
   });
 });

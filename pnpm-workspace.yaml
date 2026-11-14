@@ -3,6 +3,12 @@
 # postinstall (esbuild's platform binary arrives via optionalDependencies;
 # wrangler deploy/config never needs workerd — wrangler dev is unused here,
 # static assets + remote preview).
+# Transitive security overrides (pnpm v11 reads overrides here, not in
+# package.json): vite and source-map-js move to their patched releases.
+overrides:
+  vite: 8.3.3
+  source-map-js: 1.2.2
+  'undici@^8': 8.12.2
 allowBuilds:
   # tsParticles' install script only prints a funding message; the engine needs
   # no postinstall to run, so it is denied like esbuild below.

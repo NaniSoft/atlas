@@ -1,9 +1,10 @@
 import type { ReactNode } from 'react';
 
-import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
 import { SiteFooter } from '@nanisoft/prism-ui/blocks/site-footer';
 import { SiteNavbar } from '@nanisoft/prism-ui/blocks/site-navbar';
-import { AlphaLensMark, NaniSoftMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
+import { AtlasMark, AlphaLensMark, NaniSoftMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
+import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
+import { Text } from '@nanisoft/prism-ui/components/typography';
 
 import {
   BAR_DEFAULT_MODE,
@@ -11,70 +12,35 @@ import {
   BAR_PRODUCT,
   COPY,
   NAV,
-  PLAYGROUND_ACTION,
   SITES,
 } from '@/lib/bar';
-import { AtlasLogo } from '@/components/logo';
 
 /**
- * The chrome, in one place, and the reason it is not in the root layout.
+ * The chrome, in one place. The bar is the design system's (data and copy
+ * only), the product mark is the design system's `AtlasMark`, and the frame
+ * carries no classes of its own.
  *
- * **A server render knows the route; a root layout does not.** This bar used to live
- * in `app/layout.tsx`, which is rendered once per route and is handed no pathname, so
- * none of the three destinations could ever be marked as the page the reader was on.
- * The Block offers two ways out of that and this one takes the first: the page sets
- * `current` on the link it is serving, the flag is a prop, and nothing became a client
- * component to get it. The second way is `currentPath`, which resolves the mark in the
- * browser and would have been the first runtime this site shipped. The comment that
- * used to sit above `NAV` in the layout explaining that the mark was impossible here
- * is gone rather than contradicted, and `test/server-only.test.ts` is the assertion that
- * it stayed free.
- *
- * **The bar is the design system's, and its client boundary is inside the package.**
- * Search, the menu of the family's five sites, the light and dark control and the panel
- * below the row's threshold are four pieces of reader state, and they are one client
- * island in `@nanisoft/prism-ui` rather than a line in this repository. So this site
- * still declares no `'use client'` anywhere, which is what lets the bar arrive without
- * costing this repository the property it is built around.
- *
- * **The family moved out of the navigation row and into a menu.** It used to be passed
- * as `products`, which put a five-name product family between the brand lockup and the
- * three pages a reader can actually read on this site, in brand ink, ahead of a
- * navigation in muted ink: the loudest thing in the bar was the one that leads
- * somewhere else. It is now a named menu at the right-hand end of the row, which is the
- * arrangement the design system settled on for all five sites.
- *
- * **The playground keeps its slot.** It is passed through `actions` rather than through
- * a prop, because a link to somewhere else is application state rather than a fact the
- * Block can be told about, and because the playground is this site's own ask rather
- * than one of the family's.
- *
- * `sticky` is the Block's default and is not restated: the landing is a long page and
- * the bar is how a reader leaves it, which is the reason the default exists.
- *
- * The footer keeps the brand lockup, the two grouped destinations and the legal line.
+ * A server render knows the route; a root layout does not, which is why every
+ * page renders the chrome with the route it is serving so the bar can mark the
+ * reader's place by prop rather than by a client boundary.
  */
 export type SiteSection = '/docs' | '/blog' | '/about';
 
 /*
  * The product, as the chrome draws it: the same three facts the bar and the
- * footer have always read, plus the drawing. The mark is this site's own logo,
- * and it is the sign in the row, in the mobile panel and at the foot of the
- * page from this one fact, so a reader meets one sign three times rather than
- * a disc twice and a drawing once.
+ * footer have always read, plus the drawing — the design system's own Atlas
+ * mark, drawn in the sized slot the chrome owns, so a reader meets one sign
+ * three times rather than a disc twice and a drawing once.
  */
-const PRODUCT = { ...BAR_PRODUCT, mark: <AtlasLogo className="site-product-mark" /> };
+const PRODUCT = { ...BAR_PRODUCT, mark: <AtlasMark /> };
 
-/**
- * The family's marks, as the bar's sites menu draws them: each member's own logo
- * rather than the two-colour disc.
- */
+/** The family's marks, as the bar's sites menu draws them. */
 const SITE_MARKS: Record<string, ReactNode> = {
-  www: <NaniSoftMark className="site-product-mark" />,
-  nexus: <NexusMark className="site-product-mark" />,
-  atlas: <AtlasLogo className="site-product-mark" />,
-  alphalens: <AlphaLensMark className="site-product-mark" />,
-  prism: <PrismMark className="site-product-mark" />,
+  www: <NaniSoftMark />,
+  nexus: <NexusMark />,
+  atlas: <AtlasMark />,
+  alphalens: <AlphaLensMark />,
+  prism: <PrismMark />,
 };
 
 /** The family, with each member's drawn mark attached to its directory entry. */
@@ -114,47 +80,32 @@ export function SiteChrome({
         }}
         mode={{ lightLabel: COPY.toDark, darkLabel: COPY.toLight }}
         mobileLabels={{ open: COPY.menuOpen, close: COPY.menuClose }}
-        actions={
-          <CtaLink href={PLAYGROUND_ACTION.href} size="sm" newTab>
-            {PLAYGROUND_ACTION.label}
-          </CtaLink>
-        }
       />
-      <main className="site-main">{children}</main>
+      <main data-slot="site-main">{children}</main>
       <SiteFooter
         product={PRODUCT}
         about={
-          // The one sentence a reader who reached the bottom has not been told
-          // yet, in this site's own words from its own description, under the
-          // page's claim in the ink of the brand.
-          <div className="site-footer-about">
-            <p className="site-footer-tagline">Model the real world digitally.</p>
-            <p>
+          <DSStack gap="xs">
+            <Text>Model the real world digitally.</Text>
+            <Text tone="muted" size="sm">
               Atlas models the real world digitally: living representations of systems,
               assets and operations.
-            </p>
-          </div>
+            </Text>
+          </DSStack>
         }
         columns={[
-          // The same destinations the bar carries, read from the same list rather
-          // than written twice. This site holds itself to one name per door, and a
-          // second list of the same three hrefs is where a fourth name for `/docs`
-          // would come from. The playground rides along because it is this site's
-          // one ask, named here exactly as the bar names it.
           {
             title: 'This site',
             links: [
               { label: 'Landing', href: '/' },
-              ...NAV.map((link) => ({ label: link.label, href: link.href })),
-              { label: PLAYGROUND_ACTION.label, href: PLAYGROUND_ACTION.href, newTab: true },
+              /* The bar's destinations as they are, with each link's own new-tab
+                 decision: the playground is the one that leaves the site, and it
+                 rides the navigation now, so a separate entry here would be the
+                 same destination twice in one column. */
+              ...NAV.map((link) => ({ label: link.label, href: link.href, newTab: link.newTab })),
             ],
           },
           {
-            // The family, read from the same directory the bar's menu reads,
-            // minus the member the reader is already on. Every site in the
-            // family holds this same column to this same rule, so the foot of
-            // one site answers the same question the foot of every other one
-            // does: where else does this company go.
             title: 'The family',
             links: SITES.filter((site) => site.id !== BAR_PRODUCT.id).map((site) => ({
               label: site.name,
@@ -163,7 +114,7 @@ export function SiteChrome({
             })),
           },
         ]}
-        legal={'\u00a9 NaniSoft'}
+        legal={'© NaniSoft'}
       />
     </>
   );

@@ -63,7 +63,6 @@ describe('the site has no client code', () => {
       'app/docs/[[...slug]]/page.tsx',
       'app/layout.tsx',
       'app/not-found.tsx',
-      'app/opengraph-image.tsx',
       'app/page.tsx',
       'app/robots.ts',
       'app/sitemap.ts',
@@ -71,7 +70,6 @@ describe('the site has no client code', () => {
       'components/estate-editorial.tsx',
       'components/estate-graph-figure.tsx',
       'components/json-ld.tsx',
-      'components/logo.tsx',
       'components/section-index.tsx',
       'components/site-chrome.tsx',
       'components/traversal-figure.tsx',
@@ -119,14 +117,13 @@ describe('the site has no client code', () => {
   });
 
   it('authors no hidden state, so the reveal law has nothing to govern', () => {
-    // The reveal law, as an assertion: a CSS-authored hidden state needs an escapable
-    // condition, and the cheapest way to be sure there is none is that the stylesheet
-    // declares no opacity or visibility of zero at all and no keyframes.
-    const css = readFileSync(path.join(ROOT, 'app', 'globals.css'), 'utf8');
-    expect(css).not.toMatch(/opacity:\s*0\b/);
-    expect(css).not.toMatch(/visibility:\s*hidden/);
-    expect(css).not.toMatch(/data-reveal|\.is-in/);
-    expect(css).not.toMatch(/@keyframes/);
+    // Zero-Custom-UI: there is no site stylesheet. The DS sheet is the only sheet,
+    // and its hidden states dismiss themselves.
+    expect(existsSync(path.join(ROOT, 'app', 'globals.css'))).toBe(false);
+    const sheets = files
+      .map((file) => path.join(path.dirname(file), path.basename(file, path.extname(file)) + '.css'))
+      .filter((css) => existsSync(css));
+    expect(sheets).toEqual([]);
   });
 
   it('imports the design system stylesheet exactly once, in the root layout', () => {

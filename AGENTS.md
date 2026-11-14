@@ -9,9 +9,9 @@ Part of the five-site Nanisoft web platform (www + nexus + atlas + alphalens + p
 ## How to build here
 
 - Items come from their own subpath, never the root barrel: `@nanisoft/prism-ui/blocks/<item>`, `/components/<item>`, `/pages/<page>`, and `/theming` for the pack and mode vocabulary. The one exception is `@nanisoft/prism-ui/pages`, which is the barrel the documentation template already imported by name, and the design system publishes `DocsShell` under it.
-- `@nanisoft/prism-ui/styles.css` is imported once, in the root layout, before this site's own sheet. It carries every token, every utility and every base rule.
+- `@nanisoft/prism-ui/styles.css` is imported once, in the root layout, and nothing else is. It carries every token, every utility and every base rule.
 - A Block takes data and content as props.
-- A consumer cannot write a Prism utility class: the consumer does not run Tailwind, so a utility exists in the emitted sheet only if a Prism component already uses it. Anything this site needs for itself goes in `app/globals.css` as a site class.
+- Zero-Custom-UI: this site owns no stylesheet, no inline style, no site class, and no hand-drawn SVG. Composition only: DS primitives (`DSStack`, `DSGrid`, `Diagram`, `ListPanel`, `Item`, `Heading`, `Text`) and the catalogue. `pnpm ui:check` is the gate; `UI-GOVERNANCE.md` is the record.
 - Two attributes on `<html>`, from `lib/site.ts`: `data-pack` for the ground and `class="dark"` for the mode. A blocking `PrismThemeScript` in `<head>` applies a stored choice before first paint and is the only writer of the theme's origin.
 - A pack boundary is an attribute on an element: it repoints that pack's colour **and** its corner radius beneath it, and it wears the mode of the nearest ancestor carrying `.dark`. `scripts/pack-map.json` is the map, `scripts/pack-regions.mjs` names a region from the DOM, and the gate checks the map from the built export in both modes. A region is named after the structure the catalogue publishes, never after a number the page prints.
 - The bar is `@nanisoft/prism-ui/blocks/site-navbar` and this site supplies it data and copy only: `lib/bar.ts` holds the destinations, the family and every sentence the controls can say. The family is a menu rather than a row of marks, so it is not in the static export and the pack map does not declare a region for it.
@@ -25,7 +25,7 @@ hold none of the wording.
 
 This site's own halves are in `prism-gates.json` and the two files it names.
 
-`pnpm check` runs `prism-gates` and then this repository's own docs-tree gate. The kit
+`pnpm check` runs `ui:check`, then `prism-gates`, then this repository's own docs-tree gate. The kit
 carries the seven gates named in `prism-gates.json` plus `token-read`, which it always
 runs, so a run reports eight. Nothing in this repository can add or remove one of them.
 

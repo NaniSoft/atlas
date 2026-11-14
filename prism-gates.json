@@ -24,8 +24,8 @@
     "runtime-token-read"
   ],
   "stylesheet-ownership": {
-    "sheets": ["app/globals.css"],
-    "minDeclarations": 20
+    "sheets": [],
+    "minDeclarations": 0
   },
   "links": {
     "outDir": "out",
@@ -33,8 +33,8 @@
     "minAnchors": 900
   },
   "hidden-state": {
-    "sheets": ["app/globals.css"],
-    "minRules": 20,
+    "sheets": [],
+    "minRules": 0,
     "sourceRoots": ["app", "components", "lib"]
   },
   "pack-boundary": {

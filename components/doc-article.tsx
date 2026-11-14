@@ -2,8 +2,10 @@
 // rail, and pager. Structural props only; fumadocs types stay at the app
 // layer, mapped through lib/to-prism-tree before they reach prism-ui.
 //
-// The chrome is deliberately NOT passed as header/footer props — the root
-// layout already renders SiteHeader/SiteFooter around `main`.
+// The chrome is deliberately NOT passed as header/footer props — the page's
+// own `SiteChrome` already renders the bar and the footer around `main`, and a
+// page that nests a second chrome inside the first would be two landmarks
+// claiming one reading order.
 //
 // The pager is **not** passed. The design system derives the two neighbours from
 // the rail and the current address, because the rail already knows every page and

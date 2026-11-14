@@ -1,19 +1,20 @@
-// The documentation section index (`/docs`): the section's contents as a grouped
-// list, in the order the content tree files it. Empty sections render an honest
-// empty state instead of breaking the build.
+// The documentation section index (`/docs`): the section's contents as grouped
+// lists, in the order the content tree files them. Empty sections render an
+// honest empty state instead of breaking the build.
 //
-// **This composition is this site's own, and the reason is a decision, not an
-// omission.** The design system deliberately ships no documentation index Page: a
-// Page is judged on what it encodes, and three sites file their documentation
-// three different ways, so an index the design system owned would be an index the
-// other two had to argue with. The frame is the design system's `Section` and
-// `SectionHeading`; the grouped list below them is the one thing on this page the
-// catalogue has no item for, so it is four site classes in `app/globals.css` and
-// nothing else.
+// The design system deliberately ships no documentation index Page: a Page is
+// judged on what it encodes. The frame here is the design system's `Section`,
+// the heading is DS type, and each group is a `ListPanel` of `Item` rows —
+// the catalogue's own list vocabulary, so this file carries no styling at all.
 
 import type { ReactElement } from 'react';
 
-import { Section, SectionHeading } from '@nanisoft/prism-ui/components/section';
+import { Section } from '@nanisoft/prism-ui/components/section';
+import { SectionHeading } from '@nanisoft/prism-ui/components/section';
+import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
+import { ListPanel } from '@nanisoft/prism-ui/components/list-panel';
+import { Item } from '@nanisoft/prism-ui/components/item';
+import { Text } from '@nanisoft/prism-ui/components/typography';
 
 export interface IndexGroup {
   group: string;
@@ -33,28 +34,24 @@ export function SectionIndex({ title, description, groups, emptyMessage }: Secti
 
   return (
     <Section>
-      <div className="site-index">
-        <SectionHeading as="h1" align="left" title={title} description={description} className="site-index__head" />
+      <DSStack gap="lg">
+        <SectionHeading as="h1" align="left" title={title} description={description} />
         {total === 0 ? (
-          <p className="site-empty">{emptyMessage}</p>
+          <Text tone="muted">{emptyMessage}</Text>
         ) : (
           groups.map((group) => (
-            <section key={group.group} className="site-index__group">
-              <h2 className="site-index__label">{group.group}</h2>
-              <ul className="site-index__list">
+            <ListPanel key={group.group} title={group.group} scroll={false}>
+              <ul>
                 {group.items.map((item) => (
                   <li key={item.url}>
-                    <a href={item.url} className="site-index__item">
-                      <strong>{item.title}</strong>
-                      {item.description && <span>{item.description}</span>}
-                    </a>
+                    <Item entry={{ id: item.url, title: item.title, description: item.description, href: item.url }} />
                   </li>
                 ))}
               </ul>
-            </section>
+            </ListPanel>
           ))
         )}
-      </div>
+      </DSStack>
     </Section>
   );
 }
