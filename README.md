@@ -7,7 +7,7 @@ Part of the [NaniSoft](https://www.nanisoft.com) web platform — five sites, on
 - **Live**: https://atlas.nanisoft.com (Custom Domain, auto-created on deploy)
 - **Pack**: `mint` on the document element, and it does not change. The only region of a page carrying a pack which is not the ground is the products section, which carries the three its rows name. The family's five marks live in the bar's menu now, and a closed menu paints nothing: a reader at first paint sees one pack, and the second packs reach them when they ask to leave. That is the whole five-pack layering, and `scripts/pack-map.json` is the map and the pack-boundary gate in `@nanisoft/prism-ui/gates` is the gate, checked in both light and dark mode
 - **Stack**: Next 16 static export · fumadocs-mdx · pnpm · TypeScript strict · oxlint · Vitest (jsdom + Testing Library) · Cloudflare Workers
-- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 1.8.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. This repository authors no client module: every page is a server component, so the only JavaScript this site ships is the bar's own controls, and those are client components inside the pinned package rather than a boundary drawn here
+- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 1.9.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. This repository authors no client module: every page is a server component, so the only JavaScript this site ships is the bar's own controls, and those are client components inside the pinned package rather than a boundary drawn here
 - **Typeface**: none of this site's own. Prism ships Inter as three static woff2 files under the OFL and declares the `@font-face` rules in its own emitted sheet, so `--font-sans` resolves as published and nothing here loads, re-declares or repoints a family
 
 ## What ships
@@ -116,16 +116,18 @@ at first paint; the switcher's rule was not moved anywhere, it was deleted, and
 `test/pack-map.test.tsx` now expects one second-pack region rather than two and renders
 the real pages rather than a header it assembles itself.
 
-**The playground is a destination, not a cluster control.** The bar carried the ask as a
-CTA in its controls cluster, and at phone width the cluster plus that CTA measured past
-the panel's own trigger: the navigation was lost, not just the ask. The design system's
-own repair pairs such a CTA with a `mobileOnly` panel entry and hides the CTA below the
-width it stops fitting at, which its own site writes as a variant class this repository
-cannot author (the gate fails a consumer variant, and the published sheet emits only the
-utilities its own components use). So the playground rides the navigation as one entry:
-a row link above the panel's threshold, where it leaves the site in a new context, and a
-panel entry below it, where it navigates in place. The ask stays on the page where a
-reader decides: the hero's actions and the closing band.
+**The playground is the design system's own pair, and 1.9 is what made it writable.**
+The bar carried the ask as a CTA in its controls cluster, and at phone width the cluster
+plus that CTA measured past the panel's own trigger: the navigation was lost, not just
+the ask. The design system's arrangement pairs such a CTA with a `mobileOnly` panel
+entry and hides the CTA below the width it stops fitting at, but until 1.9 this
+repository could write neither half: the published sheet emitted no rule for
+`hidden` or `sm:inline-flex`, the panel's entry type carried no `newTab`, and the
+variant gate failed a consumer variant sight unseen. The 1.9 release closed those
+filings at the source, so the CTA steps out of the cluster below `sm` and the panel
+holds the destination there, opening in a new context the way the cluster's anchor
+does. The ask stays on the page where a reader decides: the hero's actions and the
+closing band.
 
 **Search is a static index, because this site is a static export.** There is no server to
 ask, so `app/api/search/route.ts` prerenders an index of twenty-seven entries and the

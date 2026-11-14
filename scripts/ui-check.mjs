@@ -109,7 +109,13 @@ export function dsPublishedClasses() {
     'utf8',
   );
   const set = new Set();
-  for (const m of css.matchAll(/\.((?:[a-zA-Z_][a-zA-Z0-9_-]*))/g)) set.add(m[1]);
+  // Variant selectors are escaped in the sheet (`sm\:inline-flex`), so the
+  // plain identifier read missed every responsive class the design system
+  // publishes and the variant rule below failed classes the sheet carries.
+  // The escape is read and converted to the form a className writes.
+  for (const m of css.matchAll(/\.([a-zA-Z_][a-zA-Z0-9_-]*(?:\\:[a-zA-Z0-9_-]+)*)/g)) {
+    set.add(m[1].replaceAll('\\:', ':'));
+  }
   return set;
 }
 
@@ -279,8 +285,13 @@ export function checkFile(file, published) {
                   }
                 }
               }
-              if (VARIANTS_RE.test(text)) {
-                add('UI011', line, 'Unapproved responsive styling detected.');
+              // A responsive variant is the design system's own behaviour when
+              // the sheet publishes it (Prism 1.9 emits the pair the site-navbar
+              // documentation prescribes) and a finding when it does not: a
+              // variant no rule in the sheet answers is dead at every width.
+              const unapprovedVariant = flat.find((t) => VARIANTS_RE.test(t) && !published.has(t));
+              if (unapprovedVariant) {
+                add('UI011', line, `Unapproved responsive styling detected: class "${unapprovedVariant}" is not DS-published.`);
               }
               if (flat.some((t) => OBJECT_FIT_RE.test(t))) {
                 add('ASSET010', line, 'Arbitrary object-fit or object-position is prohibited. Use DSImage with an approved variant.');

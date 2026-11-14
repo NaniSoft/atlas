@@ -49,36 +49,33 @@ export const PLAYGROUND_ACTION = {
 } as const;
 
 /**
- * This site's own destinations, with the playground among them.
+ * This site's own destinations, with the one the row carries another way.
  *
  * The three labels and destinations are the ones this chrome has always published,
  * unchanged. The order is the order a reader is most likely to want them: the
  * documentation is what a reader came for, the blog is what they read next, and About
  * is the one they read once.
  *
- * The fourth entry is the playground, and it is a nav entry rather than the controls
- * cluster's CTA on purpose. The cluster CTA overran the bar at phone width: the
- * cluster's controls plus a 164-pixel CTA measured past the trigger, which put the
- * panel's own trigger off the viewport and lost the navigation, not just the ask. The
- * design system's own arrangement for that overrun pairs the CTA with a `mobileOnly`
- * panel entry and hides the CTA below the width it stops fitting at, which its own
- * site writes as `hidden sm:inline-flex`. This repository can write neither half: the
- * published stylesheet emits only the utilities its own components use, so `hidden`
- * and `sm:inline-flex` name no rule in it, and this repository's gate fails any
- * variant class a consumer writes (UI008/UI011). So the destination renders once, as
- * a row link above the panel's threshold and in the panel below it, and the cluster
- * keeps the four controls it can afford at every width. The ask stays on the page: the
- * hero's actions and the closing band carry the playground where a reader decides.
+ * The fourth entry is the playground, and `mobileOnly` is the one reason it is here:
+ * above `sm` the controls cluster carries it as the CTA, and below that width the
+ * cluster cannot afford a fifth control, so the panel holds the place instead of
+ * losing the destination. This is the arrangement the design system documents, and
+ * 1.9 is the release that made it writable here: the published sheet emits the
+ * `hidden sm:inline-flex` pair the arrangement needs, the panel's entry type carries
+ * `newTab` so a held-back destination keeps the way the row opened it, and the
+ * variant gate exempts exactly what the sheet publishes. Before that release the
+ * cluster CTA overran the 390px bar and pushed the panel's own trigger off the
+ * viewport, and neither half of this pair could be written; the destination rode the
+ * navigation as a plain row link until the design system closed its own filings.
  *
- * The entry keeps `newTab` because the destination leaves the site. The panel's link
- * is the navigation list and navigates in place: the panel's entry type carries no
- * `newTab`, which is a gap filed upstream rather than worked around here.
+ * The entry keeps `newTab` because the destination leaves the site, and the panel now
+ * opens it the way the row would have.
  */
 export const NAV: readonly SiteNavLink[] = [
   { label: 'Docs', href: '/docs' },
   { label: 'Blog', href: '/blog' },
   { label: 'About', href: '/about' },
-  { ...PLAYGROUND_ACTION, newTab: true },
+  { ...PLAYGROUND_ACTION, newTab: true, mobileOnly: true },
 ];
 
 /** The family's five sites, which is the set the bar's sites menu moves between. */

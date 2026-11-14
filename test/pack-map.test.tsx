@@ -18,6 +18,7 @@ import { describe, expect, it } from 'vitest';
  * composed wrong, and the built-output one fails when the cascade resolves wrong.
  */
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 import Landing from '@/app/page';
 import NotFound from '@/app/not-found';
@@ -137,14 +138,15 @@ describe('the pack map', () => {
 describe('the bar this site publishes', () => {
   it('carries this site own destinations, in a navigation of its own', () => {
     // The Block renders a brand lockup and nothing else when `nav` is absent, so
-    // dropping the list is a silent removal of the whole site's navigation. The row
-    // renders every entry: the playground rides the navigation since the cluster's
-    // CTA left the bar (see `lib/bar.ts` for that decision).
+    // dropping the list is a silent removal of the whole site's navigation. The
+    // row renders the entries the panel reserves none of: the playground is
+    // `mobileOnly`, carried by the cluster's CTA above `sm` and held in the
+    // panel below it (see `lib/bar.ts` for the arrangement).
     const { container } = render(<Landing />);
     const nav = container.querySelector(`nav[aria-label="${COPY.nav}"]`);
     expect(nav, 'the bar carries no site navigation').toBeTruthy();
     expect([...nav!.querySelectorAll('a')].map((a) => a.getAttribute('href'))).toEqual(
-      NAV.map((link) => link.href),
+      NAV.filter((link) => !link.mobileOnly).map((link) => link.href),
     );
   });
 
@@ -167,23 +169,28 @@ describe('the bar this site publishes', () => {
     expect(container.querySelector('[data-slot="site-navbar-theme-trigger"]')).toBeNull();
   });
 
-  it('keeps the playground, which is the one destination above the fold that leaves this site', () => {
+  it('keeps the playground, which is the one destination above the fold that leaves this site', async () => {
     // It used to sit in the layout's `actions` slot, and it is named five times in the
     // landing's copy. A bar that dropped it would leave the landing's single honest ask
-    // unreachable from every other page. It is a nav entry now, so the row renders it
-    // above the panel's threshold as a link that leaves the site. The panel carries
-    // the same entry below that threshold and navigates in place when it is open,
-    // because the panel's entry type carries no `newTab` (filed upstream, recorded in
-    // UI-GOVERNANCE); the closed panel mounts no list, so this tree holds one link,
-    // and the browser lane verifies the panel's half.
+    // unreachable from every other page. The design system's own arrangement carries
+    // it twice: the cluster's CTA above `sm` and the panel's `mobileOnly` entry below
+    // it, and since 1.9 the panel's entry type carries `newTab`, so every rendering
+    // opens the way a site-leaving destination opens. The closed panel mounts no
+    // list, so this tree holds the cluster's link; the panel's half opens below.
+    const user = userEvent.setup();
     const { container } = render(<Landing />);
     const bar = container.querySelector('[data-slot="site-navbar"]');
-    const playground = [...bar!.querySelectorAll('a[href]')].filter((a) =>
+    const clusterLink = [...bar!.querySelectorAll('a[href]')].find((a) =>
       a.getAttribute('href')?.includes('playground.nanisoft.com'),
     );
-    expect(playground.length).toBe(1);
-    expect(playground[0]!.getAttribute('target')).toBe('_blank');
-    expect(playground[0]!.getAttribute('rel')).toBe('noopener noreferrer');
+    expect(clusterLink, 'the bar has no way to the playground').toBeTruthy();
+    expect(clusterLink!.getAttribute('target')).toBe('_blank');
+    expect(clusterLink!.getAttribute('rel')).toBe('noopener noreferrer');
+
+    await user.click(screen.getByRole('button', { name: 'Open menu' }));
+    const panelLink = await screen.findByRole('link', { name: 'Open the playground' });
+    expect(panelLink.getAttribute('target')).toBe('_blank');
+    expect(panelLink.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
   it('offers search over a static index, because this site has no server', () => {

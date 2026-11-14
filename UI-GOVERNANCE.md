@@ -285,3 +285,43 @@ the suite had ever taken was the landing wearing another name, and this audit's
 first per-route probes measured the landing four times. Plain static mode
 resolves the export's clean URLs the way the Worker's `html_handling` does at
 the host; the config now runs `serve out`.
+
+## 7. Filings closed (Prism 1.9.0)
+
+Section 6 filed five findings upstream. Prism 1.9.0 closed four in code and one
+by decision, and this site moved to the release the same day.
+
+1. **`DSGrid`'s one-column narrowing is an explicit `grid-cols-1` template**
+   (`repeat(1, minmax(0, 1fr))`), so a tile carrying its own legible floor
+   overflows inside itself rather than sizing the implicit track and scrolling
+   the page. The figures section's 698px-at-390px measurement is gone: the
+   landing's phone width is clean end to end.
+2. **The sheet emits `hidden`, `sm:inline-flex` and `xl:inline-flex`**, the pair
+   the site-navbar documentation prescribes, via `@source inline` in the
+   stylesheet source. This site's bar carries the documented arrangement now:
+   the cluster CTA steps out below `sm` and the `mobileOnly` panel entry holds
+   the destination there. The variant gate (UI011) reads the sheet for variant
+   classes the same way UI008 reads it for plain ones, so what Prism publishes
+   is what this repository may write, and a variant no rule answers is still a
+   finding.
+3. **The panel's entries carry `newTab`.** The `mobileOnly` playground entry
+   opens in a new browsing context like every other rendering of the
+   destination, asserted by opening the panel in the pack map suite.
+4. **`TsparticlesField` owns its engine call.** Serialized loads, a container
+   that arrives after an unmount destroyed on arrival, rejections carried to
+   `console.warn`: the `TSP-1101` uncaught page error cannot recur. (The
+   publish itself rode the maintainer's npm identity, because the package has
+   no trusted-publisher binding on the registry and the workflow's OIDC path
+   404s; binding it is a registry-side step recorded in the workflow's own
+   comments.)
+5. **The hero `Diagram`'s scroll affordance is closed as a decision, not a
+   change.** The sideways bargain is the Component's documented contract, the
+   container is functional, and the affordance question is the same one the
+   migration already filed upstream against `Diagram` (the
+   `scrollable-region-focusable` exemption in the visual suite). A drawn
+   affordance is design work on the catalogue, not a defect this site holds.
+
+Adopted with the release: `@nanisoft/prism-ui` pinned at 1.9.0, the canonical
+`mobileOnly` pair in the bar (this section's item 2 and 3 together), and the
+audit's second axis is closed: every Prism-drift finding from the 1.8 audit is
+either adopted upstream or recorded here as a decision.
