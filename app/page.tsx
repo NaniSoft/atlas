@@ -15,16 +15,15 @@ import {
 import { ProductGrid01 } from '@nanisoft/prism-ui/blocks/product-grid-01';
 import { StackGrid01 } from '@nanisoft/prism-ui/blocks/stack-grid-01';
 import { StatusLedger01 } from '@nanisoft/prism-ui/blocks/status-ledger-01';
-import { AuroraWash } from '@nanisoft/prism-ui/components/aurora-wash';
-import { HeaderTransparency } from '@nanisoft/prism-ui/components/header-transparency';
-import { AlphaLensMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
+import { Ground01 } from '@nanisoft/prism-ui/blocks/ground-01';
+import { AtlasMark, AlphaLensMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
+import { DSGrid } from '@nanisoft/prism-ui/components/ds-grid';
+import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
 import { PulseGraph } from '@nanisoft/prism-ui/components/pulse-graph';
 import { Reveal } from '@nanisoft/prism-ui/components/reveal';
-import { TsparticlesField } from '@nanisoft/prism-ui/components/tsparticles-field';
 
 import { EstateEditorial } from '@/components/estate-editorial';
 import { EstateGraphFigure } from '@/components/estate-graph-figure';
-import { AtlasLogo } from '@/components/logo';
 import { JsonLd } from '@/components/json-ld';
 import { SiteChrome } from '@/components/site-chrome';
 import { TraversalFigure } from '@/components/traversal-figure';
@@ -146,9 +145,9 @@ function heading(label: string, spectrum: string) {
 
 /** The platform products' own marks, so the band draws logos rather than discs. */
 const PLATFORM_MARKS: Record<string, ReactElement> = {
-  nexus: <NexusMark className="site-product-mark" />,
-  alphalens: <AlphaLensMark className="site-product-mark" />,
-  prism: <PrismMark className="site-product-mark" />,
+  nexus: <NexusMark />,
+  alphalens: <AlphaLensMark />,
+  prism: <PrismMark />,
 };
 
 /* ------------------------------------------------------------------ *
@@ -192,24 +191,22 @@ export default function Landing(): ReactElement {
   return (
     <SiteChrome>
       <JsonLd data={JSON_LD} />
-      <HeaderTransparency />
-      {/* The page's one continuous ground: light and a moving medium, fixed
-          behind every section so the whole page reads as one surface rather than
-          as a hero and a set of separate bands. It is `aria-hidden` because a
-          medium is not information. */}
-      <div aria-hidden className="site-atmosphere">
-        <AuroraWash />
-        <TsparticlesField />
-      </div>
+      {/* The page's one continuous ground, as the design system's Block: the
+          atmosphere layer, the aurora wash at the landing's own intensity, the
+          particle field and the bar's scroll transparency are one composition
+          chosen by props, so the assembly this page used to make by hand cannot
+          drift from the assembly the other four sites make. It is `aria-hidden`
+          because a medium is not information. The `main` the chrome renders
+          carries the slot the ground's stacking contract names. */}
+      <Ground01 />
       {/* The thesis, the page's own h1, and the pipeline running beside it.
 
           The band is the design system's rather than this page's: the column split,
           the gap and the width at which the columns stack are one decision made
-          once, in the place that owns the container contract. Two things here are this
-          page's, and both are in `app/globals.css` because a Block offers no slot for
-          either: `site-hero` trims the top padding, which at the catalogue's `py-24`
-          is 96px of nothing above the headline, and `site-hero h1` sets the one scale
-          on the page a product landing is allowed to have.
+          once, in the place that owns the container contract. Zero-Custom-UI:
+          the hero renders at the catalogue's own padding and type scale. A
+          trimmed top and a larger title step were this page's override; the
+          override is deleted and the DS default stands (see UI-GOVERNANCE.md).
 
           **The hero carries no eyebrow.** It used to carry `nanisoft · atlas — Model
           the real world digitally`, which `Hero01` draws as a small filled lozenge:
@@ -225,7 +222,6 @@ export default function Landing(): ReactElement {
           new: a reader who stops every animation is looking at the drawing this
           page shipped before, which is the test the second law of motion sets. */}
       <Hero01
-        className="site-hero"
         headingLevel="h1"
         title={
           <>
@@ -253,17 +249,16 @@ export default function Landing(): ReactElement {
             label={DAG_PULSE.panel.label}
             footnote={DAG_PULSE.panel.footnote}
             caption={DAG_ARIA}
-            actions={<AtlasLogo size={22} className="site-panel-logo" />}
+            actions={<AtlasMark />}
           >
-            <TwinFinding />
-            <div className="border-border mt-3 border-t pt-3">
+            <DSStack gap="md">
+              <TwinFinding />
               <PulseGraph
                 nodes={DAG_PULSE.nodes}
                 relations={DAG_PULSE.relations}
                 label={DAG_ARIA}
-                className="w-full min-w-0"
               />
-            </div>
+            </DSStack>
           </InstrumentPanel01>
         }
       />
@@ -343,10 +338,10 @@ export default function Landing(): ReactElement {
       <Reveal>
       <Section>
         <SectionHeading as="h2" align="left" title={FIGURES_TITLE} description={FIGURES_LEDE} />
-        <div className="site-figures">
+        <DSGrid columns={2} gap="md">
           <EstateGraphFigure />
           <TraversalFigure />
-        </div>
+        </DSGrid>
       </Section>
       </Reveal>
 
@@ -358,7 +353,6 @@ export default function Landing(): ReactElement {
       <Reveal delay={1}>
       <MediaBand01
         headingLevel="h2"
-        className="site-media-band"
         size="tall"
         tone="muted"
         align="media-right"

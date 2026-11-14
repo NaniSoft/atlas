@@ -39,11 +39,29 @@ jobs:
       # the gate is the only thing that reaches every push.
       - run: pnpm typecheck
       - run: pnpm test
+      # Zero-Custom-UI source + asset compliance (UI001-012 / ASSET001-014).
+      - run: pnpm ui:check
       - run: pnpm build
       # The gates read the built export, so they run after the build rather than
       # beside it. A check that cannot see the artefact it is about is a check about
       # the source, and this programme has three of those.
       - run: pnpm check
+
+  visual:
+    runs-on: ubuntu-latest
+    # Non-blocking until the DS enhancement requests in UI-GOVERNANCE.md §4 land.
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm visual
 
   deploy:
     needs: verify

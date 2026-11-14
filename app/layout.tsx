@@ -2,10 +2,8 @@ import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 // The one stylesheet. Every token, every utility and every base rule on this site
-// arrives in this one import: the design system compiles its own source into it, and
-// a consumer adds its own sheet after it and nothing else.
+// arrives here, from the DS entry point. No site stylesheet follows it.
 import '@nanisoft/prism-ui/styles.css';
-import './globals.css';
 
 import { PrismThemeScript } from '@nanisoft/prism-ui/provider';
 
@@ -23,6 +21,14 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'Atlas',
     locale: 'en',
+    images: [
+      {
+        url: '/opengraph-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Atlas: the Digital Twin Platform',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',

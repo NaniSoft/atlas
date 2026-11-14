@@ -1,8 +1,13 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import type { ReactElement } from 'react';
-import Link from 'next/link';
 import { BlogPostPage } from '@nanisoft/prism-ui/pages/blog-post-page';
+import { Section, SectionHeading } from '@nanisoft/prism-ui/components/section';
+import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
+import { ListPanel } from '@nanisoft/prism-ui/components/list-panel';
+import { Item } from '@nanisoft/prism-ui/components/item';
+import { Text } from '@nanisoft/prism-ui/components/typography';
+import { TagGroup } from '@nanisoft/prism-ui/components/tag-group';
 
 import { getMdxComponents } from '@/lib/mdx-components';
 import { JsonLd } from '@/components/json-ld';
@@ -88,41 +93,46 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
     const posts = published();
     return (
       <SiteChrome current="/blog">
-        <div className="site-index site-index--blog">
-          <header className="site-index__head">
-            <h1 className="site-index__title">Notes from the build</h1>
-            <p className="site-index__lede">
-              Why a produced twin beats assembled dashboards, how a graph earns trust, and what it costs to
-              compose instead of fork.
-            </p>
-          </header>
-          {posts.length === 0 ? (
-            <p className="site-empty">Nothing published yet. The first post is being written.</p>
-          ) : (
-            <ul className="site-blog-list">
-              {posts.map((post) => (
-                <li key={post.url}>
-                  <Link href={post.url} className="site-blog-list__title">
-                    {post.data.title}
-                  </Link>
-                  <p className="site-blog-list__description">{post.data.description}</p>
-                  <p className="site-mono site-blog-list__meta">
-                    <time dateTime={isoDate(post.data.date)}>{displayDate(post.data.date)}</time>
-                    {post.data.tags.length > 0 && (
-                      <span className="site-blog-list__tags">
-                        {post.data.tags.map((tag) => (
-                          <span className="site-blog-list__tag" key={tag}>
-                            {tag}
-                          </span>
-                        ))}
-                      </span>
-                    )}
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+        <Section>
+          <DSStack gap="lg">
+            <SectionHeading
+              as="h1"
+              align="left"
+              title="Notes from the build"
+              description="Why a produced twin beats assembled dashboards, how a graph earns trust, and what it costs to compose instead of fork."
+            />
+            {posts.length === 0 ? (
+              <Text tone="muted">Nothing published yet. The first post is being written.</Text>
+            ) : (
+              <ListPanel label="Blog posts" scroll={false}>
+                <ul>
+                  {posts.map((post) => (
+                    <li key={post.url}>
+                      <Item
+                        entry={{
+                          id: post.url,
+                          title: post.data.title,
+                          description: post.data.description,
+                          meta: (
+                            <DSStack gap="xs">
+                              <Text as="span" size="sm" tone="muted">
+                                <time dateTime={isoDate(post.data.date)}>{displayDate(post.data.date)}</time>
+                              </Text>
+                              {post.data.tags.length > 0 && (
+                                <TagGroup tags={post.data.tags.map((tag) => ({ id: tag, label: tag }))} />
+                              )}
+                            </DSStack>
+                          ),
+                          href: post.url,
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </ListPanel>
+            )}
+          </DSStack>
+        </Section>
       </SiteChrome>
     );
   }

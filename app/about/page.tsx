@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import type { ReactElement } from 'react';
 
 import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
+import { DSGrid } from '@nanisoft/prism-ui/components/ds-grid';
 import { Prose } from '@nanisoft/prism-ui/components/prose';
 import { Section, SectionHeading } from '@nanisoft/prism-ui/components/section';
 import { NoteGrid01 } from '@nanisoft/prism-ui/blocks/note-grid-01';
@@ -111,7 +112,7 @@ export default function AboutPage(): ReactElement {
 
       <Section>
         <SectionHeading as="h2" align="left" title="Keep going" />
-        <div className="site-actions">
+        <DSGrid columns={3} gap="md">
           {KEEP_GOING.map((link, index) => (
             <CtaLink
               key={link.href}
@@ -122,7 +123,7 @@ export default function AboutPage(): ReactElement {
               {link.label}
             </CtaLink>
           ))}
-        </div>
+        </DSGrid>
       </Section>
     </SiteChrome>
   );

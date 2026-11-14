@@ -77,11 +77,11 @@ describe('landing', () => {
     // sees a drawing loses the sentence rather than the claim. The caption is never
     // printed: it is the accessible name and nothing else.
     const estate = screen.getByRole('img', { name: ESTATE_FIGURE.caption });
-    expect(estate.getAttribute('data-slot')).toBe('estate-graph');
+    expect(estate.getAttribute('data-slot')).toBe('diagram');
     expect(estate.textContent).not.toContain(ESTATE_FIGURE.caption);
 
     const traversal = screen.getByRole('img', { name: TRAVERSAL_FIGURE.caption });
-    expect(traversal.getAttribute('data-slot')).toBe('traversal');
+    expect(traversal.getAttribute('data-slot')).toBe('diagram');
 
     // Each figure draws the words the page already publishes, rather than decorating
     // it. These are the copy's own nouns, asserted so a rewrite of either cannot
@@ -254,8 +254,15 @@ describe('landing', () => {
       expect(link.tagName.toLowerCase()).toBe('a');
       expect(link.getAttribute('href')).toBeTruthy();
     }
+    // The landing names the playground four times: the hero's action, the bar's row
+    // link, the closing band's action, and the footer's column entry. The panel's
+    // entry is the fifth name and does not render into this tree: the panel is closed,
+    // and its content mounts when a reader opens it. Every link this tree carries
+    // leaves the site, so every one of them opens a new browsing context. The panel's
+    // entry navigates in place when it is open (its entry type carries no `newTab`,
+    // filed upstream and recorded in UI-GOVERNANCE), which the browser lane verifies.
     const playground = screen.getAllByRole('link', { name: 'Open the playground' });
-    expect(playground.length).toBeGreaterThan(0);
+    expect(playground.length).toBe(4);
     for (const link of playground) {
       expect(link.getAttribute('target')).toBe('_blank');
       expect(link.getAttribute('rel')).toBe('noopener noreferrer');

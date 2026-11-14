@@ -16,6 +16,8 @@ export default defineConfig({
     environment: 'jsdom',
     // globals: registers RTL's automatic cleanup between tests.
     globals: true,
+    // Playwright specs live here for running, not as vitest unit tests.
+    exclude: ['**/node_modules/**', '**/dist/**', 'test/visual/**'],
     // The tsParticles engine needs a canvas the jsdom environment does not
     // provide, so the page's living medium is mocked once, here, for the whole
     // suite (see test/setup.ts).

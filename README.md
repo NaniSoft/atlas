@@ -7,7 +7,7 @@ Part of the [NaniSoft](https://www.nanisoft.com) web platform — five sites, on
 - **Live**: https://atlas.nanisoft.com (Custom Domain, auto-created on deploy)
 - **Pack**: `mint` on the document element, and it does not change. The only region of a page carrying a pack which is not the ground is the products section, which carries the three its rows name. The family's five marks live in the bar's menu now, and a closed menu paints nothing: a reader at first paint sees one pack, and the second packs reach them when they ask to leave. That is the whole five-pack layering, and `scripts/pack-map.json` is the map and the pack-boundary gate in `@nanisoft/prism-ui/gates` is the gate, checked in both light and dark mode
 - **Stack**: Next 16 static export · fumadocs-mdx · pnpm · TypeScript strict · oxlint · Vitest (jsdom + Testing Library) · Cloudflare Workers
-- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 0.13.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. This repository authors no client module: every page is a server component, so the only JavaScript this site ships is the bar's own controls, and those are client components inside the pinned package rather than a boundary drawn here
+- **Chrome, every page and every section**: [@nanisoft/prism-ui](https://www.npmjs.com/package/@nanisoft/prism-ui) 1.8.0, pinned exactly. It brings [@nanisoft/prism-tokens](https://www.npmjs.com/package/@nanisoft/prism-tokens) at the exact version it was released against, so this repository declares one first-party dependency and cannot be handed a mismatched pair. This repository authors no client module: every page is a server component, so the only JavaScript this site ships is the bar's own controls, and those are client components inside the pinned package rather than a boundary drawn here
 - **Typeface**: none of this site's own. Prism ships Inter as three static woff2 files under the OFL and declares the `@font-face` rules in its own emitted sheet, so `--font-sans` resolves as published and nothing here loads, re-declares or repoints a family
 
 ## What ships
@@ -29,9 +29,7 @@ Honesty devices are content, not chrome: use-case statuses (access traversal = a
 ```
 app/layout.tsx        the document: two theme attributes, the boot script, the page
 app/page.tsx          the landing, composed from catalogue items and nothing else
-app/globals.css       about 250 lines: the design system's own font family, the two
-                      site-owned lists, and three layout classes for the hero
-app/docs/…            the section index (this site's) and the document (the catalogue's)
+app/docs/…            the section index (DS ListPanel + Item rows) and the document (the catalogue's)
 app/blog/…            the blog list (this site's) and the blog post (the catalogue's)
 app/api/search/route.ts  the search index, prerendered because the export has no server
 components/site-chrome.tsx  the bar, the main, the footer, and the current page
@@ -47,19 +45,19 @@ test/                 the corpus from disk, the composition, the pack map, the
 
 Three things are worth knowing before changing anything here.
 
-**A consumer cannot write a design-system utility class.** The emitted stylesheet is
-compiled from the design system's own source, so a utility exists in it only if a
-Prism component uses it. `mb-12` is safe; a utility Prism happens not to use would do
-nothing and say nothing. Anything this site needs for itself goes in
-`app/globals.css` as a site class.
+**Zero-Custom-UI: this site owns no styling.** The emitted stylesheet is
+compiled from the design system's own source, and this site adds nothing to it:
+no stylesheet, no inline style, no site class, no hand-drawn SVG. Composition
+only — DS primitives (`DSStack`, `DSGrid`, `Diagram`, `ListPanel`, `Item`,
+`Heading`, `Text`) carry layout, type and ink. `pnpm ui:check` is the gate
+and `UI-GOVERNANCE.md` is the record.
 
-**The site stylesheet owns almost nothing.** It must not declare the page ground, the
-body ink, a focus outline or a hairline colour on a selector with no class in it, and
-it must not carry a `:focus` rule at all: the design system's base layer is layered
-and this sheet is not, so a bare-element rule here wins the cascade whatever the
-cascade then does with it. That sentence is the reason the gate exists rather than the
-gate's rule: the rule is the failure message, and when `pnpm check` is red the message
-says which of these it was and why it matters.
+**There is no site stylesheet.** Before Zero-Custom-UI it owned ~250 lines of
+lists, hero layout and figure colours, with strict ownership rules. That sheet
+is gone: the design system's base layer is layered and a consumer sheet is
+not, so any consumer rule wins the cascade — the only honest rule left is that
+there is no consumer rule. When `pnpm check` is red, `ui:check`'s message says
+which code broke and why it matters.
 
 **A pack boundary is not only colour.** It repoints the pack's corner radius beneath
 it, and it wears the mode of the nearest ancestor carrying `.dark`, which is why a
@@ -82,15 +80,14 @@ platform has a factory behind it"), and no gate here can tell a habit from a
 decision. If a reviewer wants them gone, that is a copy decision with a ledger entry
 attached, not a lint rule.
 
-**Two figures are hand-drawn, and they draw sentences rather than decorate.** Before
-them the landing carried exactly one visual, the hero's pipeline, and everything below
-the fold was a heading over a grid of words. `components/estate-graph-figure.tsx` and
+**Two figures are DS Diagrams, and they draw sentences rather than decorate.** Before
+them the landing carried exactly one visual, the hero's pipeline, and everything
+below the fold was a heading over a grid of words. `components/estate-graph-figure.tsx` and
 `components/traversal-figure.tsx` draw two claims the page had no picture for: what the
 estate turns into, and what the flagship question walks through. Each transcribes copy
-the page already publishes, `InstrumentPanel01` owns the frame, and every colour in
-both is a class in `app/globals.css` rather than a hex value, so a pack boundary
-repaints them. Neither carries a `'use client'` line, so neither costs the page any
-JavaScript.
+the page already publishes, `InstrumentPanel01` owns the frame, and every stroke is a
+design-system token, so a pack boundary repaints them. Neither carries a `'use client'` line,
+so neither costs the page any JavaScript.
 
 ## The bar is the design system's, and this site composes it
 
@@ -118,6 +115,17 @@ still names `header.brand` and `footer.brand`, because the wordmark is still on 
 at first paint; the switcher's rule was not moved anywhere, it was deleted, and
 `test/pack-map.test.tsx` now expects one second-pack region rather than two and renders
 the real pages rather than a header it assembles itself.
+
+**The playground is a destination, not a cluster control.** The bar carried the ask as a
+CTA in its controls cluster, and at phone width the cluster plus that CTA measured past
+the panel's own trigger: the navigation was lost, not just the ask. The design system's
+own repair pairs such a CTA with a `mobileOnly` panel entry and hides the CTA below the
+width it stops fitting at, which its own site writes as a variant class this repository
+cannot author (the gate fails a consumer variant, and the published sheet emits only the
+utilities its own components use). So the playground rides the navigation as one entry:
+a row link above the panel's threshold, where it leaves the site in a new context, and a
+panel entry below it, where it navigates in place. The ask stays on the page where a
+reader decides: the hero's actions and the closing band.
 
 **Search is a static index, because this site is a static export.** There is no server to
 ask, so `app/api/search/route.ts` prerenders an index of twenty-seven entries and the
@@ -245,11 +253,11 @@ recording are the ones a future pass would be tempted to undo:
 - The six cards between the data path and the use cases had no heading at all. They now
   have one, scoped to the four stages above them rather than to the platform, which is
   surveyed two bands later.
-- The hero's title is set by `.site-hero h1` in `app/globals.css`, because `Hero01`
-  offers no slot to scale one and the catalogue caps a section title at
-  `sm:text-4xl`. It is a class rule on purpose: an unlayered rule beats prism's layered
-  utility, and a bare `h1` rule would be a competing declaration the ownership gate
-  rejects.
+- The hero's title renders at the catalogue's own scale: `Hero01` offers no slot
+  to scale one and the catalogue caps a section title at `sm:text-4xl`. The bigger
+  step this page had came from a site class override; Zero-Custom-UI deleted it,
+  and the DS scale stands. A `titleSize` prop is filed as a DS enhancement
+  (`UI-GOVERNANCE.md` §4).
 - `app/icon.svg` was Prism's mark: a white beam refracted into blue inks on a navy
   ground, shipped as the favicon for a mint site on a near-black ground. It is now
   Atlas's own, three nodes and the edges among them, in values out of the mint pack's

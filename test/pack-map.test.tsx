@@ -135,9 +135,11 @@ describe('the pack map', () => {
 });
 
 describe('the bar this site publishes', () => {
-  it('carries this site own three destinations, in a navigation of its own', () => {
+  it('carries this site own destinations, in a navigation of its own', () => {
     // The Block renders a brand lockup and nothing else when `nav` is absent, so
-    // dropping the three is a silent removal of the whole site's navigation.
+    // dropping the list is a silent removal of the whole site's navigation. The row
+    // renders every entry: the playground rides the navigation since the cluster's
+    // CTA left the bar (see `lib/bar.ts` for that decision).
     const { container } = render(<Landing />);
     const nav = container.querySelector(`nav[aria-label="${COPY.nav}"]`);
     expect(nav, 'the bar carries no site navigation').toBeTruthy();
@@ -166,16 +168,22 @@ describe('the bar this site publishes', () => {
   });
 
   it('keeps the playground, which is the one destination above the fold that leaves this site', () => {
-    // It used to sit in the layout's `actions` slot, which is where it is still
-    // published, and it is named five times in the landing's copy. A bar that dropped it
-    // would leave the landing's single honest ask unreachable from every other page.
+    // It used to sit in the layout's `actions` slot, and it is named five times in the
+    // landing's copy. A bar that dropped it would leave the landing's single honest ask
+    // unreachable from every other page. It is a nav entry now, so the row renders it
+    // above the panel's threshold as a link that leaves the site. The panel carries
+    // the same entry below that threshold and navigates in place when it is open,
+    // because the panel's entry type carries no `newTab` (filed upstream, recorded in
+    // UI-GOVERNANCE); the closed panel mounts no list, so this tree holds one link,
+    // and the browser lane verifies the panel's half.
     const { container } = render(<Landing />);
     const bar = container.querySelector('[data-slot="site-navbar"]');
-    const playground = [...bar!.querySelectorAll('a[href]')].find((a) =>
+    const playground = [...bar!.querySelectorAll('a[href]')].filter((a) =>
       a.getAttribute('href')?.includes('playground.nanisoft.com'),
     );
-    expect(playground, 'the bar has no way to the playground').toBeTruthy();
-    expect(playground!.getAttribute('target')).toBe('_blank');
+    expect(playground.length).toBe(1);
+    expect(playground[0]!.getAttribute('target')).toBe('_blank');
+    expect(playground[0]!.getAttribute('rel')).toBe('noopener noreferrer');
   });
 
   it('offers search over a static index, because this site has no server', () => {
