@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { SiteFooter } from '@nanisoft/prism-ui/blocks/site-footer';
 import { SiteNavbar } from '@nanisoft/prism-ui/blocks/site-navbar';
 import { AtlasMark, AlphaLensMark, NaniSoftMark, NexusMark, PrismMark } from '@nanisoft/prism-ui/components/product-marks';
+import { CtaLink } from '@nanisoft/prism-ui/components/cta-link';
 import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
 import { Text } from '@nanisoft/prism-ui/components/typography';
 
@@ -12,6 +13,7 @@ import {
   BAR_PRODUCT,
   COPY,
   NAV,
+  PLAYGROUND_ACTION,
   SITES,
 } from '@/lib/bar';
 
@@ -80,6 +82,18 @@ export function SiteChrome({
         }}
         mode={{ lightLabel: COPY.toDark, darkLabel: COPY.toLight }}
         mobileLabels={{ open: COPY.menuOpen, close: COPY.menuClose }}
+        actions={
+          /* The bar's one way out, and its other rendering. The CTA steps out of
+             the cluster below `sm`, where the cluster cannot afford it beside
+             the panel's trigger, and the `mobileOnly` nav entry holds the
+             destination in the panel there. Both halves are the design system's
+             own arrangement, writable since 1.9 published the pair and the
+             panel's new-tab. The playground is external, so every rendering of
+             it opens in a new browsing context. */
+          <CtaLink href={PLAYGROUND_ACTION.href} size="sm" newTab className="hidden sm:inline-flex">
+            {PLAYGROUND_ACTION.label}
+          </CtaLink>
+        }
       />
       <main data-slot="site-main">{children}</main>
       <SiteFooter

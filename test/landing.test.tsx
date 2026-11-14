@@ -254,13 +254,13 @@ describe('landing', () => {
       expect(link.tagName.toLowerCase()).toBe('a');
       expect(link.getAttribute('href')).toBeTruthy();
     }
-    // The landing names the playground four times: the hero's action, the bar's row
-    // link, the closing band's action, and the footer's column entry. The panel's
-    // entry is the fifth name and does not render into this tree: the panel is closed,
-    // and its content mounts when a reader opens it. Every link this tree carries
-    // leaves the site, so every one of them opens a new browsing context. The panel's
-    // entry navigates in place when it is open (its entry type carries no `newTab`,
-    // filed upstream and recorded in UI-GOVERNANCE), which the browser lane verifies.
+    // The landing names the playground four times in the closed tree: the hero's
+    // action, the bar's cluster CTA, the closing band's action, and the footer's
+    // column entry. The panel's `mobileOnly` entry is the fifth name and does not
+    // render into this tree: the panel is closed, and its content mounts when a
+    // reader opens it. Since 1.9 the panel's entry type carries `newTab` too, so
+    // every rendering of the destination opens a new browsing context; the panel's
+    // half is asserted in the pack map suite by opening it.
     const playground = screen.getAllByRole('link', { name: 'Open the playground' });
     expect(playground.length).toBe(4);
     for (const link of playground) {
