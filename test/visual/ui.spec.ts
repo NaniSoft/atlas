@@ -42,9 +42,12 @@ for (const route of ROUTES) {
     );
     expect(blocking).toEqual([]);
 
-    // Visual regression against the approved baseline.
+    // Visual regression against the approved baseline. The thirty-second
+    // budget is WebKit headroom: its screenshot pass over the fixed ground
+    // and the backdrop-filter panes does not hold the five-second default
+    // on the runner.
     const name = route === '/' ? 'landing' : route.replaceAll('/', '');
-    await expect(page).toHaveScreenshot(`${name}.png`, { maxDiffPixelRatio: 0.02 });
+    await expect(page).toHaveScreenshot(`${name}.png`, { maxDiffPixelRatio: 0.02, timeout: 30 * 1000 });
   });
 }
 
@@ -55,5 +58,5 @@ test('themes: light and dark render', async ({ page }) => {
     document.documentElement.classList.remove('dark');
   });
   await expect(page.locator('main')).toBeVisible();
-  await expect(page).toHaveScreenshot('landing-light.png', { maxDiffPixelRatio: 0.02 });
+  await expect(page).toHaveScreenshot('landing-light.png', { maxDiffPixelRatio: 0.02, timeout: 30 * 1000 });
 });
