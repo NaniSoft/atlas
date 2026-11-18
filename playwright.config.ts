@@ -11,14 +11,6 @@ export default defineConfig({
   testDir: './test/visual',
   timeout: 2 * 60 * 1000,
   snapshotDir: './test/visual/__snapshots__',
-  expect: {
-    toHaveScreenshot: {
-      // WebKit's screenshot pass over the fixed ground and the backdrop-filter
-      // panes does not hold the five-second default on the runner. The budget
-      // is headroom, not patience: the pages are still, fonts loaded, one shot.
-      timeout: 30 * 1000,
-    },
-  },
   use: {
     baseURL: 'http://127.0.0.1:3100',
     trace: 'retain-on-failure',
