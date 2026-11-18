@@ -60,7 +60,11 @@ jobs:
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
-      - run: pnpm exec playwright install --with-deps chromium
+      # The suite's mobile and tablet projects run iPhone and iPad emulation,
+      # which is WebKit, so WebKit installs beside Chromium. The same gap is
+      # closed in alphalens's workflow, and the suite learns its browser the
+      # same way.
+      - run: pnpm exec playwright install --with-deps chromium webkit
       - run: pnpm visual
 
   deploy:

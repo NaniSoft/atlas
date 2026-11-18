@@ -22,7 +22,7 @@
     "check": "pnpm ui:check && pnpm check:prism-gates && pnpm check:docs-tree"
   },
   "dependencies": {
-    "@nanisoft/prism-ui": "1.9.0",
+    "@nanisoft/prism-ui": "1.10.0",
     "fumadocs-core": "^16.18.1",
     "fumadocs-mdx": "^15.5.0",
     "next": "^16.4.5",
