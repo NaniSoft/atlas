@@ -337,7 +337,7 @@ export default function Landing(): ReactElement {
           six. */}
       <Reveal>
       <Section>
-        <SectionHeading as="h2" align="left" title={FIGURES_TITLE} description={FIGURES_LEDE} />
+        <SectionHeading as="h2" title={FIGURES_TITLE} description={FIGURES_LEDE} />
         <DSGrid columns={2} gap="md">
           <EstateGraphFigure />
           <TraversalFigure />
