@@ -174,8 +174,13 @@ describe('landing', () => {
     // correct-looking section with nothing in it, which no screenshot shows.
     const parts = container.querySelectorAll('[data-slot="stack-grid"] > ul:first-child > li');
     expect(parts).toHaveLength(16);
-    for (const part of parts) {
-      expect(part.textContent?.trim().length ?? 0).toBeGreaterThan(0);
+    for (const [index, part] of parts.entries()) {
+      const product = STACK_PRODUCTS[index]!;
+      expect(part.textContent).toContain(product.name);
+      expect(part.textContent).toContain(product.role);
+      if (product.realName !== product.name) {
+        expect(part.textContent).toContain(product.realName);
+      }
     }
     const own = container.querySelectorAll('[data-slot="stack-grid-own"] > li');
     expect(own).toHaveLength(4);

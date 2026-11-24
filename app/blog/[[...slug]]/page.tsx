@@ -7,7 +7,6 @@ import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
 import { ListPanel } from '@nanisoft/prism-ui/components/list-panel';
 import { Item } from '@nanisoft/prism-ui/components/item';
 import { Text } from '@nanisoft/prism-ui/components/typography';
-import { TagGroup } from '@nanisoft/prism-ui/components/tag-group';
 
 import { getMdxComponents } from '@/lib/mdx-components';
 import { JsonLd } from '@/components/json-ld';
@@ -113,15 +112,17 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
                           id: post.url,
                           title: post.data.title,
                           description: post.data.description,
+                          // The meta column is `shrink-0`, so holding both the
+                          // date and a tag run there squeezed each post's title
+                          // and standfirst to a few words on a 390px screen.
+                          // The date is the compact fact that belongs beside a
+                          // row; the tags are already on the post page, which
+                          // is the design system's own Page and carries them
+                          // as Badges there.
                           meta: (
-                            <DSStack gap="xs">
-                              <Text as="span" size="sm" tone="muted">
-                                <time dateTime={isoDate(post.data.date)}>{displayDate(post.data.date)}</time>
-                              </Text>
-                              {post.data.tags.length > 0 && (
-                                <TagGroup tags={post.data.tags.map((tag) => ({ id: tag, label: tag }))} />
-                              )}
-                            </DSStack>
+                            <Text as="span" size="sm" tone="muted">
+                              <time dateTime={isoDate(post.data.date)}>{displayDate(post.data.date)}</time>
+                            </Text>
                           ),
                           href: post.url,
                         }}
@@ -176,6 +177,7 @@ export default async function BlogPage({ params }: PageProps): Promise<ReactElem
         next={next && { title: next.data.title, href: next.url }}
         trailLabels={TRAIL_LABELS}
         trailLabel="More posts"
+        indexLink={{ title: 'All posts', href: '/blog' }}
       >
         <MDX components={getMdxComponents({ itemKey: page.url.replace(/^\//, '') })} />
       </BlogPostPage>

@@ -20,7 +20,7 @@ import { createRequire } from 'node:module';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SOURCE_ROOTS = ['app', 'components', 'lib', 'content'];
-const ROOT_FILES = ['next.config.ts', 'vitest.config.ts', 'playwright.config.ts'];
+const ROOT_FILES = ['next.config.ts', 'vitest.config.mts', 'playwright.config.ts'];
 const DS_CSS_IMPORT = '@nanisoft/prism-ui/styles.css';
 
 const requireFromGate = createRequire(import.meta.url);
@@ -207,7 +207,7 @@ export function checkFile(file, published) {
         if (spec.endsWith('.svg')) {
           add('ASSET008', line, `Unapproved SVG import detected: ${spec}. Use DSIcon by name or a registered asset.`);
         }
-        if (/^next\/font/.test(spec) || /font.*css$/i.test(spec)) {
+        if (spec.startsWith('next/font') || /font.*css$/i.test(spec)) {
           add('UI009', line, `Unapproved font import detected: ${spec}.`);
         }
         if (/^fumadocs-(core|mdx)\/(ui|.*ui.*)/.test(spec) || spec === 'fumadocs-ui') {
@@ -391,8 +391,8 @@ export function checkAssets() {
   const findings = [];
   const add = (code, file, detail) => findings.push({ code, file, line: 1, detail });
   const site = loadSiteManifest();
-  const budgets = { ...(loadDsManifest().budgetsKiB ?? {}), ...(site.budgetsKiB ?? {}) };
-  const variants = { ...(loadDsManifest().variants ?? {}), ...(site.variants ?? {}) };
+  const budgets = { ...loadDsManifest().budgetsKiB, ...site.budgetsKiB };
+  const variants = { ...loadDsManifest().variants, ...site.variants };
 
   for (const asset of site.assets ?? []) {
     const full = path.join(ROOT, asset.file);

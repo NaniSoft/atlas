@@ -325,3 +325,92 @@ Adopted with the release: `@nanisoft/prism-ui` pinned at 1.9.0, the canonical
 `mobileOnly` pair in the bar (this section's item 2 and 3 together), and the
 audit's second axis is closed: every Prism-drift finding from the 1.8 audit is
 either adopted upstream or recorded here as a decision.
+
+## 8. Accessibility and composition audit (2026-11-23)
+
+A second audit scored the site 16/20 and found ten issues. Four were closed in
+this repository and four were closed in the Prism checkout, because the markup
+that caused them belongs to the published package rather than to this site.
+The remaining two were documentation/tooling drift and are closed below.
+
+### Closed here
+
+- **`app/page.tsx` now passes `realName`.** Prism 1.12.0 added `StackPart.realName`,
+  which renders the real product beneath a codename. The old comment saying the
+  field had no slot was removed, and `test/landing.test.tsx` plus
+  `test/audit-fixes.test.tsx` assert every codenamed entry now prints its real
+  name. This closes the copy/promise mismatch the ledger itself declared.
+- **`components/section-index.tsx` passes a `Heading as="h2"` as the `ListPanel`
+  title.** The panel's own title is a `span`, which is right when four panels sit
+  under one section heading and wrong when five panels *are* the sections. The
+  docs index now has an `h1` and five `h2`s under it.
+- **`app/blog/[[...slug]]/page.tsx` keeps the row meta compact.** The date and a
+  `TagGroup` shared the `shrink-0` column, squeezing titles and standfirsts to
+  a few words at 390px. Only the `<time>` remains in the row; the tags are
+  already on the post Page as `Badge`s. The same Page now passes `indexLink`,
+  so the end of a post has a way back to the archive.
+- **`DESIGN.md` names the installed pin (1.13.0)** and the Impeccable sidecar
+  was regenerated from it, preserving the Markdown. The five `oxlint` warnings
+  in `scripts/ui-check.mjs` are gone, `vitest.config.ts` is `vitest.config.mts`
+  so Vite no longer reports a CJS deprecation, and the two readers of that
+  filename were updated with it.
+
+### Closed in Prism, referenced here
+
+These were made in the `prism` checkout at `packages/ui/src`, with tests and a
+changeset (`anchor-focus-and-trail-targets.md`), and are consumed here from a
+locally rebuilt `dist`:
+
+- `components/ui/item.tsx`: the row link carries `flex min-h-6 items-center`, a
+  24px target paid on the box, and the description wraps to two lines with
+  `line-clamp-2` instead of truncating to one.
+- `components/ui/diagram.tsx` and `pulse-graph.tsx`: every horizontal scroll
+  container carries `tabIndex={0}` so a keyboard reader can pan a figure that
+  overflows. Named figures additionally carry `role="region"` and their own
+  accessible name; decorative ones stay unnamed.
+- `pages/docs-shell/docs-shell.tsx`: the two `<aside>` regions carry
+  `aria-label={navLabel}` and `aria-label={tocLabel}`, so axe sees two distinct
+  complementary landmarks rather than an anonymous pair.
+- `styles.css`: anchors and `[tabindex="0"]` regions inherit a 3px focus ring
+  from `@layer base`, so a scroll container added by a figure has the same
+  indicator as a Component's own control.
+
+`BlogPostPage` trail links and `SiteFooter` links already carried 44px/24px
+floors and explicit rings from the change set that was in flight when the audit
+ran; those halves needed no further edit. The DS `Table` component was left
+alone: a `tabIndex` on its wrapper becomes the first tab stop before a sortable
+header, and the MDX tables that triggered the finding are plain `<table>` elements,
+which this site gives a tab stop through its own MDX component map below.
+
+### Not fixed, by decision
+
+The audit's remaining P2 finding is that a phone reader reaches a documentation
+article only after scrolling the full 19-link rail. `DocsShell` documents this
+as the cost of drawing the tree once. The two ways to remove it both break a
+load-bearing rule: a `<details>` copy doubles the tree and broke three consumer
+suites when Prism tried it in 0.16.0, and a client-island disclosure would put
+the first `'use client'` boundary in this repository and fail
+`test/server-only.test.ts`. It stays recorded here rather than worked around.
+
+The audit also raised the 640px figure floor inside two-column desktop panels.
+`UI-GOVERNANCE.md` §6 already closed this as a decision: horizontal scroll is
+`Diagram`'s documented contract, and a drawn affordance is catalogue design
+work rather than a defect this site holds. The new keyboard tab stop makes the
+bargain operable without changing it.
+
+**Release debt, paid.** The four Prism fixes above shipped in the package's
+1.13.0 release, and the pin moved to `@nanisoft/prism-ui` 1.13.0 exactly, as
+the `pin` gate requires, with the local `dist` overlay dropped in the same
+change. A clean `pnpm install` on another machine now resolves the published
+package and keeps the fixes.
+
+### Verification
+
+`pnpm lint`, `pnpm typecheck`, `pnpm test` (82 passing), `pnpm build`, and
+`pnpm check` (ui:check 0, gate kit 0 across all seven gates, docs-tree 9
+passing) are green. `pnpm visual` now runs 24 tests: the integration ledger is
+a route in its own right, and the axe `scrollable-region-focusable` rule is no
+longer excepted, so a scroll container without a tab stop fails the suite. The
+five changed baselines were regenerated from the new markup. `impeccable
+doctor` reports no drift. The Prism package's own build, `check` chain and the
+nine affected test files are green as well.

@@ -364,15 +364,18 @@ export default function Landing(): ReactElement {
       </Reveal>
 
       {/* 04, how it is built: the survey of composed parts, then the four that are
-          ours. The real product name under each codename has no slot on the item
-          that draws this section, so it is a loss of published copy and it is
-          reported rather than rewritten into the role line. Filed against the
-          design system as a field on `StackPart`, counted per consumer. */}
+          ours. Since Prism 1.12.0, `StackPart` carries `realName`, so the eight
+          codenamed entries print the real open-source product beneath the codename
+          as promised by `HOW_BUILT_LEDE` and `INTEGRATIONS_NOTE`. */}
       <Reveal>
       <StackGrid01
         title="How it’s built: compose, don’t fork"
         description={HOW_BUILT_LEDE}
-        parts={STACK_PRODUCTS.map((product) => ({ name: product.name, role: product.role }))}
+        parts={STACK_PRODUCTS.map((product) => ({
+          name: product.name,
+          realName: product.realName !== product.name ? product.realName : undefined,
+          role: product.role,
+        }))}
         own={IN_HOUSE.map((component) => ({ name: component.name, blurb: component.blurb }))}
         ownLabel="built in-house"
         caption={INTEGRATIONS_NOTE}

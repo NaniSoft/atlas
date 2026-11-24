@@ -14,7 +14,7 @@ import { SectionHeading } from '@nanisoft/prism-ui/components/section';
 import { DSStack } from '@nanisoft/prism-ui/components/ds-stack';
 import { ListPanel } from '@nanisoft/prism-ui/components/list-panel';
 import { Item } from '@nanisoft/prism-ui/components/item';
-import { Text } from '@nanisoft/prism-ui/components/typography';
+import { Heading, Text } from '@nanisoft/prism-ui/components/typography';
 
 export interface IndexGroup {
   group: string;
@@ -40,7 +40,11 @@ export function SectionIndex({ title, description, groups, emptyMessage }: Secti
           <Text tone="muted">{emptyMessage}</Text>
         ) : (
           groups.map((group) => (
-            <ListPanel key={group.group} title={group.group} scroll={false}>
+            <ListPanel
+              key={group.group}
+              title={<Heading as="h2" size="lg">{group.group}</Heading>}
+              scroll={false}
+            >
               <ul>
                 {group.items.map((item) => (
                   <li key={item.url}>

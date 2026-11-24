@@ -72,7 +72,7 @@ The estate in ink, its twin in mint: the mark draws reality and its living repre
 
 Atlas is the drawing site of the family, and its drawings transcribe copy: every figure is a design system Diagram whose nodes and edges are literally the words the adjacent text publishes, framed in an instrument panel with a caption that says what the drawing is ("A schematic of the estate, not a photograph"). The drawings claim nothing: the hero panel carries no status word and never claims live, because drawings may not assert freshness over authored data. The site's voice is declarative and engineering-literal, and the em dash is its deliberate punctuation.
 
-The site ships zero CSS of its own. Every value below arrives through the pinned `@nanisoft/prism-ui@1.11.0` stylesheet (`data-pack="mint"`), which is normative; these figures are a snapshot of that pin. Dark is the default rendering and the `-day` siblings are the light mode. The only pixels Atlas authors are its favicon, which quotes the mint dark values verbatim, because a favicon is an image, not a surface.
+The site ships zero CSS of its own. Every value below arrives through the pinned `@nanisoft/prism-ui@1.13.0` stylesheet (`data-pack="mint"`), which is normative; these figures are a snapshot of that pin. Dark is the default rendering and the `-day` siblings are the light mode. The only pixels Atlas authors are its favicon, which quotes the mint dark values verbatim, because a favicon is an image, not a surface.
 
 **Key Characteristics:**
 - One leaf-mint beam on a near-neutral dark ground, dark first

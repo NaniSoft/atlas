@@ -35,7 +35,7 @@ const SOURCE = /\.(ts|tsx)$/;
 const ROOTS = ['app', 'components', 'lib', 'test'];
 
 /** The two configuration files at the root, which are source too. */
-const ROOT_FILES = ['next.config.ts', 'vitest.config.ts'];
+const ROOT_FILES = ['next.config.ts', 'vitest.config.mts'];
 
 function sourceFiles(dir: string, found: string[] = []): string[] {
   if (!existsSync(dir)) return found;
@@ -83,7 +83,7 @@ describe('the site has no client code', () => {
       'lib/source.ts',
       'lib/to-prism-tree.ts',
       'next.config.ts',
-      'vitest.config.ts',
+      'vitest.config.mts',
     ]);
   });
 

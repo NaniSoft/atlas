@@ -2,7 +2,10 @@ import { AxeBuilder } from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 /** Mission §12: render-time proof that DS owns presentation at every breakpoint/mode. */
-const ROUTES = ['/', '/about', '/blog', '/docs'] as const;
+// The ledger is here because its wide tables are the one MDX surface that
+// overflows on a phone; the keyboard tab stop on them is verified by axe below
+// and pinned visually at every width.
+const ROUTES = ['/', '/about', '/blog', '/docs', '/docs/reference/integration-ledger'] as const;
 
 for (const route of ROUTES) {
   test(`runtime compliance: ${route}`, async ({ page }) => {
@@ -33,10 +36,10 @@ for (const route of ROUTES) {
     const rawImages = await page.locator('img').count();
     expect(rawImages).toBe(0);
 
-    // Axe: blocking violations fail the run. The scrollable-region rule is
-    // DS-owned markup (Diagram's overflow container); filed upstream so this
-    // suite does not re-decide a DS signature.
-    const results = await new AxeBuilder({ page }).disableRules(['scrollable-region-focusable']).analyze();
+    // Axe: blocking violations fail the run. Every horizontal scroll region
+    // the site ships (figure diagrams, the pipeline, MDX tables) now carries a
+    // tab stop, so the rule stays enabled rather than excepted.
+    const results = await new AxeBuilder({ page }).analyze();
     const blocking = results.violations.filter(
       (v: { impact?: string | null }) => v.impact === 'critical' || v.impact === 'serious',
     );
